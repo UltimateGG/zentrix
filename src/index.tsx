@@ -9,6 +9,7 @@ import './firebase';
 import { AuthContextProvider } from './contexts/AuthContext';
 import ChatsPage from './pages/ChatsPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -17,7 +18,6 @@ root.render(
     <JetDesign>
       <AuthContextProvider>   
         <HashRouter>
-
           <Routes>
             <Route path="/" element={<AuthPage />} />
 
@@ -27,6 +27,8 @@ root.render(
               </ProtectedRoute>
             } />
           </Routes>
+
+          <Navbar />
         </HashRouter>
       </AuthContextProvider>
     </JetDesign>
