@@ -10,6 +10,7 @@ import { AuthContextProvider } from './contexts/AuthContext';
 import ChatsPage from './pages/ChatsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import SettingsPage from './pages/SettingsPage';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -24,6 +25,12 @@ root.render(
             <Route path="chats" element={
               <ProtectedRoute>
                 <ChatsPage />
+              </ProtectedRoute>
+            } />
+
+            <Route path="settings" element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             } />
           </Routes>
