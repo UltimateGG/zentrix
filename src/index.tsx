@@ -8,6 +8,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import './firebase';
 import { AuthContextProvider } from './contexts/AuthContext';
 import ChatsPage from './pages/ChatsPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -20,7 +21,11 @@ root.render(
           <Routes>
             <Route path="/" element={<AuthPage />} />
 
-            <Route path="chats" element={<ChatsPage />} />
+            <Route path="chats" element={
+              <ProtectedRoute>
+                <ChatsPage />
+              </ProtectedRoute>
+            } />
           </Routes>
         </HashRouter>
       </AuthContextProvider>

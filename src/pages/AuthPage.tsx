@@ -5,7 +5,7 @@ import { Button } from '../Jet';
 
 
 const AuthPage = () => {
-  const { signInWithGoogle, logout, user } = useAuthContext();
+  const { signInWithGoogle, user } = useAuthContext();
   const navigate = useNavigate();
 
 
@@ -16,11 +16,6 @@ const AuthPage = () => {
   return (
     <div>
       <Button onClick={signInWithGoogle}>Sign In</Button>
-
-      {user && <>
-        <p>{user.displayName}</p>
-        <Button onClick={logout}>Sign Out</Button>
-      </>}
     </div>
   );
 }
