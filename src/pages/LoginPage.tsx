@@ -4,7 +4,7 @@ import useAuthContext from '../contexts/AuthContext';
 import { Button } from '../Jet';
 
 
-const AuthPage = () => {
+const LoginPage = () => {
   const { signInWithGoogle, user } = useAuthContext();
   const navigate = useNavigate();
 
@@ -20,4 +20,4 @@ const AuthPage = () => {
   );
 }
 
-export default AuthPage;
+export default LoginPage;

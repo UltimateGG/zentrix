@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AuthPage from './pages/AuthPage';
+import LoginPage from './pages/LoginPage';
 import { JetDesign } from './Jet';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AuthContextProvider } from './contexts/AuthContext';
@@ -20,7 +20,7 @@ root.render(
       <AuthContextProvider>
         <HashRouter>
           <Routes>
-            <Route path="/" element={<AuthPage />} />
+            <Route path="/" element={<LoginPage />} />
 
             <Route path="chats" element={
               <ProtectedRoute>
