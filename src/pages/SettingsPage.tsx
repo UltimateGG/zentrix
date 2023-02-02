@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import useAuthContext from '../contexts/AuthContext';
-import { Box, Button, Progress, TextField, ThemeContext } from '../Jet';
+import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
 
 const defaultProfilePicture = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';

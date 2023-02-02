@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import Firebase from 'firebase/app';
 
 
 interface IAuthContext {
   user: firebase.default.User | null;
+  allowedUsers: string[];
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -12,6 +13,7 @@ interface IAuthContext {
 export const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [user, setUser] = React.useState<firebase.default.User | null>(null);
+  const [allowedUsers, setAllowedUsers] = React.useState<string[]>([]);
 
 
   useEffect(() => {
@@ -25,8 +27,29 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
       setUser(user);
     });
 
+    populateAllowedUsers();
     return () => unsubscribe();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const populateAllowedUsers = async () => {
+    if (allowedUsers.length !== 0) return;
+    const temp = [];
+
+    try {
+      const snapshot = await db.ref('allowedUsers').get();
+      if (snapshot.exists()) {
+        const val = snapshot.val();
+        Object.keys(val).forEach((key: string) => {
+          if (val[key] === true) temp.push(key);
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (temp.length === 0) temp.push('_'); // to prevent infinite loop
+    setAllowedUsers(temp);
+  }
 
   const signInWithGoogle = async () => {
     const provider = new Firebase.auth.GoogleAuthProvider();
@@ -37,9 +60,28 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     await auth.signOut();
   };
 
+  const getContent = () => {
+    if (user == null || allowedUsers.length === 0 || allowedUsers.includes(user.uid))
+      return children;
+
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <h1>Access Denied</h1>
+        <p>You are not allowed to use this app,</p>
+        <p>only whitelisted UIDs can access this application!</p>
+
+        <p style={{ marginTop: '1rem' }}>
+          {user.email}
+          <br />
+          <small>Not you? <a onClick={logout} href="#">Sign in with a different account</a></small> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, allowedUsers, signInWithGoogle, logout }}>
+      {getContent()}
     </AuthContext.Provider>
   );
 };
