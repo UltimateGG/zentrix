@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import AuthPage from './pages/AuthPage';
 import { JetDesign } from './Jet';
 import { HashRouter, Route, Routes } from 'react-router-dom';
+
+// Init firebase
+import './firebase';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -12,7 +15,7 @@ root.render(
       <HashRouter>
 
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<AuthPage />} />
         </Routes>
       </HashRouter>
     </JetDesign>
