@@ -15,6 +15,7 @@ export interface TextFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   roomForError?: boolean;
   error?: string;
   name?: string;
+  autoFocus?: boolean;
 }
 
 const TextFieldContainerStyle = styled.div.attrs((props: TextFieldProps) => props)`
@@ -82,7 +83,7 @@ const ErrorTextStyle = styled.small`
  * @param props Use onChanged for onChange event
  */
 const TextField = (props: TextFieldProps) => {
-  let { type = 'text', value, placeholder, onChanged, onBlur, variant = 'filled', disabled, fullWidth, roomForError, error, ...rest } = props;
+  let { type = 'text', value, placeholder, onChanged, onBlur, variant = 'filled', disabled, fullWidth, roomForError, error, autoFocus, ...rest } = props;
   const { theme } = React.useContext(ThemeContext);
 
   if (error === '' || (error && error.trim() === ''))
@@ -102,6 +103,7 @@ const TextField = (props: TextFieldProps) => {
         fullWidth={fullWidth}
         roomForError={roomForError}
         error={error}
+        autoFocus={autoFocus}
         id={props.name}
       />
       

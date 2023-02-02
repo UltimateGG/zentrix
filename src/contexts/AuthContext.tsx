@@ -15,7 +15,13 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged(async user => {
+      if (user != null && (user.displayName == null || user.displayName === ''))
+        await user.updateProfile({ displayName: user.email?.split('@')[0] }); // ensure user always has a display name
+
+      if (user != null && user.displayName != null && user.displayName.length > 20)
+        await user.updateProfile({ displayName: user.displayName.substring(0, 20) });
+
       setUser(user);
     });
 
