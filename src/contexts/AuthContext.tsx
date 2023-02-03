@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from 'react';
-import { auth, db } from '../firebase';
-import { GoogleAuthProvider, signInWithPopup, updateProfile, User } from 'firebase/auth';
-import { get, ref } from 'firebase/database';
+import { auth, db } from '../api/firebase';
+import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
+import { get, onValue, ref } from 'firebase/database';
+import ZentrixUser from '../api/ZentrixUser';
 
 
 interface IAuthContext {
-  user: User | null;
+  user: ZentrixUser | null;
   allowedUsers: string[];
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -13,24 +14,40 @@ interface IAuthContext {
 
 export const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [user, setUser] = React.useState<User | null>(null);
+  const [user, setUser] = React.useState<ZentrixUser | null>(null);
   const [allowedUsers, setAllowedUsers] = React.useState<string[]>([]);
 
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
-      if (user != null && (user.displayName == null || user.displayName === ''))
-        await updateProfile(user, { displayName: user.email?.split('@')[0] }); // ensure user always has a display name
+      if (!user) return setUser(null);
 
-      if (user != null && user.displayName != null && user.displayName.length > 20)
-        await updateProfile(user, { displayName: user.displayName.substring(0, 20) });
-
-      setUser(user);
+      const newUser = await ZentrixUser.getUser(user as User);
+      setUser(newUser);
     });
 
     if (allowedUsers.length === 0) populateAllowedUsers();
     return () => unsubscribe();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // User update listener
+  useEffect(() => {
+    if (!user) return;
+
+    let initial = true;
+    const unsubscribe = onValue(user.dbRef, snapshot => {
+      if (initial) {
+        initial = false;
+        return;
+      }
+      if (!snapshot.exists()) return;
+
+      user.update(snapshot.val());
+      setUser(user.clone()); // Or else React won't update the component
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const populateAllowedUsers = async () => {
     const temp = [];
@@ -44,7 +61,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
         });
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error loading user whitelist', err);
     }
 
     if (temp.length === 0) temp.push('_'); // to prevent infinite loop
@@ -61,7 +78,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   };
 
   const getContent = () => {
-    if (user == null || allowedUsers.length === 0 || allowedUsers.includes(user.uid))
+    if (user == null || allowedUsers.length === 0 || allowedUsers.includes(user.id))
       return children;
 
     return (
@@ -71,7 +88,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
         <p>only whitelisted UIDs can access this application!</p>
 
         <p style={{ marginTop: '1rem' }}>
-          {user.email}
+          {user.firebaseUser.email}
           <br />
           <small>Not you? <a onClick={logout} href="#">Sign in with a different account</a></small> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
         </p>

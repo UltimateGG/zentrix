@@ -10,7 +10,7 @@ import Navbar from './components/Navbar';
 import SettingsPage from './pages/SettingsPage';
 
 // Init firebase
-import './firebase';
+import './api/firebase';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

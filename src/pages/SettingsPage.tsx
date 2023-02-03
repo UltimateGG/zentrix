@@ -1,11 +1,8 @@
-import { updateProfile } from 'firebase/auth';
 import React from 'react';
 import styled from 'styled-components';
 import useAuthContext from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
-
-const defaultProfilePicture = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
   width: 100%;
@@ -43,7 +40,7 @@ const SettingsPage = () => {
 
     try {
       setUpdatingDisplayName(true);
-      if (user) await updateProfile(user, { displayName: cleanDisplayName });
+      await user?.setDisplayName(cleanDisplayName);
     } catch (err) {
       console.error(err);
     }
@@ -65,7 +62,7 @@ const SettingsPage = () => {
       </Box>
 
       <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ margin: '1rem 0' }}>
-        <img referrerPolicy="no-referrer" src={user.photoURL || defaultProfilePicture} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+        <img referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
 
         {editingDisplayName ? (
           <>
@@ -86,7 +83,7 @@ const SettingsPage = () => {
         ) : (
           <h2 style={{ textAlign: 'center', marginTop: '0.6rem', marginBottom: 0 }}>{displayName}</h2>
         )}
-        <p style={{ textAlign: 'center', marginTop: '0.2rem' }}>{user.email}</p>
+        <p style={{ textAlign: 'center', marginTop: '0.2rem' }}>{user.firebaseUser.email}</p>
       </Box>
 
       <SettingStyle theme={theme} style={{ marginTop: '2rem' }} onClick={() => setEditingDisplayName(true)}>
