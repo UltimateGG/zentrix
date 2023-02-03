@@ -1,3 +1,4 @@
+import { updateProfile } from 'firebase/auth';
 import React from 'react';
 import styled from 'styled-components';
 import useAuthContext from '../contexts/AuthContext';
@@ -42,7 +43,7 @@ const SettingsPage = () => {
 
     try {
       setUpdatingDisplayName(true);
-      await user?.updateProfile({ displayName: cleanDisplayName });
+      if (user) await updateProfile(user, { displayName: cleanDisplayName });
     } catch (err) {
       console.error(err);
     }
@@ -64,7 +65,7 @@ const SettingsPage = () => {
       </Box>
 
       <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ margin: '1rem 0' }}>
-        <img src={user.photoURL || defaultProfilePicture} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+        <img referrerPolicy="no-referrer" src={user.photoURL || defaultProfilePicture} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
 
         {editingDisplayName ? (
           <>

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import Firebase from 'firebase/app';
+import { GoogleAuthProvider, signInWithPopup, updateProfile, User } from 'firebase/auth';
+import { get, ref } from 'firebase/database';
 
 
 interface IAuthContext {
-  user: firebase.default.User | null;
+  user: User | null;
   allowedUsers: string[];
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -12,31 +13,30 @@ interface IAuthContext {
 
 export const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [user, setUser] = React.useState<firebase.default.User | null>(null);
+  const [user, setUser] = React.useState<User | null>(null);
   const [allowedUsers, setAllowedUsers] = React.useState<string[]>([]);
 
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user != null && (user.displayName == null || user.displayName === ''))
-        await user.updateProfile({ displayName: user.email?.split('@')[0] }); // ensure user always has a display name
+        await updateProfile(user, { displayName: user.email?.split('@')[0] }); // ensure user always has a display name
 
       if (user != null && user.displayName != null && user.displayName.length > 20)
-        await user.updateProfile({ displayName: user.displayName.substring(0, 20) });
+        await updateProfile(user, { displayName: user.displayName.substring(0, 20) });
 
       setUser(user);
     });
 
-    populateAllowedUsers();
+    if (allowedUsers.length === 0) populateAllowedUsers();
     return () => unsubscribe();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const populateAllowedUsers = async () => {
-    if (allowedUsers.length !== 0) return;
     const temp = [];
 
     try {
-      const snapshot = await db.ref('allowedUsers').get();
+      const snapshot = await get(ref(db, 'allowedUsers'));
       if (snapshot.exists()) {
         const val = snapshot.val();
         Object.keys(val).forEach((key: string) => {
@@ -52,8 +52,8 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }
 
   const signInWithGoogle = async () => {
-    const provider = new Firebase.auth.GoogleAuthProvider();
-    await auth.signInWithPopup(provider);
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
   };
 
   const logout = async () => {

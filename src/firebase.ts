@@ -1,6 +1,8 @@
 import Firebase from 'firebase/app';
 import 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import 'firebase/database';
+import { getDatabase } from 'firebase/database';
 
 
 // Initialize Firebase
@@ -13,8 +15,8 @@ const app = Firebase.initializeApp({
   appId: process.env.REACT_APP_APP_ID
 });
 
-const auth = Firebase.auth();
-const db = Firebase.database();
+const auth = getAuth(app);
+const db = getDatabase(app);
 
 export {
   app,
