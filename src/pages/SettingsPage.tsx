@@ -37,7 +37,7 @@ const SettingsPage = () => {
     const cleanDisplayName = displayName.trim();
 
     if (cleanDisplayName.length < 3 || cleanDisplayName.length > 20) {
-      setError('Display name must be between 3 and 20 characters');
+      setError('Must be between 3 and 20 characters');
       return;
     }
 

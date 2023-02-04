@@ -12,9 +12,13 @@ const ChatsPage = () => {
     
   }
 
+  if (!user) return null;
   return (
-    <div>
+    <>
       <Box justifyContent="space-between" alignItems="center" style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 2,
         height: '3.6rem',
         padding: '1rem 2rem',
         backgroundColor: theme.colors.background[1]
@@ -23,8 +27,14 @@ const ChatsPage = () => {
         <Icon icon={IconEnum.add_chat} style={{ cursor: 'pointer' }} size={32} onClick={createChat} />
       </Box>
 
-      {/* TODO: list chats */}
-    </div>
+      {user.chats.length === 0 && (
+        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
+          <h3 style={{ margin: 0 }}>No chats yet</h3>
+          <p style={{ margin: 0 }}>Click the + button to create a new chat</p>
+        </Box>
+      )}
+
+    </>
   );
 }
 
