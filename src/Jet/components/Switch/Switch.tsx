@@ -10,6 +10,7 @@ export interface SwitchProps extends React.HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
   label?: string;
   name?: string;
+  lightBg?: boolean;
 }
 
 const SwitchContainerStyle = styled.div`
@@ -21,7 +22,7 @@ const SwitchContainerStyle = styled.div`
 const SwitchStyle = styled.input.attrs((props: SwitchProps) => props)`
   display: inline-block;
   border: 2px solid ${props => props.theme.colors.background[2]};
-  background-color: ${props => props.theme.colors.background[2]};
+  background-color: ${props => props.theme.colors.background[props.lightBg ? 3 : 2]};
   border-radius: ${props => props.theme.roundedFull};
   margin: 0.2rem 0;
   padding: 0.6rem 1.2rem;
@@ -75,7 +76,7 @@ const SwitchStyle = styled.input.attrs((props: SwitchProps) => props)`
  * @param props Use onCheck for onChange event
  */
 const Switch = (props: SwitchProps) => {
-  const { onCheck, variant, checked, disabled, label, ...rest } = props;
+  const { onCheck, variant, checked, disabled, label, lightBg, ...rest } = props;
   const { theme } = React.useContext(ThemeContext);
 
   const toggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +93,7 @@ const Switch = (props: SwitchProps) => {
         disabled={disabled}
         checked={checked}
         onChange={toggle}
+        lightBg={lightBg}
         id={props.name}
       />
 

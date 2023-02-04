@@ -1,6 +1,6 @@
 import { User } from 'firebase/auth';
 import { child, DatabaseReference, get, ref, set, update } from 'firebase/database';
-import { db } from './firebase';
+import { db, getStaticResourceURL } from './firebase';
 
 
 export default class ZentrixUser {
@@ -75,16 +75,10 @@ export default class ZentrixUser {
   }
 
   public static getRandomProfilePicture(): string {
-    const defaultProfilePictures = [
-      'https://i.imgur.com/7bKLXsh.png',
-      'https://i.imgur.com/XSLGxVM.png',
-      'https://i.imgur.com/4CXsECx.png',
-      'https://i.imgur.com/BmwfYbV.png',
-      'https://i.imgur.com/WTZOiQC.png'
-    ];
+    const max = 5;
+    const num = Math.floor(Math.random() * max) + 1;
 
-    const num = Math.floor(Math.random() * defaultProfilePictures.length);
-    return defaultProfilePictures[num];
+    return getStaticResourceURL(`users/icon${num}.png`);
   }
 
 

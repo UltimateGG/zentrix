@@ -1,16 +1,19 @@
 import React from 'react';
+import ChatEntry from '../components/ChatEntry';
+import CreateChatModal from '../components/CreateChatModal';
 import useAuthContext from '../contexts/AuthContext';
+import useChatsContext from '../contexts/ChatsContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
 
 const ChatsPage = () => {
   const { user } = useAuthContext();
   const { theme } = React.useContext(ThemeContext);
+  const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
+  const { chats, loadingChats} = useChatsContext();
 
 
-  const createChat = () => {
-    
-  }
+  if (loadingChats) return (<h1>Loading...</h1>); // TODO: Loading component
 
   if (!user) return null;
   return (
@@ -24,7 +27,7 @@ const ChatsPage = () => {
         backgroundColor: theme.colors.background[1]
       }}>
         <h2 style={{ margin: 0 }}>Chats</h2>
-        <Icon icon={IconEnum.add_chat} style={{ cursor: 'pointer' }} size={32} onClick={createChat} />
+        <Icon icon={IconEnum.add_chat} style={{ cursor: 'pointer' }} size={32} onClick={() => setCreateChatModalOpen(true)} />
       </Box>
 
       {user.chats.length === 0 && (
@@ -34,6 +37,15 @@ const ChatsPage = () => {
         </Box>
       )}
 
+      {user.chats.length > 0 && (
+        <Box flexDirection="column" style={{ marginTop: '1rem' }}>
+          {chats.map(chat => (
+            <ChatEntry key={chat.id} chat={chat} />
+          ))}
+        </Box>
+      )}
+
+      <CreateChatModal open={createChatModalOpen} onClose={() => setCreateChatModalOpen(false)} />
     </>
   );
 }

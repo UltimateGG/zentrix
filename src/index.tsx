@@ -11,6 +11,7 @@ import SettingsPage from './pages/SettingsPage';
 
 // Init firebase
 import './api/firebase';
+import { ChatsContextProvider } from './contexts/ChatsContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -19,6 +20,7 @@ root.render(
     <JetDesign>
       <HashRouter>
         <AuthContextProvider>
+        <ChatsContextProvider>
           <Routes>
             <Route path="/" element={<LoginPage />} />
 
@@ -36,6 +38,7 @@ root.render(
           </Routes>
 
           <Navbar />
+        </ChatsContextProvider>
         </AuthContextProvider>
       </HashRouter>
     </JetDesign>

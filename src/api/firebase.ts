@@ -18,9 +18,14 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
+const getStaticResourceURL = (path: string): string => {
+  return `https://firebasestorage.googleapis.com/v0/b/${process.env.REACT_APP_STORAGE_BUCKET}/o/static%2F${encodeURIComponent(path)}?alt=media`;
+}
+
 export {
   app,
   auth,
   db,
-  storage
+  storage,
+  getStaticResourceURL
 };
