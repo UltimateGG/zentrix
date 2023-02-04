@@ -13,7 +13,7 @@ const icons = [
     icon: IconEnum.menu,
   },
   {
-    path: '/todo',
+    path: '/last_chat',
     icon: IconEnum.chat_filled,
     shouldShow: (user: ZentrixUser) => user.lastChat != null,
   },
@@ -53,8 +53,8 @@ const Navbar = () => {
             key={path}
             icon={icon}
             size={32}
-            color={location.pathname === path ? theme.colors.primary[0] : theme.colors.text[9]}
-            onClick={() => navigate(path)}
+            color={location.pathname === path || (path === '/last_chat' && location.pathname.startsWith('/chats/')) ? theme.colors.primary[0] : theme.colors.text[9]}
+            onClick={() => navigate(path === '/last_chat' ? `chats/${user.lastChat}` : path)}
             style={{ cursor: 'pointer' }}
           />
       ))}

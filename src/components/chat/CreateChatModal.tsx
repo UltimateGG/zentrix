@@ -1,7 +1,7 @@
 import React from 'react';
-import ZentrixChat from '../api/ZentrixChat';
-import useAuthContext from '../contexts/AuthContext';
-import { Button, Modal, Progress, Switch, TextField } from '../Jet';
+import ZentrixChat from '../../api/ZentrixChat';
+import useAuthContext from '../../contexts/AuthContext';
+import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
 
 
 interface CreateChatModalProps {
@@ -37,7 +37,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
     if (typed.length === 0) return setPassword(str);
     if (typed.length === 0 || !isAsciiPrintable(typed) || str.length > 50) return;
 
-    setPassword(str.trimStart());
+    setPassword(str.trim());
     setPasswordError('');
   }
 

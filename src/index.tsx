@@ -4,7 +4,7 @@ import LoginPage from './pages/LoginPage';
 import { JetDesign } from './Jet';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AuthContextProvider } from './contexts/AuthContext';
-import ChatsPage from './pages/ChatsPage';
+import ChatsListPage from './pages/ChatListPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import SettingsPage from './pages/SettingsPage';
@@ -12,6 +12,7 @@ import SettingsPage from './pages/SettingsPage';
 // Init firebase
 import './api/firebase';
 import { ChatsContextProvider } from './contexts/ChatsContext';
+import ChatPage from './pages/ChatPage';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -26,7 +27,13 @@ root.render(
 
             <Route path="chats" element={
               <ProtectedRoute>
-                <ChatsPage />
+                <ChatsListPage />
+              </ProtectedRoute>
+            } />
+
+            <Route path="chats/:chatId" element={
+              <ProtectedRoute>
+                <ChatPage />
               </ProtectedRoute>
             } />
 

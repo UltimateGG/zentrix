@@ -13,21 +13,30 @@ interface IChatsContext {
 export const ChatsContext = React.createContext<IChatsContext | undefined>(undefined);
 export const ChatsContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [chats, setChats] = React.useState<ZentrixChat[]>([]);
+  const [lastUserChats, setLastUserChats] = React.useState<string[] | null>(null);
   const [loadingChats, setLoadingChats] = React.useState(true);
 
   const { user } = useAuthContext();
 
 
   useEffect(() => {
-    populateChats();
+    if (!user) return;
+
+    let didPopulateChats = false;
+    if (lastUserChats === null || user.chats.length !== lastUserChats.length || user.chats.some((chat, i) => chat !== lastUserChats[i])) {
+      setLastUserChats(user.chats);
+      populateChats();
+      didPopulateChats = true;
+    }
 
     return () => {
+      if (!didPopulateChats) return;
       chats.forEach(chat => {
         if (chat.unsubscribe) chat.unsubscribe();
         chat.unsubscribe = undefined;
       });
     }
-  }, [user?.chats]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const populateChats = async () => {
     if (!user) return;
