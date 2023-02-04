@@ -4,6 +4,7 @@ import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
 import { get, onValue, ref } from 'firebase/database';
 import ZentrixUser from '../api/ZentrixUser';
 import LoadingScreen from '../pages/LoadingScreen';
+import UnauthorizedPage from '../pages/UnauthorizedPage';
 
 
 interface IAuthContext {
@@ -24,7 +25,11 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
-      if (!user) return setUser(null);
+      if (!user) {
+        setUser(null);
+        setLoggingIn(false);
+        return;
+      }
 
       const newUser = await ZentrixUser.getUser(user as User);
       setUser(newUser);
@@ -94,19 +99,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
       return (<LoadingScreen status={getLoadingScreenStatus()} />);
     
     if (user != null && !allowedUsers.includes(user.id))
-      return (
-        <div style={{ textAlign: 'center' }}>
-          <h1>Access Denied</h1>
-          <p>You are not allowed to use this app,</p>
-          <p>only whitelisted UIDs can access this application!</p>
-
-          <p style={{ marginTop: '1rem' }}>
-            {user.firebaseUser.email}
-            <br />
-            <small>Not you? <a onClick={logout} href="#">Sign in with a different account</a></small> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-          </p>
-        </div>
-      );
+      return (<UnauthorizedPage />);
 
     return children;
   }
