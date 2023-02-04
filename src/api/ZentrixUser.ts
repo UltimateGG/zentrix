@@ -101,10 +101,10 @@ export default class ZentrixUser {
   }
 
   public update(snapshot: any) {
-    this.iconURL = snapshot.iconURL;
-    this.displayName = snapshot.displayName;
-    this.lastChat = snapshot.lastChat;
-    this.chats = snapshot.chats;
+    this.iconURL = snapshot.iconURL || this.iconURL || ZentrixUser.getRandomProfilePicture();
+    this.displayName = snapshot.displayName || this.displayName || this.firebaseUser.uid;
+    this.lastChat = snapshot.lastChat || this.lastChat || null;
+    this.chats = snapshot.chats || this.chats || [];
   }
 
   public clone() {

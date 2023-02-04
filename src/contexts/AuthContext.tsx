@@ -3,6 +3,7 @@ import { auth, db } from '../api/firebase';
 import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
 import { get, onValue, ref } from 'firebase/database';
 import ZentrixUser from '../api/ZentrixUser';
+import LoadingScreen from '../pages/LoadingScreen';
 
 
 interface IAuthContext {
@@ -17,6 +18,9 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [user, setUser] = React.useState<ZentrixUser | null>(null);
   const [allowedUsers, setAllowedUsers] = React.useState<string[]>([]);
 
+  const [loggingIn, setLoggingIn] = React.useState(true);
+  const [authenticating, setAuthenticating] = React.useState(true);
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -24,6 +28,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
       const newUser = await ZentrixUser.getUser(user as User);
       setUser(newUser);
+      setLoggingIn(false);
     });
 
     if (allowedUsers.length === 0) populateAllowedUsers();
@@ -66,6 +71,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
     if (temp.length === 0) temp.push('_'); // to prevent infinite loop
     setAllowedUsers(temp);
+    setAuthenticating(false);
   }
 
   const signInWithGoogle = async () => {
@@ -77,23 +83,32 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     await auth.signOut();
   };
 
+  const getLoadingScreenStatus = () => {
+    if (loggingIn) return 'Logging in...';
+    if (authenticating) return 'Authenticating...';
+    return 'Loading...';
+  }
+
   const getContent = () => {
-    if (user == null || allowedUsers.length === 0 || allowedUsers.includes(user.id))
-      return children;
+    if (loggingIn || authenticating)
+      return (<LoadingScreen status={getLoadingScreenStatus()} />);
+    
+    if (user != null && !allowedUsers.includes(user.id))
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <h1>Access Denied</h1>
+          <p>You are not allowed to use this app,</p>
+          <p>only whitelisted UIDs can access this application!</p>
 
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <h1>Access Denied</h1>
-        <p>You are not allowed to use this app,</p>
-        <p>only whitelisted UIDs can access this application!</p>
+          <p style={{ marginTop: '1rem' }}>
+            {user.firebaseUser.email}
+            <br />
+            <small>Not you? <a onClick={logout} href="#">Sign in with a different account</a></small> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+          </p>
+        </div>
+      );
 
-        <p style={{ marginTop: '1rem' }}>
-          {user.firebaseUser.email}
-          <br />
-          <small>Not you? <a onClick={logout} href="#">Sign in with a different account</a></small> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-        </p>
-      </div>
-    );
+    return children;
   }
 
   return (

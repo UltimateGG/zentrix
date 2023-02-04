@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import ZentrixUser from '../api/ZentrixUser';
+import useAuthContext from '../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
 
@@ -13,6 +15,7 @@ const icons = [
   {
     path: '/todo',
     icon: IconEnum.chat_filled,
+    shouldShow: (user: ZentrixUser) => user.lastChat != null,
   },
   {
     path: '/settings',
@@ -35,22 +38,24 @@ const FooterStyle = styled(Box).attrs((props: any) => props)`
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
   const { theme } = React.useContext(ThemeContext);
 
 
-  if (EXCLUDED_PATHS.includes(location.pathname))
+  if (EXCLUDED_PATHS.includes(location.pathname) || !user)
     return null;
 
   return (
     <FooterStyle theme={theme} alignItems="center" justifyContent="space-between">
-      {icons.map(({ path, icon }) => (
-        <Icon
-          key={path}
-          icon={icon}
-          size={32}
-          color={location.pathname === path ? theme.colors.primary[0] : undefined}
-          onClick={() => navigate(path)}
-        />
+      {icons.map(({ path, icon, shouldShow }) => (
+          shouldShow && !shouldShow(user) ? null :
+          <Icon
+            key={path}
+            icon={icon}
+            size={32}
+            color={location.pathname === path ? theme.colors.primary[0] : theme.colors.text[9]}
+            onClick={() => navigate(path)}
+          />
       ))}
     </FooterStyle>
   );
