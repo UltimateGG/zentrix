@@ -1,5 +1,7 @@
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React from 'react';
 import styled from 'styled-components';
+import { storage } from '../api/firebase';
 import useAuthContext from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
@@ -27,6 +29,7 @@ const SettingsPage = () => {
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
   const [updatingDisplayName, setUpdatingDisplayName] = React.useState(false);
+  const [uploadingIcon, setUploadingIcon] = React.useState(false);
   const [error, setError] = React.useState('');
 
 
@@ -49,6 +52,30 @@ const SettingsPage = () => {
     setEditingDisplayName(false);
   }
 
+  const openFilePicker = () => {
+    const filePicker = document.getElementById('filePicker');
+    if (filePicker) filePicker.click();
+  }
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!user || !file || !file.type.startsWith('image/')) return;
+
+    try {
+      // Upload to storage
+      setUploadingIcon(true);
+      const fileRef = ref(storage, `media/profile/${user.id}`);
+      const uploadTask = await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(uploadTask.ref);
+      
+      await user.setIconURL(url);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setUploadingIcon(false);
+  }
+
   if (!user) return null;
   return (
     <div>
@@ -62,7 +89,16 @@ const SettingsPage = () => {
       </Box>
 
       <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ margin: '1rem 0' }}>
-        <img referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ cursor: 'pointer' }} onClick={openFilePicker}>
+          {uploadingIcon ? (
+            <Progress circular indeterminate />
+          ) : (
+            <img referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+          )}
+          <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
+
+          <input type="file" style={{ display: 'none' }} id="filePicker" accept="image/*" onChange={onFileChange} />
+        </Box>
 
         {editingDisplayName ? (
           <>

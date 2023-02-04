@@ -5,6 +5,7 @@ import { get, onValue, ref } from 'firebase/database';
 import ZentrixUser from '../api/ZentrixUser';
 import LoadingScreen from '../pages/LoadingScreen';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface IAuthContext {
@@ -21,6 +22,8 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   const [loggingIn, setLoggingIn] = React.useState(true);
   const [authenticating, setAuthenticating] = React.useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
 
   useEffect(() => {
@@ -33,6 +36,8 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
       const newUser = await ZentrixUser.getUser(user as User);
       setUser(newUser);
+      if (newUser.lastScreen != null) navigate(newUser.lastScreen);
+
       setLoggingIn(false);
     });
 
@@ -58,6 +63,15 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
     return () => unsubscribe();
   }, [user]);
+
+  // Update last screen
+  useEffect(() => {
+    if (!user) return;
+    if (location.pathname === '' || location.pathname === '/') return;
+    if (location.pathname === user.lastScreen) return;
+
+    user.setLastScreen(location.pathname);
+  }, [location.pathname, user]);
 
   const populateAllowedUsers = async () => {
     const temp = [];

@@ -17,8 +17,8 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <JetDesign>
-      <AuthContextProvider>
-        <HashRouter>
+      <HashRouter>
+        <AuthContextProvider>
           <Routes>
             <Route path="/" element={<LoginPage />} />
 
@@ -36,8 +36,8 @@ root.render(
           </Routes>
 
           <Navbar />
-        </HashRouter>
-      </AuthContextProvider>
+        </AuthContextProvider>
+      </HashRouter>
     </JetDesign>
   </React.StrictMode>
 );

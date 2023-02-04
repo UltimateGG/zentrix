@@ -55,6 +55,7 @@ const Navbar = () => {
             size={32}
             color={location.pathname === path ? theme.colors.primary[0] : theme.colors.text[9]}
             onClick={() => navigate(path)}
+            style={{ cursor: 'pointer' }}
           />
       ))}
     </FooterStyle>

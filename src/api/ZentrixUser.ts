@@ -8,6 +8,7 @@ export default class ZentrixUser {
   iconURL: string;
   displayName: string;
   lastChat: string | null;
+  lastScreen: string | null;
   chats: string[];
   firebaseUser: User;
   dbRef: DatabaseReference;
@@ -18,6 +19,7 @@ export default class ZentrixUser {
     this.iconURL = '';
     this.displayName = '';
     this.lastChat = null;
+    this.lastScreen = null;
     this.chats = [];
     this.firebaseUser = firebaseUser;
     this.dbRef = child(ref(db, 'users'), this.id);
@@ -64,6 +66,7 @@ export default class ZentrixUser {
       iconURL: firebaseUser.photoURL || this.getRandomProfilePicture(),
       displayName,
       lastChat: null,
+      lastScreen: null,
       chats: []
     };
 
@@ -100,10 +103,16 @@ export default class ZentrixUser {
     await update(this.dbRef, { lastChat });
   }
 
+  public async setLastScreen(lastScreen: string | null) {
+    this.lastScreen = lastScreen;
+    await update(this.dbRef, { lastScreen });
+  }
+
   public update(snapshot: any) {
     this.iconURL = snapshot.iconURL || this.iconURL || ZentrixUser.getRandomProfilePicture();
     this.displayName = snapshot.displayName || this.displayName || this.firebaseUser.uid;
     this.lastChat = snapshot.lastChat || this.lastChat || null;
+    this.lastScreen = snapshot.lastScreen || this.lastScreen || null;
     this.chats = snapshot.chats || this.chats || [];
   }
 
