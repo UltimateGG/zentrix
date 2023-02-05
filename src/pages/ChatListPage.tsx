@@ -7,7 +7,7 @@ import useChatsContext from '../contexts/ChatsContext';
 import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
 
 
-const ChatsPage = () => {
+const ChatListPage = () => {
   const { user } = useAuthContext();
   const { theme } = React.useContext(ThemeContext);
   const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
@@ -61,4 +61,4 @@ const ChatsPage = () => {
   );
 }
 
-export default ChatsPage;
+export default ChatListPage;

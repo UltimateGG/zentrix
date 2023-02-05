@@ -69,7 +69,7 @@ export const ChatsContextProvider: React.FC<{children: React.ReactNode}> = ({ ch
         chat.update(snapshot.val());
 
         // Remove chat
-        if (!chat.participants.includes(user.id) || !user.chats.includes(chat.id)) {
+        if (!chat.participants || !chat.participants.includes(user.id) || !user.chats.includes(chat.id)) {
           setChats(prev => prev.filter(c => c.id !== chat.id));
           unsubscribe();
           return;
