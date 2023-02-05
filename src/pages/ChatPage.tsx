@@ -37,13 +37,13 @@ const ChatPage = () => {
     if (!user) return;
 
     const chat = chats.find(chat => chat.id === chatId);
-    if (!chat || !user.chats.includes(chat.id) || !chat.participants.includes(user.id)) {
+    if (chat && (!user.chats.includes(chat.id) || !chat.participants.includes(user.id))) {
       navigate('/chats');
       addNotification({ variant: 'danger', text: 'You are not a member of this chat', dismissable: true });
       return;
     }
   
-    setChat(chat);
+    setChat(chat || null);
   }, [user, chats, chatId]);
 
   if (!user || !chat) return null;

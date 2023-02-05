@@ -5,6 +5,7 @@ import { HashRouter } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RoutesComponent from './routes';
 import Contexts from './contexts';
+import { register } from './registerServiceWorker';
 
 // Init firebase
 import './api/firebase';
@@ -24,3 +25,6 @@ root.render(
     </JetDesign>
   </React.StrictMode>
 );
+
+// if (process.env.NODE_ENV === 'production')
+  register();
