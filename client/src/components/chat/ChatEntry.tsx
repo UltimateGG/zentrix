@@ -39,7 +39,7 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
 
   const openChat = () => {
     navigate(`/chats/${chat.id}`);
-    user?.setLastChat(chat.id);
+    // user?.setLastChat(chat.id);
   }
 
   return (

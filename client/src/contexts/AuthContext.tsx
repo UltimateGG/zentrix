@@ -2,24 +2,32 @@ import React, { useContext, useEffect } from 'react';
 import User from '../api/User';
 import LoadingScreen from '../pages/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { connect, emit, SocketEvent } from '../api/websocket';
+import { logout as apiLogout } from '../api/api';
 
 
 interface AuthContextProps {
   user: User | null;
-  connectToSocket: () => void;
   logout: () => Promise<void>;
 }
 
 export const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
+  const [firstLoad, setFirstLoad] = React.useState(true);
 
   const [loggingIn, setLoggingIn] = React.useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
 
-  useEffect(() => connectToSocket());
+  useEffect(() => {
+    if (!firstLoad) return;
+    setFirstLoad(false);
+
+    connectToSocket();
+  }, [firstLoad]);
+
 
   // Update last screen
   useEffect(() => {
@@ -27,18 +35,22 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     if (location.pathname === '' || location.pathname === '/') return;
     if (location.pathname === user.lastScreen) return;
 
-    user.setLastScreen(location.pathname);
+    emit(SocketEvent.SET_LAST_SCREEN, { screen: location.pathname });
   }, [location.pathname, user]);
 
-  const connectToSocket = () => {
+  const connectToSocket = async () => {
     setLoggingIn(true);
 
-    // Try to connect to socket. This runs on initial load or when manually signed in from google button
-    // If failed, set logging in to false. This is what will show the loading screen normall when a user opens the app
+    await connect().then(user => {
+      if (user) setUser(user);
+      navigate(user.lastScreen || '/chats');
+    }).catch(() => {});
+
+    setLoggingIn(false);
   }
 
   const logout = async () => {
-    await logout();
+    await apiLogout();
     setUser(null);
     navigate('/');
   };
@@ -56,7 +68,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }
 
   return (
-    <AuthContext.Provider value={{ user, connectToSocket, logout }}>
+    <AuthContext.Provider value={{ user, logout }}>
       {getContent()}
     </AuthContext.Provider>
   );

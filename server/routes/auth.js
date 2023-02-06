@@ -20,8 +20,7 @@ router.get('/login', asyncHandler(async (req, res) => {
   });
 
   const payload = ticket.getPayload();
-  if (!payload || payload.iss !== 'https://accounts.google.com' || payload.aud !== process.env.GOOGLE_OAUTH_CLIENT_ID)
-    throw new Error('Invalid token');
+  if (!payload) throw new Error('Invalid token');
 
   const userId = payload.sub;
   let user = await User.findOne({ googleId: userId });

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const logger = require('../utils/logging');
 
 
 const UserSchema = new Schema({
@@ -50,6 +51,15 @@ const getRandomIcon = () => {
 
   return icons[Math.floor(Math.random() * icons.length)];
 };
+
+UserSchema.post('save', (error, doc, next) => {
+  if (error.name === 'ValidationError') {
+    logger.logError('Error saving schema:', error.message);
+  } else {
+    logger.logError('Error saving schema:', error);
+    next(error);
+  }
+});
 
 module.exports = {
   User: mongoose.model('users', UserSchema),

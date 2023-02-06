@@ -41,7 +41,7 @@ const SettingsPage = () => {
 
     try {
       setUpdatingDisplayName(true);
-      await user?.setDisplayName(cleanDisplayName);
+      // await user?.setDisplayName(cleanDisplayName);
     } catch (err) {
       console.error(err);
     }
@@ -64,7 +64,7 @@ const SettingsPage = () => {
       setUploadingIcon(true);
       const url = ''; // todo
       
-      await user.setIconURL(url);
+      // await user.setIconURL(url);
     } catch (err) {
       console.error(err);
     }

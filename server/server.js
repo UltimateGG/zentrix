@@ -4,6 +4,9 @@ const app = express();
 const logger = require('./utils/logging');
 const { errorHandler } = require('./middleware/errorHandler');
 const { connectToDatabase } = require('./utils/database');
+const websocket = require('./socket/websocket');
+
+const server = require('http').createServer(app);
 
 
 // Middleware
@@ -20,11 +23,13 @@ app.use((req, res, next) => {
 // Routes
 app.use('/auth', require('./routes/auth'));
 
+server.on('upgrade', websocket.onUpgrade);
+
 app.use(errorHandler);
 
 
 // Start server
 const PORT = process.env.PORT || 5000;
 connectToDatabase().then(() => {
-  app.listen(PORT, () => logger.logInfo(`Server listening on port ${PORT}`));
+  server.listen(PORT, () => logger.logInfo(`Server listening on port ${PORT}`));
 });

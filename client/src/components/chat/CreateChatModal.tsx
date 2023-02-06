@@ -66,7 +66,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    await Chat.create(name, encrypted, password, [ user.id ]);
+    await Chat.create(name, encrypted, password, [ user._id ]);
     setLoading(false);
 
     reset();

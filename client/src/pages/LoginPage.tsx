@@ -8,7 +8,7 @@ import { Box } from '../Jet';
 
 
 const LoginPage = () => {
-  const { user, connectToSocket } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { addNotification } = useNotifications();
 
@@ -23,7 +23,6 @@ const LoginPage = () => {
     const data = await getAuthToken(res.credential);
 
     if (data.error) return addNotification({ text: data.message || 'An unknown error occurred', variant: 'danger', dismissable: true });
-    connectToSocket();
   }
 
   return (
