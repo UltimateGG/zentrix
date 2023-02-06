@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { emit, SocketEvent } from '../api/websocket';
 import useAuth from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
@@ -26,7 +27,6 @@ const SettingsPage = () => {
   const { theme } = React.useContext(ThemeContext);
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
-  const [updatingDisplayName, setUpdatingDisplayName] = React.useState(false);
   const [uploadingIcon, setUploadingIcon] = React.useState(false);
   const [error, setError] = React.useState('');
 
@@ -39,14 +39,7 @@ const SettingsPage = () => {
       return;
     }
 
-    try {
-      setUpdatingDisplayName(true);
-      // await user?.setDisplayName(cleanDisplayName);
-    } catch (err) {
-      console.error(err);
-    }
-
-    setUpdatingDisplayName(false);
+    emit(SocketEvent.SET_DISPLAY_NAME, { displayName: cleanDisplayName });
     setEditingDisplayName(false);
   }
 
@@ -97,21 +90,15 @@ const SettingsPage = () => {
         </Box>
 
         {editingDisplayName ? (
-          <>
-            {updatingDisplayName ? (
-              <Progress circular indeterminate />
-            ) : (
-              <TextField
-                placeholder="Enter name..."
-                value={displayName}
-                onChanged={s => setDisplayName(s)}
-                error={error}
-                onBlur={updateDisplayName}
-                style={{ marginTop: '1rem' }}
-                autoFocus
-              />
-            )}
-          </>
+          <TextField
+            placeholder="Enter name..."
+            value={displayName}
+            onChanged={s => setDisplayName(s)}
+            error={error}
+            onBlur={updateDisplayName}
+            style={{ marginTop: '1rem' }}
+            autoFocus
+          />
         ) : (
           <h2 style={{ textAlign: 'center', marginTop: '0.6rem', marginBottom: 0 }}>{displayName}</h2>
         )}

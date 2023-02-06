@@ -23,12 +23,13 @@ const LoginPage = () => {
     const data = await getAuthToken(res.credential);
 
     if (data.error) return addNotification({ text: data.message || 'An unknown error occurred', variant: 'danger', dismissable: true });
+    window.location.reload();
   }
 
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
       <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="Zentrix" style={{ width: '6rem', height: '6rem' }} />
-      <p style={{ margin: '1rem 0' }}>Sign in to Zentrix</p>
+      <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
 
       <GoogleLogin onSuccess={onSuccess} />
     </Box>

@@ -40,8 +40,15 @@ const send = (ws, event, payload) => {
   ws.send(JSON.stringify({ event, payload }));
 };
 
+const broadcast = (event, payload) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) send(client, event, payload);
+  });
+};
+
 const eventHandlers = [
-  { event: 'setLastScreen', handler: require('./setLastScreen') }
+  { event: 'setLastScreen', handler: require('./setLastScreen') },
+  { event: 'setDisplayName', handler: require('./setDisplayName') },
 ];
 
 wss.on('connection', (ws, req, user) => {
@@ -52,7 +59,7 @@ wss.on('connection', (ws, req, user) => {
       const { event, payload } = JSON.parse(message);
       
       const handler = eventHandlers.find((h) => h.event === event)?.handler;
-      if (!handler) return;
+      if (!handler) return logger.logWarn(`No handler for event ${event}`);
 
       handler(user, payload);
     } catch (e) {
@@ -65,4 +72,5 @@ wss.on('connection', (ws, req, user) => {
 module.exports = {
   wss,
   onUpgrade,
+  broadcast
 };

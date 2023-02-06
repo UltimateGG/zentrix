@@ -48,4 +48,5 @@ export const emit = (event: SocketEvent, payload: any) => {
 export enum SocketEvent {
   CONNECT = 'connect',
   SET_LAST_SCREEN = 'setLastScreen',
+  SET_DISPLAY_NAME = 'setDisplayName',
 }

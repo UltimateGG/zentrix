@@ -41,16 +41,11 @@ const UserSchema = new Schema({
 });
 
 const getRandomIcon = () => {
-  const icons = [ // TODO
-    'https://i.imgur.com/0o48UoR.png',
-    'https://i.imgur.com/0o48UoR.png',
-    'https://i.imgur.com/0o48UoR.png',
-    'https://i.imgur.com/0o48UoR.png',
-    'https://i.imgur.com/0o48UoR.png',
-  ];
+  const max = 5;
+  const num = Math.floor(Math.random() * max) + 1;
 
-  return icons[Math.floor(Math.random() * icons.length)];
-};
+  return `${process.env.APP_URL}/static/user/default_user${num}.png`;
+}
 
 UserSchema.post('save', (error, doc, next) => {
   if (error.name === 'ValidationError') {
