@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import User from '../api/User';
+import User from '../api/apiTypes';
 import LoadingScreen from '../pages/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connect, emit, SocketEvent } from '../api/websocket';

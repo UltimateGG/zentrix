@@ -1,5 +1,5 @@
 import React from 'react';
-import Chat from '../../api/Chat';
+import Chat from '../../api/apiTypes';
 import useAuth from '../../contexts/AuthContext';
 import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
 
@@ -66,7 +66,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    await Chat.create(name, encrypted, password, [ user._id ]);
+    // await Chat.create(name, encrypted, password, [ user._id ]); TODO
     setLoading(false);
 
     reset();

@@ -8,3 +8,13 @@ export default interface User {
   lastScreen: string | null;
   chats: string[];
 }
+
+export default interface Chat {
+  _id: string;
+  title: string;
+  iconURL: string;
+  lastMessage: string | null;
+  encrypted: boolean;
+  password: string | null;
+  participants: string[];
+}

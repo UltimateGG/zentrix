@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Chat from '../../api/Chat';
+import Chat from '../../api/apiTypes';
 import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
 
@@ -38,7 +38,7 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
   
 
   const openChat = () => {
-    navigate(`/chats/${chat.id}`);
+    navigate(`/chats/${chat._id}`);
     // user?.setLastChat(chat.id);
   }
 

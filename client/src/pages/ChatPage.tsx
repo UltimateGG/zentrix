@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Chat from '../api/Chat';
+import Chat from '../api/apiTypes';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
