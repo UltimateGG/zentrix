@@ -4,6 +4,7 @@ const app = express();
 const logger = require('./utils/logging');
 const { errorHandler } = require('./middleware/errorHandler');
 const { connectToDatabase } = require('./utils/database');
+const { auth } = require('./middleware/authMiddleware');
 const websocket = require('./socket/websocket');
 
 const server = require('http').createServer(app);
@@ -19,11 +20,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static('public'));
+app.use(require('cookie-parser')());
+
+app.use(express.static('public', {
+  cacheControl: true,
+  maxAge: '30d'
+}));
 
 
 // Routes
 app.use('/auth', require('./routes/auth'));
+app.use('/media', auth, require('./routes/media'));
 
 server.on('upgrade', websocket.onUpgrade);
 

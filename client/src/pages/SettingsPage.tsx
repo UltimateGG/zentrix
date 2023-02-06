@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { uploadProfilePicture } from '../api/api';
 import { emit, SocketEvent } from '../api/websocket';
 import useAuth from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
@@ -40,6 +41,7 @@ const SettingsPage = () => {
     }
 
     emit(SocketEvent.SET_DISPLAY_NAME, { displayName: cleanDisplayName });
+    if (user) user.displayName = cleanDisplayName;
     setEditingDisplayName(false);
   }
 
@@ -48,21 +50,25 @@ const SettingsPage = () => {
     if (filePicker) filePicker.click();
   }
 
+  const clearFilePicker = () => {
+    const filePicker = document.getElementById('filePicker') as HTMLInputElement;
+    if (filePicker) filePicker.value = '';
+  }
+
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!user || !file || !file.type.startsWith('image/')) return;
 
-    try {
-      // Upload to storage
+    try { // Upload to storage
       setUploadingIcon(true);
-      const url = ''; // todo
-      
-      // await user.setIconURL(url);
+      const data = await uploadProfilePicture(file);
+      user.iconURL = data.path;
     } catch (err) {
       console.error(err);
     }
 
     setUploadingIcon(false);
+    clearFilePicker();
   }
 
   if (!user) return null;

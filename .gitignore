@@ -1,6 +1,8 @@
 node_modules/
 /client/build/
-logs/
+/server/logs/
+/server/public/media/
+
 .env
 
 npm-debug.log*

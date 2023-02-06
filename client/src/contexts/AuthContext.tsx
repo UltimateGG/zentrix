@@ -36,6 +36,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     if (location.pathname === user.lastScreen) return;
 
     emit(SocketEvent.SET_LAST_SCREEN, { screen: location.pathname });
+    user.lastScreen = location.pathname;
   }, [location.pathname, user]);
 
   const connectToSocket = async () => {
