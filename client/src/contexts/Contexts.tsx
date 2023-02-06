@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react';
 import { AuthContextProvider } from './AuthContext';
 import { NotificationProvider } from './NotificationContext';
@@ -5,11 +6,13 @@ import { NotificationProvider } from './NotificationContext';
 
 const Contexts = ({ children }: { children: React.ReactNode }) => {
   return (
-    <AuthContextProvider>
-      <NotificationProvider>
-        {children}
-      </NotificationProvider>
-    </AuthContextProvider>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || ''}>
+      <AuthContextProvider>
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
+      </AuthContextProvider>
+    </GoogleOAuthProvider>
   );
 }
 

@@ -20,6 +20,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
 
   useEffect(() => {
+    setLoggingIn(false);
    /* const unsubscribe = auth.onAuthStateChanged(async user => {
       if (!user) {
         setUser(null);

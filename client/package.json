@@ -2,6 +2,7 @@
   "name": "zentrix-client",
   "version": "0.0.1",
   "private": true,
+  "proxy": "http://localhost:5000/",
   "dependencies": {
     "@types/node": "^16.18.11",
     "@types/react": "^18.0.27",
@@ -13,7 +14,9 @@
     "react-router-dom": "^6.8.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.6",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "@react-oauth/google": "^0.7.0",
+    "axios": "^1.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
