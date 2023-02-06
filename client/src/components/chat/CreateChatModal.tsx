@@ -1,6 +1,6 @@
 import React from 'react';
-import ZentrixChat from '../../api/ZentrixChat';
-import useAuthContext from '../../contexts/AuthContext';
+import Chat from '../../api/Chat';
+import useAuth from '../../contexts/AuthContext';
 import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
 
 
@@ -19,7 +19,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const [passwordError, setPasswordError] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   if (!user) return null;
 
 
@@ -66,7 +66,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    await ZentrixChat.create(name, encrypted, password, [ user.id ]);
+    await Chat.create(name, encrypted, password, [ user.id ]);
     setLoading(false);
 
     reset();

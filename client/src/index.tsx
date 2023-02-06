@@ -3,11 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { JetDesign } from './Jet';
 import { HashRouter } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Contexts from './contexts/contexts';
-import RoutesComponent from './routes';
+import RoutesComponent from './components/Routes';
+import Contexts from './contexts/Contexts';
 
 
-console.log(process.env.REACT_APP_VERSION)
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>

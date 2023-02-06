@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import ChatListPage from './pages/ChatListPage';
-import ChatPage from './pages/ChatPage';
-import LoginPage from './pages/LoginPage';
-import SettingsPage from './pages/SettingsPage';
+import ProtectedRoute from './ProtectedRoute';
+import ChatListPage from '../pages/ChatListPage';
+import ChatPage from '../pages/ChatPage';
+import LoginPage from '../pages/LoginPage';
+import SettingsPage from '../pages/SettingsPage';
 
 
 const RoutesComponent = () => {

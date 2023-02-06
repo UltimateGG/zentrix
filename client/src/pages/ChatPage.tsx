@@ -1,10 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ZentrixChat from '../api/ZentrixChat';
-import useAuthContext from '../contexts/AuthContext';
-import useChatsContext from '../contexts/ChatsContext';
-import { useNotifications } from '../contexts/NotificationContext';
+import Chat from '../api/Chat';
+import useAuth from '../contexts/AuthContext';
+import useNotifications from '../contexts/NotificationContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
 
@@ -25,26 +24,18 @@ const IconStyle = styled.img`
 
 const ChatPage = () => {
   const { chatId } = useParams();
-  const { user } = useAuthContext();
-  const { chats } = useChatsContext();
+  const { user } = useAuth();
   const { addNotification } = useNotifications();
   const { theme } = useContext(ThemeContext);
-  const [chat, setChat] = React.useState<ZentrixChat | null>(null);
+  const [chat, setChat] = React.useState<Chat | null>(null);
   const navigate = useNavigate();
 
   
   useEffect(() => {
     if (!user) return;
 
-    const chat = chats.find(chat => chat.id === chatId);
-    if (chat && (!user.chats.includes(chat.id) || !chat.participants.includes(user.id))) {
-      navigate('/chats');
-      addNotification({ variant: 'danger', text: 'You are not a member of this chat', dismissable: true });
-      return;
-    }
-  
-    setChat(chat || null);
-  }, [user, chats, chatId]);
+   
+  }, [user, chatId]);
 
   if (!user || !chat) return null;
   return (

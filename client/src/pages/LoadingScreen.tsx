@@ -29,11 +29,7 @@ const StatusStyle = styled.h1`
   font-weight: bold;
 `;
 
-interface ILoadingScreenProps {
-  status: string;
-}
-
-const LoadingScreen = ({ status }: ILoadingScreenProps) => {
+const LoadingScreen = ({ status }: { status: string }) => {
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
       <StatusStyle>{status}</StatusStyle>

@@ -1,19 +1,14 @@
 import React from 'react';
 import ChatEntry from '../components/chat/ChatEntry';
 import CreateChatModal from '../components/chat/CreateChatModal';
-import PasswordModal from '../components/chat/PasswordModal';
-import useAuthContext from '../contexts/AuthContext';
-import useChatsContext from '../contexts/ChatsContext';
+import useAuth from '../contexts/AuthContext';
 import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
 
 
 const ChatListPage = () => {
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   const { theme } = React.useContext(ThemeContext);
   const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
-  const [passwordModalOpen, setPasswordModalOpen] = React.useState(false);
-
-  const { chats, loadingChats} = useChatsContext();
 
 
   if (!user) return null;
@@ -34,7 +29,7 @@ const ChatListPage = () => {
       </Box>
       <div style={{ height: '3.6rem' }} />
 
-      {loadingChats ? (
+      {false ? (
         <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
           <Progress circular indeterminate />
         </Box>
@@ -48,14 +43,13 @@ const ChatListPage = () => {
 
         {user.chats.length > 0 && (
           <Box flexDirection="column" style={{ paddingBottom: '3.6rem' }}>
-            {chats.map(chat => (
-              <ChatEntry key={chat.id} chat={chat} openPasswordModal={() => setPasswordModalOpen(true)} />
-            ))}
+            {/* {chats.map(chat => (
+              <ChatEntry key={chat.id} chat={chat} />
+            ))} */}
           </Box>
         )}
 
         <CreateChatModal open={createChatModalOpen} onClose={() => setCreateChatModalOpen(false)} />
-        <PasswordModal open={passwordModalOpen} onClose={() => setPasswordModalOpen(false)} />
       </>)}
     </>
   );

@@ -1,19 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Snackbar } from '../Jet';
 import { SnackbarProps } from '../Jet/components/Snackbar/Snackbar';
 
 
-export interface NotificationContextProps {
+interface NotificationContextProps {
   notifications: SnackbarProps[];
   addNotification: (notification: SnackbarProps) => void;
 }
-export const NotificationContext = React.createContext<NotificationContextProps>({
-  notifications: [],
-  addNotification: (notification: SnackbarProps) => {},
-});
 
+export const NotificationContext = React.createContext<NotificationContextProps | undefined>(undefined);
 export const NotificationProvider = ({ children }: any) => {
   const [notifications, setNotifications] = React.useState<SnackbarProps[]>([]);
+
 
   const addNotification = (notification: SnackbarProps) => {
     if (!notification.seconds) notification.seconds = 5;
@@ -24,15 +22,25 @@ export const NotificationProvider = ({ children }: any) => {
   return (
     <NotificationContext.Provider value={{ notifications, addNotification }}>
       {children}
-      {notifications.map((notification, index) => <Snackbar
-        {...notification}
-        key={index}
-        index={index}
-        shown
-        onDismiss={() => setNotifications(notifications.filter((_, i) => i !== index))}
-      />)}
+      {notifications.map((notification, index) => (
+        <Snackbar
+          {...notification}
+          key={index}
+          index={index}
+          shown
+          onDismiss={() => setNotifications(notifications.filter((_, i) => i !== index))}
+        />
+      ))}
     </NotificationContext.Provider>
-  )
+  );
 }
 
-export const useNotifications = () => React.useContext(NotificationContext);
+const useNotifications = () => {
+  const context = useContext(NotificationContext);
+  if (context === undefined)
+    throw new Error('You are not using the correct provider.');
+  return context;
+};
+
+export default useNotifications;
+

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ZentrixChat from '../../api/ZentrixChat';
-import useAuthContext from '../../contexts/AuthContext';
+import Chat from '../../api/Chat';
+import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
 
 
@@ -28,22 +28,16 @@ const IconStyle = styled.img`
 `;
 
 interface ChatEntryProps {
-  chat: ZentrixChat;
-  openPasswordModal: () => void;
+  chat: Chat;
 }
 
-const ChatEntry = ({ chat, openPasswordModal }: ChatEntryProps) => {
+const ChatEntry = ({ chat }: ChatEntryProps) => {
   const { theme } = useContext(ThemeContext);
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
 
   const openChat = () => {
-    if (chat.encrypted) {
-      openPasswordModal();
-      return; // TODO
-    }
-
     navigate(`/chats/${chat.id}`);
     user?.setLastChat(chat.id);
   }

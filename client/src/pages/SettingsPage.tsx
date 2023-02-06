@@ -1,8 +1,6 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React from 'react';
 import styled from 'styled-components';
-import { storage } from '../api/firebase';
-import useAuthContext from '../contexts/AuthContext';
+import useAuth from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
 
@@ -24,7 +22,7 @@ const SettingStyle = styled(Box).attrs((props: any) => props)`
 `;
 
 const SettingsPage = () => {
-  const { user, logout } = useAuthContext();
+  const { user, logout } = useAuth();
   const { theme } = React.useContext(ThemeContext);
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
@@ -64,9 +62,7 @@ const SettingsPage = () => {
     try {
       // Upload to storage
       setUploadingIcon(true);
-      const fileRef = ref(storage, `media/profile/${user.id}`);
-      const uploadTask = await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(uploadTask.ref);
+      const url = ''; // todo
       
       await user.setIconURL(url);
     } catch (err) {
@@ -119,7 +115,7 @@ const SettingsPage = () => {
         ) : (
           <h2 style={{ textAlign: 'center', marginTop: '0.6rem', marginBottom: 0 }}>{displayName}</h2>
         )}
-        <p style={{ textAlign: 'center', marginTop: '0.2rem' }}>{user.firebaseUser.email}</p>
+        <p style={{ textAlign: 'center', marginTop: '0.2rem' }}>{user.email}</p>
       </Box>
 
       <SettingStyle theme={theme} style={{ marginTop: '2rem' }} onClick={() => setEditingDisplayName(true)}>

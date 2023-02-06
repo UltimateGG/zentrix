@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthContext from '../contexts/AuthContext';
+import useAuth from '../contexts/AuthContext';
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
 

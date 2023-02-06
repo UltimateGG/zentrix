@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ZentrixUser from '../api/ZentrixUser';
-import useAuthContext from '../contexts/AuthContext';
+import User from '../api/User';
+import useAuth from '../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
 
@@ -15,7 +15,7 @@ const icons = [
   {
     path: '/last_chat',
     icon: IconEnum.chat_filled,
-    shouldShow: (user: ZentrixUser) => user.lastChat != null,
+    shouldShow: (user: User) => user.lastChat != null,
   },
   {
     path: '/settings',
@@ -38,7 +38,7 @@ const FooterStyle = styled(Box).attrs((props: any) => props)`
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuthContext();
+  const { user } = useAuth();
   const { theme } = React.useContext(ThemeContext);
 
 

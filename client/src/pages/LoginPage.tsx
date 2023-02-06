@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStaticResourceURL } from '../api/firebase';
-import useAuthContext from '../contexts/AuthContext';
+import useAuth from '../contexts/AuthContext';
 import { Box } from '../Jet';
 
 
 const LoginPage = () => {
-  const { signInWithGoogle, user } = useAuthContext();
+  const { loginWithGoogle, user } = useAuth();
   const navigate = useNavigate();
 
 
@@ -19,7 +18,7 @@ const LoginPage = () => {
       <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="Zentrix" style={{ width: '6rem', height: '6rem' }} />
       <p style={{ margin: '1rem 0' }}>Sign in to Zentrix</p>
 
-      <img src={getStaticResourceURL('signin_btn.png')} alt="Sign in with Google" onClick={signInWithGoogle} style={{ cursor: 'pointer', width: '200px' }} />
+      <img src={''} alt="Sign in with Google" onClick={loginWithGoogle} style={{ cursor: 'pointer', width: '200px' }} />
     </Box>
   );
 }
