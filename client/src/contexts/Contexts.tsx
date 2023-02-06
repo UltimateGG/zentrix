@@ -1,7 +1,7 @@
 import React from 'react';
-import { AuthContextProvider } from './contexts/AuthContext';
-import { ChatsContextProvider } from './contexts/ChatsContext';
-import { NotificationProvider } from './contexts/NotificationContext';
+import { AuthContextProvider } from './AuthContext';
+import { ChatsContextProvider } from './ChatsContext';
+import { NotificationProvider } from './NotificationContext';
 
 
 const Contexts = ({ children }: { children: React.ReactNode }) => {

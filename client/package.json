@@ -1,6 +1,6 @@
 {
-  "name": "zentrix",
-  "version": "0.1.0",
+  "name": "zentrix-client",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@types/node": "^16.18.11",
@@ -8,7 +8,6 @@
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
-    "firebase": "^9.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
@@ -17,10 +16,8 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "set REACT_APP_VERSION=$npm_package_version && react-scripts start",
+    "build": "set REACT_APP_VERSION=$npm_package_version && react-scripts build"
   },
   "eslintConfig": {
     "extends": [
