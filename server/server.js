@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const logger = require('./utils/logging');
 const { errorHandler } = require('./middleware/errorHandler');
+const { connectToDatabase } = require('./utils/database');
 
 
 // Middleware
@@ -18,15 +20,11 @@ app.use((req, res, next) => {
 // Routes
 app.use('/auth', require('./routes/auth'));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 app.use(errorHandler);
 
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+connectToDatabase().then(() => {
+  app.listen(PORT, () => logger.logInfo(`Server listening on port ${PORT}`));
 });

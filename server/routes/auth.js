@@ -2,6 +2,7 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+const { User, getRandomIcon } = require('../models/User');
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
@@ -19,17 +20,32 @@ router.get('/login', asyncHandler(async (req, res) => {
   });
 
   const payload = ticket.getPayload();
-  if (!payload || payload.iss !== 'https://accounts.google.com' || payload.aud !== process.env.GOOGLE_CLIENT_ID)
+  if (!payload || payload.iss !== 'https://accounts.google.com' || payload.aud !== process.env.GOOGLE_OAUTH_CLIENT_ID)
     throw new Error('Invalid token');
 
   const userId = payload.sub;
+  let user = await User.findOne({ googleId: userId });
+
+  if (!user) { // Create new user
+    user = new User({
+      googleId: userId,
+      email: payload.email || '',
+      iconURL: payload.picture || getRandomIcon(),
+      displayName: payload.name || userId,
+    });
+
+    await user.save();
+  }
   
+  const authToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  res.cookie('zxtoken', authToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 60 * 24 * 30 });
+  res.json({ message: 'Successfully logged in' });
 }));
 
-
 router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect(process.env.CLIENT_URL);
+  res.clearCookie('zxtoken');
+  res.json({ message: 'Successfully logged out' });
 });
+
 
 module.exports = router;

@@ -12,6 +12,7 @@
     "dotenv": "^16.0.3",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.0",
-    "google-auth-library": "^8.7.0"
+    "google-auth-library": "^8.7.0",
+    "mongoose": "^6.9.0"
   }
 }

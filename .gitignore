@@ -1,5 +1,6 @@
 node_modules/
 /client/build/
+logs/
 .env
 
 npm-debug.log*

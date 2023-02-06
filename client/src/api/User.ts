@@ -18,14 +18,6 @@ export default class User {
     this.chats = [];
   }
 
-  public static getRandomIconURL(): string {
-    const max = 5;
-    const num = Math.floor(Math.random() * max) + 1;
-
-    return ''; // todo
-  }
-
-
   public async setIconURL(iconURL: string) {
     this.iconURL = iconURL;
     // await update(this.dbRef, { iconURL });

@@ -10,12 +10,18 @@ axios.interceptors.response.use((response) => response, (error) => {
   });
 });
 
-export const login = async (token: string) => {
+export const getAuthToken = async (token: string) => {
   const res = await axios.get('/auth/login', {
     headers: {
       authorization: `Bearer ${token}`,
     }
   });
+
+  return res.data;
+}
+
+export const logout = async () => {
+  const res = await axios.get('/auth/logout');
 
   return res.data;
 }

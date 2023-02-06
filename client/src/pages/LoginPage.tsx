@@ -1,14 +1,16 @@
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import React, { useEffect } from 'react';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/api';
+import { getAuthToken } from '../api/api';
 import useAuth from '../contexts/AuthContext';
+import useNotifications from '../contexts/NotificationContext';
 import { Box } from '../Jet';
 
 
 const LoginPage = () => {
-  const { user } = useAuth();
+  const { user, connectToSocket } = useAuth();
   const navigate = useNavigate();
+  const { addNotification } = useNotifications();
 
 
   useEffect(() => {
@@ -18,8 +20,10 @@ const LoginPage = () => {
   const onSuccess = async (res: CredentialResponse) => {
     if (!res.credential) return;
 
-    const data = await login(res.credential);
-    console.log(data)
+    const data = await getAuthToken(res.credential);
+
+    if (data.error) return addNotification({ text: data.message || 'An unknown error occurred', variant: 'danger', dismissable: true });
+    connectToSocket();
   }
 
   return (

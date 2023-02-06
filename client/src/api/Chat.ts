@@ -18,18 +18,11 @@ export default class Chat {
     this.participants = [];
   }
 
-  public static getRandomIconURL(): string {
-    const max = 5;
-    const num = Math.floor(Math.random() * max) + 1;
-
-    return ''; // todo
-  }
-
   public static async create(title: string, encrypted: boolean, password: string | null, participants: string[]): Promise<Chat> {
     return new Promise<Chat>(async (resolve, reject) => {
       const chat = {
         title,
-        iconURL: Chat.getRandomIconURL(),
+        iconURL: '',
         lastMessage: null,
         encrypted,
         password: encrypted ? password : null,

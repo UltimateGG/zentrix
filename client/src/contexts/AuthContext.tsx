@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 interface AuthContextProps {
   user: User | null;
-  loginWithGoogle: () => Promise<void>;
+  connectToSocket: () => void;
   logout: () => Promise<void>;
 }
 
@@ -19,31 +19,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const location = useLocation();
 
 
-  useEffect(() => {
-    setLoggingIn(false);
-   /* const unsubscribe = auth.onAuthStateChanged(async user => {
-      if (!user) {
-        setUser(null);
-        setLoggingIn(false);
-        return;
-      }
-
-      const newUser = await ZentrixUser.getUser(user as User);
-      setUser(newUser);
-      if (newUser.lastScreen != null) navigate(newUser.lastScreen);
-
-      setLoggingIn(false);
-    });
-
-    return () => unsubscribe();*/
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // User update listener
-  useEffect(() => {
-    if (!user) return;
-
-    //...
-  }, [user]);
+  useEffect(() => connectToSocket());
 
   // Update last screen
   useEffect(() => {
@@ -54,12 +30,17 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     user.setLastScreen(location.pathname);
   }, [location.pathname, user]);
 
-  const loginWithGoogle = async () => {
-    // ...
-  };
+  const connectToSocket = () => {
+    setLoggingIn(true);
+
+    // Try to connect to socket. This runs on initial load or when manually signed in from google button
+    // If failed, set logging in to false. This is what will show the loading screen normall when a user opens the app
+  }
 
   const logout = async () => {
-    // ...
+    await logout();
+    setUser(null);
+    navigate('/');
   };
 
   const getLoadingScreenStatus = () => {
@@ -75,7 +56,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }
 
   return (
-    <AuthContext.Provider value={{ user, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, connectToSocket, logout }}>
       {getContent()}
     </AuthContext.Provider>
   );
