@@ -1,6 +1,6 @@
 import React from 'react';
-import Chat from '../../api/apiTypes';
-import { emit, emitWithRes, SocketEvent } from '../../api/websocket';
+import { SocketEvent } from '../../api/apiTypes';
+import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useNotifications from '../../contexts/NotificationContext';
 import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
@@ -69,9 +69,8 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    const res = await emitWithRes(SocketEvent.CREATE_CHAT, { title: name, encrypted, password, participants: [] }).catch(err => {
-      addNotification({ text: 'Failed to create chat', variant: 'danger', dismissable: true });
-      console.error(err);
+    await emitWithRes(SocketEvent.CREATE_CHAT, { title: name, encrypted, password, participants: [] }).catch(e => {
+      addNotification({ text: e.message, variant: 'danger', dismissable: true });
     });
 
     setLoading(false);
@@ -144,7 +143,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
 
       {loading && <Progress indeterminate thin />}
 
-      <small>You can add friends to the chat later</small>
+      <small>You can add friends to this chat later</small>
     </Modal>
   );
 }

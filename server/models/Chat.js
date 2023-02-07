@@ -37,15 +37,6 @@ const ChatSchema = new Schema({
   }]
 });
 
-ChatSchema.post('save', (error, doc, next) => {
-  if (error.name === 'ValidationError') {
-    logger.logError('Error saving schema:', error.message);
-  } else {
-    logger.logError('Error saving schema:', error);
-    next(error);
-  }
-});
-
 module.exports = {
   Chat: mongoose.model('chats', ChatSchema),
 };

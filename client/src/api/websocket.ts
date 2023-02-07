@@ -1,9 +1,10 @@
-import User from './apiTypes';
+import { SocketEvent, User } from './apiTypes';
 
 
 let ws: WebSocket | null = null;
 const reconnectDelay = 1500;
 let reconnectTimeout: NodeJS.Timeout | null = null;
+let connecting = false;
 
 
 const getWSUrl = (path: string) => {
@@ -14,12 +15,18 @@ const getWSUrl = (path: string) => {
 
 export const connect = async () => {
   return new Promise<User>(async (resolve, reject) => {
-    if (ws && ws.readyState !== WebSocket.CLOSED) return reject();
+    if ((ws && ws.readyState !== WebSocket.CLOSED) || connecting) return reject();
+    connecting = true;
     ws = new WebSocket(getWSUrl('/socket'));
   
+    ws.onopen = () => {
+      connecting = false;
+    }
+
     ws.onclose = () => {
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
       reconnectTimeout = setTimeout(connect, reconnectDelay);
+      connecting = false;
     }
 
     ws.onmessage = (event) => {
@@ -75,19 +82,22 @@ export const emitWithRes = async (event: SocketEvent, payload: any) => {
     let resolved = false;
     const listener = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      if (data.payload && data.payload.replyTo === id) {
-        ws?.removeEventListener('message', listener);
-        data.payload.replyTo = undefined;
-        resolve(data.payload);
-        resolved = true;
-      }
+      if (!data.payload || data.payload.replyTo !== id) return;
+      ws?.removeEventListener('message', listener);
+
+      if (data.payload.error) reject(data.payload);
+      else resolve(data.payload);
+      resolved = true;
     }
 
     ws.addEventListener('message', listener);
     setTimeout(() => {
       if (resolved) return;
       ws?.removeEventListener('message', listener);
-      reject();
+      reject({
+        error: true,
+        message: 'Request timed out',
+      });
     }, 5000);
 
     ws.send(JSON.stringify({ event, payload, replyTo: id }));
@@ -98,21 +108,7 @@ export const isConnected = () => {
   return ws && ws.readyState === WebSocket.OPEN;
 }
 
-
-
-export enum SocketEvent {
-  CONNECT = 'connect',
-  SET_LAST_SCREEN = 'setLastScreen',
-  SET_DISPLAY_NAME = 'setDisplayName',
-  CREATE_CHAT = 'createChat',
-  POPULATE_CACHE = 'populateCache',
-  UPDATE_CACHE = 'updateCache',
-  SET_LAST_CHAT = 'setLastChat',
-  UPDATE_CHAT = 'updateChat',
+export const isConnecting = () => {
+  return connecting;
 }
 
-interface SocketData {
-  event: SocketEvent;
-  payload: any;
-  replyTo?: string;
-}

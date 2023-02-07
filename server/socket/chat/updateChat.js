@@ -1,5 +1,5 @@
-const { Chat } = require('../models/Chat');
-const { cacheUpdate } = require('./websocket');
+const { Chat } = require('../../models/Chat');
+const { cacheUpdate } = require('../websocket');
 
 
 module.exports = async (user, payload) => {

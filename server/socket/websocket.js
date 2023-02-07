@@ -5,6 +5,25 @@ const logger = require('../utils/logging');
 const { User } = require('../models/User');
 
 
+const SocketEvent = {
+  CONNECT: 'connect', // Outbound only
+
+  ACK: 'ack',
+
+  // Cache
+  CACHE_POPULATE: 'cachePopulate',
+  CACHE_UPDATE: 'cacheUpdate',
+
+  // User
+  SET_DISPLAY_NAME: 'setDisplayName',
+  SET_LAST_SCREEN: 'setLastScreen',
+  SET_LAST_CHAT: 'setLastChat',
+
+  // Chat
+  CREATE_CHAT: 'createChat',
+  UPDATE_CHAT: 'updateChat',
+};
+
 const onUpgrade = async (req, socket, head) => {
   try {
     if (req.url !== '/socket') return socket.destroy();
@@ -39,20 +58,21 @@ const onUpgrade = async (req, socket, head) => {
 const send = (ws, event, payload) => {
   if (ws.readyState !== 1) return;
   ws.send(JSON.stringify({ event, payload }));
-};
+}
 
 const broadcast = (event, payload) => {
   wss.clients.forEach((client) => send(client, event, payload));
-};
+}
 
 const cacheUpdate = (payload, affectedUsers) => {
   const clients = Array.from(wss.clients);
 
   for (const client of clients)
-    if (affectedUsers.includes(client.user._id)) send(client, 'updateCache', payload);
-};
+    if (affectedUsers.includes(client.user._id)) send(client, SocketEvent.CACHE_UPDATE, payload);
+}
 
 module.exports = {
+  SocketEvent,
   wss,
   onUpgrade,
   send,
@@ -61,12 +81,14 @@ module.exports = {
 };
 
 const eventHandlers = [
-  { event: 'setLastScreen', handler: require('./setLastScreen') },
-  { event: 'setDisplayName', handler: require('./setDisplayName') },
-  { event: 'createChat', handler: require('./createChat') },
-  { event: 'populateCache', handler: require('./populateCache') },
-  { event: 'setLastChat', handler: require('./setLastChat') },
-  { event: 'updateChat', handler: require('./updateChat') },
+  { event: SocketEvent.CACHE_POPULATE, handler: require('./cachePopulate') },
+
+  { event: SocketEvent.SET_DISPLAY_NAME, handler: require('./user/setDisplayName') },
+  { event: SocketEvent.SET_LAST_SCREEN, handler: require('./user/setLastScreen') },
+  { event: SocketEvent.SET_LAST_CHAT, handler: require('./user/setLastChat') },
+
+  { event: SocketEvent.CREATE_CHAT, handler: require('./chat/createChat') },
+  { event: SocketEvent.UPDATE_CHAT, handler: require('./chat/updateChat') },
 ];
 
 wss.on('connection', (ws, req, user) => {
@@ -80,10 +102,13 @@ wss.on('connection', (ws, req, user) => {
       if (!handler) return logger.logWarn(`No handler for event ${event}`);
 
       handler(user, payload).then((result) => {
+        if (!replyTo) return;
+
         if (result) send(ws, event, { ...result, replyTo });
+        else send(ws, SocketEvent.ACK, { replyTo });
       }).catch((e) => {
-        logger.logError(e);
-        send(ws, event, { error: true, replyTo });
+        logger.logError(`Error handling event ${event}`, e);
+        if (replyTo) send(ws, event, { error: true, message: e.message || 'Unknown error', replyTo });
       });
     } catch (e) {
       logger.logError(e);

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Drawer, TextField } from '../../Jet';
-import Chat from '../../api/apiTypes';
+import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
-import { emit, SocketEvent } from '../../api/websocket';
+import { emitWithRes } from '../../api/websocket';
+import useNotifications from '../../contexts/NotificationContext';
 
 
 interface ChatSettingsDrawerProps {
@@ -14,6 +15,8 @@ interface ChatSettingsDrawerProps {
 const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) => {
   const [name, setName] = React.useState(chat.title);
   const [nameError, setNameError] = React.useState<string>('');
+  const { addNotification } = useNotifications();
+
 
   const onNameChange = (str: string) => {
     const typed = str.slice(name.length);
@@ -24,12 +27,14 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
     setNameError('');
   }
 
-  const validate = () => {
+  const setChatName = () => {
     if (name.length === 0) return setNameError('Chat name cannot be empty');
     if (!isAsciiPrintable(name)) return setNameError('Invalid characters in name');
     setNameError('');
 
-    emit(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name });
+    emitWithRes(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name }).catch(e => {
+      addNotification({ variant: 'danger', text: e.message, seconds: 10, dismissable: true });
+    });
   }
 
   return (
@@ -40,7 +45,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
         value={name}
         onChanged={onNameChange}
         error={nameError}
-        onBlur={validate}
+        onBlur={setChatName}
       />
 
       <label htmlFor="icon" style={{ display: 'block' }}>Chat Icon</label>

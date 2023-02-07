@@ -42,15 +42,6 @@ const getRandomIcon = () => {
   return `${process.env.APP_URL}/static/default${num}.png`;
 }
 
-UserSchema.post('save', (error, doc, next) => {
-  if (error.name === 'ValidationError') {
-    logger.logError('Error saving schema:', error.message);
-  } else {
-    logger.logError('Error saving schema:', error);
-    next(error);
-  }
-});
-
 module.exports = {
   User: mongoose.model('users', UserSchema),
   getRandomIcon

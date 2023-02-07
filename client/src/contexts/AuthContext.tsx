@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import User from '../api/apiTypes';
+import { SocketEvent, User } from '../api/apiTypes';
 import LoadingScreen from '../pages/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { connect, emit, SocketEvent } from '../api/websocket';
+import { connect, emit } from '../api/websocket';
 import { logout as apiLogout } from '../api/api';
 
 
@@ -26,7 +26,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     setFirstLoad(false);
 
     connectToSocket();
-  }, [firstLoad]);
+  }, [firstLoad]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   // Update last screen

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Chat from '../api/apiTypes';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
@@ -49,7 +48,7 @@ const ChatPage = () => {
       dismissable: true
     });
     navigate(-1);
-  }, [user, loading, chatId]);
+  }, [user, loading, chatId, chats, addNotification, navigate]);
 
   const chat = chats[index];
   if (!user || !chats[index] || loading)

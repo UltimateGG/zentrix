@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { uploadProfilePicture } from '../api/api';
-import { emit, SocketEvent } from '../api/websocket';
+import { SocketEvent } from '../api/apiTypes';
+import { emit } from '../api/websocket';
 import useAuth from '../contexts/AuthContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 

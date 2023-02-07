@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Chat from '../../api/apiTypes';
-import { emit, SocketEvent } from '../../api/websocket';
+import { Chat, SocketEvent } from '../../api/apiTypes';
+import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
 

@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
-import  Chat from '../api/apiTypes';
-import { emitWithRes, isConnected, SocketEvent, subscribe } from '../api/websocket';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { Chat, CacheUpdate, SocketEvent } from '../api/apiTypes';
+import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 
 
 interface DataCacheContextProps {
@@ -16,7 +16,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
   // Should only run once, rest is handled through cache update
   const populateCache = async () => {
-    const res = await emitWithRes(SocketEvent.POPULATE_CACHE, {}).catch(() => {});
+    const res = await emitWithRes(SocketEvent.CACHE_POPULATE, {}).catch(() => {});
     if (!res) return;
 
     setChats(res.chats);
@@ -26,27 +26,41 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     if (populated) return;
 
     const interval = setInterval(async () => {
-      if (!isConnected()) return;
+      if (!isConnected()) {
+        if (!isConnecting()) await connect().catch(() => {});
+        return;
+      }
+
       clearInterval(interval);
       await populateCache();
       setPopulated(true);
     }, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [populated]);
 
-  const onCacheUpdate = (data: any) => {
+  const onCacheUpdate = useCallback((data: CacheUpdate) => {
     if (data.chats && data.chats.length > 0) {
-      data.chats.forEach((chat: Chat) => {
-        setChats(chats => chats.map(c => c._id === chat._id ? chat : c));
+      data.chats.forEach(chat => {
+        const index = chats.findIndex(c => c._id === chat._id);
+
+        if (index === -1) {
+          setChats(chats => [...chats, chat]);
+        } else {
+          setChats(chats => {
+            const newChats = [...chats];
+            newChats[index] = chat;
+            return newChats;
+          });
+        }
       });
     }
-  }
+  }, [chats]);
 
   useEffect(() => {
-    const unsubscribe = subscribe(SocketEvent.UPDATE_CACHE, (d) => onCacheUpdate(d));
+    const unsubscribe = subscribe(SocketEvent.CACHE_UPDATE, (d) => onCacheUpdate(d));
     return () => unsubscribe();
-  }, []);
+  }, [onCacheUpdate]);
 
   return (
     <DataCacheContext.Provider value={{ chats, loading: !populated }}>

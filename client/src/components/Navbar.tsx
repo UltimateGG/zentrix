@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import User from '../api/apiTypes';
+import { User } from '../api/apiTypes';
 import useAuth from '../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
