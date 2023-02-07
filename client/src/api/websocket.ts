@@ -107,6 +107,7 @@ export enum SocketEvent {
   CREATE_CHAT = 'createChat',
   POPULATE_CACHE = 'populateCache',
   UPDATE_CACHE = 'updateCache',
+  SET_LAST_CHAT = 'setLastChat',
 }
 
 interface SocketData {

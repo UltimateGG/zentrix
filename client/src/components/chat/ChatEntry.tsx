@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Chat from '../../api/apiTypes';
+import { emit, SocketEvent } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
 
@@ -39,7 +40,8 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
 
   const openChat = () => {
     navigate(`/chats/${chat._id}`);
-    // user?.setLastChat(chat.id);
+    emit(SocketEvent.SET_LAST_CHAT, { id: chat._id });
+    if (user) user.lastChat = chat._id;
   }
 
   return (

@@ -39,7 +39,7 @@ const getRandomIcon = () => {
   const max = 5;
   const num = Math.floor(Math.random() * max) + 1;
 
-  return `${process.env.APP_URL}/static/user/default_user${num}.png`;
+  return `${process.env.APP_URL}/static/default${num}.png`;
 }
 
 UserSchema.post('save', (error, doc, next) => {

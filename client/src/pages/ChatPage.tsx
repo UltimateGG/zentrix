@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Chat from '../api/apiTypes';
 import useAuth from '../contexts/AuthContext';
+import useDataCache from '../contexts/DataCacheContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
 
@@ -27,6 +28,7 @@ const ChatPage = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
   const { theme } = useContext(ThemeContext);
+  const { chats } = useDataCache();
   const [chat, setChat] = React.useState<Chat | null>(null);
   const navigate = useNavigate();
 
@@ -34,7 +36,17 @@ const ChatPage = () => {
   useEffect(() => {
     if (!user) return;
 
-   
+    const chat = chats.find(chat => chat._id === chatId);
+    setChat(chat || null);
+
+    if (chat) return;
+
+    addNotification({
+      variant: 'danger',
+      text: 'You do not have access to this chat',
+      dismissable: true
+    });
+    navigate(-1);
   }, [user, chatId]);
 
   if (!user || !chat) return null;

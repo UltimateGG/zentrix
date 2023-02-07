@@ -58,6 +58,7 @@ const eventHandlers = [
   { event: 'setDisplayName', handler: require('./setDisplayName') },
   { event: 'createChat', handler: require('./createChat') },
   { event: 'populateCache', handler: require('./populateCache') },
+  { event: 'setLastChat', handler: require('./setLastChat') },
 ];
 
 wss.on('connection', (ws, req, user) => {

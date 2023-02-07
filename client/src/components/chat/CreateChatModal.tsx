@@ -83,6 +83,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
     <Modal
       title="New Chat"
       open={open}
+      closeOnOutsideClick
       onClose={() => {
         reset();
         onClose();
