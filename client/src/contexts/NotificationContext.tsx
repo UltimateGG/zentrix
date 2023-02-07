@@ -40,7 +40,7 @@ const useNotifications = () => {
   if (context === undefined)
     throw new Error('You are not using the correct provider.');
   return context;
-};
+}
 
 export default useNotifications;
 

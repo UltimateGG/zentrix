@@ -19,6 +19,7 @@ export interface Chat {
 }
 
 export enum SocketEvent {
+  _ALL = '_all',
   CONNECT = 'connect', // Inbound only
 
   ACK = 'ack',

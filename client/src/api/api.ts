@@ -10,7 +10,7 @@ axios.interceptors.response.use((response) => response, (error) => {
   });
 });
 
-export const getAuthToken = async (token: string) => {
+export const loginWithGoogle = async (token: string) => {
   const res = await axios.get('/auth/login', {
     headers: {
       authorization: `Bearer ${token}`,
@@ -22,7 +22,6 @@ export const getAuthToken = async (token: string) => {
 
 export const logout = async () => {
   const res = await axios.get('/auth/logout');
-
   return res.data;
 }
 

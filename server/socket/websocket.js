@@ -6,6 +6,7 @@ const { User } = require('../models/User');
 
 
 const SocketEvent = {
+  _ALL: '_all',
   CONNECT: 'connect', // Outbound only
 
   ACK: 'ack',
@@ -96,12 +97,13 @@ wss.on('connection', (ws, req, user) => {
 
   ws.on('message', (message) => {
     try {
-      const { event, payload, replyTo } = JSON.parse(message);
+      const { event, payload } = JSON.parse(message);
+      const replyTo = payload?.replyTo;
       
       const handler = eventHandlers.find((h) => h.event === event)?.handler;
       if (!handler) return logger.logWarn(`No handler for event ${event}`);
 
-      handler(user, payload).then((result) => {
+      handler(user, payload).then(result => {
         if (!replyTo) return;
 
         if (result) send(ws, event, { ...result, replyTo });

@@ -119,6 +119,10 @@ const SettingsPage = () => {
       <SettingStyle theme={theme} onClick={logout} style={{ marginTop: '1.6rem' }}>
         <p style={{ color: theme.colors.danger[0] }}>Log Out</p>
       </SettingStyle>
+
+      {process.env.REACT_APP_VERSION && (
+        <small style={{ position: 'absolute', bottom: '4.2rem', left: '50%', transform: 'translateX(-50%)' }}>Zentrix v{process.env.REACT_APP_VERSION}</small>
+      )}
     </div>
   );
 }

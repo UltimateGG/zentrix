@@ -53,7 +53,7 @@ const subscribers: EventSubscriber[] = [];
 const onEvent = (event: SocketEvent, payload: any) => {
   subscribers.forEach(subscriber => {
     try {
-      if (subscriber.event === event) subscriber.callback(payload);
+      if (subscriber.event === event || subscriber.event === SocketEvent._ALL) subscriber.callback(payload);
     } catch (e) {
       console.error('Error calling event subscriber for ' + event, e);
     }
@@ -77,30 +77,30 @@ export const emit = (event: SocketEvent, payload: any) => {
 export const emitWithRes = async (event: SocketEvent, payload: any) => {
   return new Promise<any>((resolve, reject) => {
     if (!ws || ws.readyState !== WebSocket.OPEN) return reject();
-
     const id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+
     let resolved = false;
-    const listener = (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
-      if (!data.payload || data.payload.replyTo !== id) return;
-      ws?.removeEventListener('message', listener);
-
-      if (data.payload.error) reject(data.payload);
-      else resolve(data.payload);
+    const unsubscribe = subscribe(SocketEvent._ALL, payload => {
+      if (payload.replyTo !== id) return;
+      unsubscribe();
+      
+      delete payload.replyTo;
+      if (payload.error) reject(payload);
+      else resolve(payload);
       resolved = true;
-    }
+    });
 
-    ws.addEventListener('message', listener);
     setTimeout(() => {
       if (resolved) return;
-      ws?.removeEventListener('message', listener);
+
+      unsubscribe();
       reject({
         error: true,
         message: 'Request timed out',
       });
     }, 5000);
 
-    ws.send(JSON.stringify({ event, payload, replyTo: id }));
+    ws.send(JSON.stringify({ event, payload: { ...payload, replyTo: id } }));
   });
 }
 

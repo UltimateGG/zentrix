@@ -14,9 +14,9 @@ interface AuthContextProps {
 export const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
+  const [loggingIn, setLoggingIn] = React.useState(true);
   const [firstLoad, setFirstLoad] = React.useState(true);
 
-  const [loggingIn, setLoggingIn] = React.useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -73,13 +73,13 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
       {getContent()}
     </AuthContext.Provider>
   );
-};
+}
 
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined)
     throw new Error('You are not using the correct provider.');
   return context;
-};
+}
 
 export default useAuth;

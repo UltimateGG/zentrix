@@ -47,11 +47,11 @@ const ChatPage = () => {
       text: 'You do not have access to this chat',
       dismissable: true
     });
-    navigate(-1);
+    navigate('/chats');
   }, [user, loading, chatId, chats, addNotification, navigate]);
 
   const chat = chats[index];
-  if (!user || !chats[index] || loading)
+  if (!user || !chat || loading)
     return (
       <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
         <Progress circular indeterminate />
@@ -71,7 +71,7 @@ const ChatPage = () => {
         backgroundColor: theme.colors.background[1]
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
-        <IconStyle src={chat.iconURL} alt="pfp" />
+        <IconStyle src={chat.iconURL} alt="profile" />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />

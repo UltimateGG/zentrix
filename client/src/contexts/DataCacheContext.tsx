@@ -16,8 +16,10 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
   // Should only run once, rest is handled through cache update
   const populateCache = async () => {
-    const res = await emitWithRes(SocketEvent.CACHE_POPULATE, {}).catch(() => {});
-    if (!res) return;
+    const res = await emitWithRes(SocketEvent.CACHE_POPULATE, {}).catch(e => {
+      console.error('Error populating cache', e);
+    });
+    if (!res || res.error) return;
 
     setChats(res.chats);
   }
@@ -32,8 +34,8 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       }
 
       clearInterval(interval);
-      await populateCache();
       setPopulated(true);
+      await populateCache();
     }, 100);
 
     return () => clearInterval(interval);
@@ -67,13 +69,13 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       {children}
     </DataCacheContext.Provider>
   );
-};
+}
 
 const useDataCache = () => {
   const context = useContext(DataCacheContext);
   if (context === undefined)
     throw new Error('You are not using the correct provider.');
   return context;
-};
+}
 
 export default useDataCache;

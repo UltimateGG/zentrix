@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { getAuthToken } from '../api/api';
+import { loginWithGoogle } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box } from '../Jet';
@@ -27,7 +27,7 @@ const LoginPage = () => {
   const onSuccess = async (res: CredentialResponse) => {
     if (!res.credential) return;
 
-    const data = await getAuthToken(res.credential);
+    const data = await loginWithGoogle(res.credential);
 
     if (data.error) return addNotification({ text: data.message || 'An unknown error occurred', variant: 'danger', dismissable: true });
     window.location.reload();

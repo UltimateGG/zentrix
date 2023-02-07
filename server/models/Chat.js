@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const logger = require('../utils/logging');
 
 
 const ChatSchema = new Schema({
@@ -14,7 +13,7 @@ const ChatSchema = new Schema({
     required: true,
     maxLength: 1000
   },
-  lastMessage: {// TODO ref
+  lastMessage: {// TODO ref?
     type: String,
     maxLength: 1000,
     default: null
