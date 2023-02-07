@@ -46,9 +46,18 @@ const broadcast = (event, payload) => {
   });
 };
 
+module.exports = {
+  wss,
+  onUpgrade,
+  send,
+  broadcast
+};
+
 const eventHandlers = [
   { event: 'setLastScreen', handler: require('./setLastScreen') },
   { event: 'setDisplayName', handler: require('./setDisplayName') },
+  { event: 'createChat', handler: require('./createChat') },
+  { event: 'populateCache', handler: require('./populateCache') },
 ];
 
 wss.on('connection', (ws, req, user) => {
@@ -56,21 +65,19 @@ wss.on('connection', (ws, req, user) => {
 
   ws.on('message', (message) => {
     try {
-      const { event, payload } = JSON.parse(message);
+      const { event, payload, replyTo } = JSON.parse(message);
       
       const handler = eventHandlers.find((h) => h.event === event)?.handler;
       if (!handler) return logger.logWarn(`No handler for event ${event}`);
 
-      handler(user, payload);
+      handler(user, payload).then((result) => {
+        if (result) send(ws, event, { ...result, replyTo });
+      }).catch((e) => {
+        logger.logError(e);
+        send(ws, event, { error: true, replyTo });
+      });
     } catch (e) {
       logger.logError(e);
     }
   });
 });
-
-
-module.exports = {
-  wss,
-  onUpgrade,
-  broadcast
-};

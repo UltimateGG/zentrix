@@ -2,11 +2,13 @@ import React from 'react';
 import ChatEntry from '../components/chat/ChatEntry';
 import CreateChatModal from '../components/chat/CreateChatModal';
 import useAuth from '../contexts/AuthContext';
+import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
 
 
 const ChatListPage = () => {
   const { user } = useAuth();
+  const { chats, loading } = useDataCache();
   const { theme } = React.useContext(ThemeContext);
   const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
 
@@ -29,23 +31,23 @@ const ChatListPage = () => {
       </Box>
       <div style={{ height: '3.6rem' }} />
 
-      {false ? (
+      {loading ? (
         <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
           <Progress circular indeterminate />
         </Box>
       ) : (<>
-        {user.chats.length === 0 && (
+        {chats.length === 0 && (
           <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
             <h3 style={{ margin: 0 }}>No chats yet</h3>
             <p style={{ margin: 0 }}>Click the + button to create a new chat</p>
           </Box>
         )}
 
-        {user.chats.length > 0 && (
+        {chats.length > 0 && (
           <Box flexDirection="column" style={{ paddingBottom: '3.6rem' }}>
-            {/* {chats.map(chat => (
-              <ChatEntry key={chat.id} chat={chat} />
-            ))} */}
+            {chats.map(chat => (
+              <ChatEntry key={chat._id} chat={chat} />
+            ))}
           </Box>
         )}
 

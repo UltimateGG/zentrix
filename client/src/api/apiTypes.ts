@@ -6,7 +6,6 @@ export default interface User {
   displayName: string;
   lastChat: string | null;
   lastScreen: string | null;
-  chats: string[];
 }
 
 export default interface Chat {

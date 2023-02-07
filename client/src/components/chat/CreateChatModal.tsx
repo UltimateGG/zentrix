@@ -1,6 +1,8 @@
 import React from 'react';
 import Chat from '../../api/apiTypes';
+import { emit, emitWithRes, SocketEvent } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
+import useNotifications from '../../contexts/NotificationContext';
 import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
 
 
@@ -19,6 +21,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const [passwordError, setPasswordError] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
 
+  const { addNotification } = useNotifications();
   const { user } = useAuth();
   if (!user) return null;
 
@@ -66,9 +69,12 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    // await Chat.create(name, encrypted, password, [ user._id ]); TODO
-    setLoading(false);
+    const res = await emitWithRes(SocketEvent.CREATE_CHAT, { title: name, encrypted, password, participants: [] }).catch(err => {
+      addNotification({ text: 'Failed to create chat', variant: 'danger', dismissable: true });
+      console.error(err);
+    });
 
+    setLoading(false);
     reset();
     onClose();
   }

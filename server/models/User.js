@@ -32,12 +32,7 @@ const UserSchema = new Schema({
     type: String,
     maxLength: 500,
     default: null
-  },
-  chats: [{
-    type: Schema.Types.ObjectId,
-    ref: 'chats',
-    default: []
-  }]
+  }
 });
 
 const getRandomIcon = () => {
