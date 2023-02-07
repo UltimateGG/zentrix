@@ -5,7 +5,14 @@ import { getAuthToken } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box } from '../Jet';
+import styled from 'styled-components';
 
+
+const IOSFix = styled.div`
+  * {
+    color: #000 !important;
+  }
+`;
 
 const LoginPage = () => {
   const { user } = useAuth();
@@ -30,8 +37,10 @@ const LoginPage = () => {
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
       <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="Zentrix" style={{ width: '6rem', height: '6rem' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
-
-      <GoogleLogin onSuccess={onSuccess} />
+      
+      <IOSFix>
+        <GoogleLogin onSuccess={onSuccess} />
+      </IOSFix>
     </Box>
   );
 }

@@ -11,7 +11,7 @@ interface CreateChatModalProps {
   onClose: () => void;
 }
 
-const isAsciiPrintable = (str: string) => /^[\x20-\x7E]*$/.test(str);
+export const isAsciiPrintable = (str: string) => /^[\x20-\x7E]*$/.test(str);
 
 const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const [name, setName] = React.useState<string>('');

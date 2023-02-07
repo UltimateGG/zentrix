@@ -6,6 +6,7 @@ import { IconEnum } from '../../icons/Icons';
 
 
 export interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
+  side?: 'left' | 'right';
   open?: boolean;
   onClose?: () => void;
   closeOnOutsideClick?: boolean;
@@ -15,9 +16,9 @@ const DrawerStyle = styled.div.attrs((props: DrawerProps) => props)`
   position: fixed;
   top: 0;
   bottom: 0;
-  left: ${props => props.open ? '0' : '-105%'};
+  ${props => props.side || 'left'}: ${props => props.open ? '0' : '-105%'};
   transition: transform 0.3s ease-in-out;
-  transform: ${props => props.open ? 'translateX(0)' : 'translateX(-105%)'};
+  transform: ${props => props.open ? 'translateX(0)' : `translateX(${props.side === 'right' ? '' : '-'}105%)`};
   padding: 0.6rem;
   padding-top: 1.2rem;
   min-width: 8vw;
@@ -54,7 +55,7 @@ const OverlayStyle = styled.div.attrs((props: DrawerProps) => props)`
 `;
 
 const Drawer = (props: DrawerProps) => {
-  const { open, onClose, closeOnOutsideClick = true, ...rest } = props;
+  const { side, open, onClose, closeOnOutsideClick = true, ...rest } = props;
   const { theme } = React.useContext(ThemeContext);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ const Drawer = (props: DrawerProps) => {
       theme={theme}
       {...rest}
       open={open}
+      side={side}
     >
       <Icon
         icon={IconEnum.x}

@@ -37,20 +37,27 @@ const onUpgrade = async (req, socket, head) => {
 }
 
 const send = (ws, event, payload) => {
+  if (ws.readyState !== 1) return;
   ws.send(JSON.stringify({ event, payload }));
 };
 
 const broadcast = (event, payload) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === 1) send(client, event, payload);
-  });
+  wss.clients.forEach((client) => send(client, event, payload));
+};
+
+const cacheUpdate = (payload, affectedUsers) => {
+  const clients = Array.from(wss.clients);
+
+  for (const client of clients)
+    if (affectedUsers.includes(client.user._id)) send(client, 'updateCache', payload);
 };
 
 module.exports = {
   wss,
   onUpgrade,
   send,
-  broadcast
+  broadcast,
+  cacheUpdate,
 };
 
 const eventHandlers = [
@@ -59,6 +66,7 @@ const eventHandlers = [
   { event: 'createChat', handler: require('./createChat') },
   { event: 'populateCache', handler: require('./populateCache') },
   { event: 'setLastChat', handler: require('./setLastChat') },
+  { event: 'updateChat', handler: require('./updateChat') },
 ];
 
 wss.on('connection', (ws, req, user) => {

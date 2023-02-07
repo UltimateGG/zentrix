@@ -23,7 +23,7 @@ const ChatListPage = () => {
         right: 0,
         zIndex: 2,
         height: '3.6rem',
-        padding: '1rem 2rem',
+        padding: '1rem',
         backgroundColor: theme.colors.background[1]
       }}>
         <h2 style={{ margin: 0 }}>Chats</h2>

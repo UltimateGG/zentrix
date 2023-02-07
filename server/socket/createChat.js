@@ -1,13 +1,13 @@
 const { Chat } = require('../models/Chat');
 const { getRandomIcon } = require('../models/User');
-const { wss, send } = require('./websocket');
+const { cacheUpdate } = require('./websocket');
 
 
 module.exports = async (user, payload) => {
   const { title, encrypted, password, participants } = payload;
   const newChat = new Chat({
     title,
-    iconURL: getRandomIcon(), // Just use user icons for now
+    iconURL: getRandomIcon(),
     encrypted,
     password,
     participants: [user._id, ...participants]
@@ -15,10 +15,6 @@ module.exports = async (user, payload) => {
   
   await newChat.save();
 
-  newChat.participants.forEach((participant) => {
-    const ws = Array.from(wss.clients).find((client) => client.user._id.equals(participant));
-    if (ws) send(ws, 'updateCache', { chats: [newChat.toJSON()] });
-  });
-
+  cacheUpdate({ chats: [newChat.toJSON()] }, newChat.participants);
   return newChat.toJSON();
 }

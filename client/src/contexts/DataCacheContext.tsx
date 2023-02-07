@@ -38,23 +38,13 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   const onCacheUpdate = (data: any) => {
     if (data.chats && data.chats.length > 0) {
       data.chats.forEach((chat: Chat) => {
-        const index = chats.findIndex(c => c._id === chat._id);
-
-        if (index === -1) {
-          setChats(chats => [...chats, chat]);
-        } else {
-          setChats(chats => {
-            const newChats = [...chats];
-            newChats[index] = chat;
-            return newChats;
-          });
-        }
+        setChats(chats => chats.map(c => c._id === chat._id ? chat : c));
       });
     }
   }
 
   useEffect(() => {
-    const unsubscribe = subscribe(SocketEvent.UPDATE_CACHE, onCacheUpdate);
+    const unsubscribe = subscribe(SocketEvent.UPDATE_CACHE, (d) => onCacheUpdate(d));
     return () => unsubscribe();
   }, []);
 

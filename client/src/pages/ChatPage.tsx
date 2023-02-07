@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Chat from '../api/apiTypes';
+import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import useNotifications from '../contexts/NotificationContext';
-import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
+import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
 
 
 const TitleStyle = styled.h4`
@@ -28,18 +29,19 @@ const ChatPage = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
   const { theme } = useContext(ThemeContext);
-  const { chats } = useDataCache();
-  const [chat, setChat] = React.useState<Chat | null>(null);
+  const { chats, loading } = useDataCache();
+  const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
 
   
   useEffect(() => {
-    if (!user) return;
+    if (!user || loading) return;
 
-    const chat = chats.find(chat => chat._id === chatId);
-    setChat(chat || null);
+    const index = chats.findIndex(chat => chat._id === chatId);
+    setIndex(index);
 
-    if (chat) return;
+    if (index !== -1) return;
 
     addNotification({
       variant: 'danger',
@@ -47,9 +49,16 @@ const ChatPage = () => {
       dismissable: true
     });
     navigate(-1);
-  }, [user, chatId]);
+  }, [user, loading, chatId]);
 
-  if (!user || !chat) return null;
+  const chat = chats[index];
+  if (!user || !chats[index] || loading)
+    return (
+      <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
+        <Progress circular indeterminate />
+      </Box>
+    );
+
   return (
     <>
       <Box alignItems="center" style={{
@@ -62,15 +71,15 @@ const ChatPage = () => {
         padding: '1rem 0.2rem',
         backgroundColor: theme.colors.background[1]
       }}>
-        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate(-1)} />
+        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
         <IconStyle src={chat.iconURL} alt="pfp" />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         
-        <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} />
+        <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
       <div style={{ height: '3.6rem' }} />
 
-      
+      <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />      
     </>
   );
 }
