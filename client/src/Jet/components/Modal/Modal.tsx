@@ -122,7 +122,7 @@ const Modal = (props: ModalProps) => {
           </div>
         )}
 
-        {open && props.children}
+        {props.children}
       </ModalStyle>
     </BackdropStyle>
   );

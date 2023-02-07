@@ -66,6 +66,12 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
     setLoading(false);
   }
 
+  const doClose = async () => {
+    onClose();
+    await new Promise(r => setTimeout(r, 200));
+    reset();
+  }
+
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
@@ -74,8 +80,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
     });
 
     setLoading(false);
-    reset();
-    onClose();
+    doClose();
   }
 
   return (
@@ -83,10 +88,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
       title="New Chat"
       open={open}
       closeOnOutsideClick
-      onClose={() => {
-        reset();
-        onClose();
-      }}
+      onClose={doClose}
     >
       <label htmlFor="chat-name">Chat Name</label><br />
       <TextField
