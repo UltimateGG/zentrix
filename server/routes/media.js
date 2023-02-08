@@ -9,8 +9,8 @@ const { cacheUpdate } = require('../socket/websocket');
 
 const truncate = (str, length) => str.length > length ? `${str.substring(0, length)}...` : str;
 
-const cacheControl = 'max-age=' + 60 * 60 * 24 * 30; // 30 days
-const maxFileSize = 1 * 1024 * 1024 * 1024; // 1 GB cuz s3 is awesome
+const cacheControl = 'max-age=' + 60 * 60 * 24 * 90; // 90 days
+/*const maxFileSize = 1 * 1024 * 1024 * 1024; // 1 GB cuz s3 is awesome
 const uploadFile = multer({
   storage: multerS3({
     s3,
@@ -30,7 +30,7 @@ router.post('/upload', uploadFile.single('file'), asyncHandler(async (req, res) 
   if (!file) throw new Error('No file was uploaded');
   
   res.status(200).json({ path: file.path });
-}));
+}));*/
 
 
 const pfpFilter = (req, file, cb) => {

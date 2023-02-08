@@ -35,14 +35,14 @@ const UserSchema = new Schema({
   }
 });
 
-const getRandomIcon = () => {
-  const max = 5;
+const getRandomUserIcon = () => {
+  const max = 6;
   const num = Math.floor(Math.random() * max) + 1;
 
-  return `https://${bucket}.s3.${region}.amazonaws.com/static/default${num}.png`;
+  return `https://${bucket}.s3.${region}.amazonaws.com/static/user${num}.png`;
 }
 
 module.exports = {
   User: mongoose.model('users', UserSchema),
-  getRandomIcon
+  getRandomUserIcon
 };

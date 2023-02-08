@@ -2,7 +2,7 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
-const { User, getRandomIcon } = require('../models/User');
+const { User, getRandomUserIcon } = require('../models/User');
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
@@ -29,7 +29,7 @@ router.get('/login', asyncHandler(async (req, res) => {
     user = new User({
       googleId: userId,
       email: payload.email || '',
-      iconURL: payload.picture || getRandomIcon(),
+      iconURL: payload.picture || getRandomUserIcon(),
       displayName: payload.name || userId,
     });
 

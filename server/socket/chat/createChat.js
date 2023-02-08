@@ -1,5 +1,5 @@
 const { Chat } = require('../../models/Chat');
-const { getRandomIcon } = require('../../models/User');
+const { getRandomChatIcon } = require('../../models/Chat');
 const { cacheUpdate } = require('../websocket');
 
 
@@ -8,7 +8,7 @@ module.exports = async (user, payload) => {
 
   const newChat = new Chat({
     title,
-    iconURL: getRandomIcon(),
+    iconURL: getRandomChatIcon(),
     encrypted,
     password,
     participants: [...new Set([user.id, ...participants])]

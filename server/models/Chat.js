@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { bucket, region } = require('../utils/s3');
 
 
 const ChatSchema = new Schema({
@@ -36,6 +37,14 @@ const ChatSchema = new Schema({
   }]
 });
 
+const getRandomChatIcon = () => {
+  const max = 6;
+  const num = Math.floor(Math.random() * max) + 1;
+
+  return `https://${bucket}.s3.${region}.amazonaws.com/static/chat${num}.png`;
+}
+
 module.exports = {
   Chat: mongoose.model('chats', ChatSchema),
+  getRandomChatIcon
 };
