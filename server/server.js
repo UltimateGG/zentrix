@@ -22,11 +22,6 @@ app.use((req, res, next) => {
 
 app.use(require('cookie-parser')());
 
-app.use(express.static('public', {
-  cacheControl: true,
-  maxAge: '30d'
-}));
-
 
 // Routes
 app.use('/auth', require('./routes/auth'));
