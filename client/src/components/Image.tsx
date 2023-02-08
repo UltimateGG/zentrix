@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { FALLBACK_IMAGE_URL } from '../api/api';
 import { ThemeContext } from '../Jet';
 
 
@@ -23,6 +24,7 @@ const LoaderStyle = styled.div.attrs((props: any) => props)`
 
 const Image = ({ src, style, ...rest }: any) => {
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   const { theme } = useContext(ThemeContext);
 
 
@@ -31,8 +33,9 @@ const Image = ({ src, style, ...rest }: any) => {
       {loading && <LoaderStyle theme={theme} style={style} />}
       {/* eslint-disable-next-line */}
       <img
-        src={src}
+        src={failed ? FALLBACK_IMAGE_URL : src}
         onLoad={() => setLoading(false)}
+        onError={() => setFailed(true)}
         style={{ ...style, display: loading ? 'none' : 'block' }}
         {...rest}
       />

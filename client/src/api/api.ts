@@ -2,6 +2,7 @@ import axios from 'axios';
 
 
 export const LOGO_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/logo192.png';
+export const FALLBACK_IMAGE_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/image_failed.png';
 
 axios.interceptors.response.use((response) => response, (error) => {
   return Promise.resolve({
