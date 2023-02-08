@@ -13,6 +13,8 @@ interface JetDesignProps {
 }
 
 const getGlobalStyles = (props: any) => `
+  @import url('${props.theme.font}');
+
   * {
     margin: 0;
     padding: 0;
@@ -100,12 +102,6 @@ const JetDesign = ({ children, theme: initial = themeDefault }: JetDesignProps) 
   // Inject fonts into head
   useEffect(() => {
     if (document.head.querySelector('[data-jet-injected]')) return;
-
-    const fontLink = document.createElement('link');
-    fontLink.rel = 'stylesheet';
-    fontLink.href = theme.font;
-
-    document.head.appendChild(fontLink);
 
     const globalStyles = document.createElement('style');
     globalStyles.innerHTML = getGlobalStyles({ theme });
