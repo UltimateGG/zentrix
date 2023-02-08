@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { Chat, CacheUpdate, SocketEvent } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
+import useAuth from './AuthContext';
 
 
 interface DataCacheContextProps {
@@ -12,6 +13,8 @@ export const DataCacheContext = React.createContext<DataCacheContextProps | unde
 export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [populated, setPopulated] = React.useState<boolean>(false);
   const [chats, setChats] = React.useState<Chat[]>([]);
+
+  const { user } = useAuth();
 
 
   // Should only run once, rest is handled through cache update
@@ -41,7 +44,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     return () => clearInterval(interval);
   }, [populated]);
 
-  const onCacheUpdate = (data: CacheUpdate) => {
+  const onCacheUpdate = useCallback((data: CacheUpdate) => {
     if (data.chats && data.chats.length > 0) {
       data.chats.forEach(chat => {
         setChats(chats => {
@@ -67,13 +70,18 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
             return newChats;
           });
       });
+
+      if (user && user.lastChat && data.deletedChats.includes(user.lastChat)) {
+        emitWithRes(SocketEvent.SET_LAST_CHAT, { chatId: null }).catch(e => {});
+        user.lastChat = null;
+      }
     }
-  }
+  }, [user]);
 
   useEffect(() => {
     const unsubscribe = subscribe(SocketEvent.CACHE_UPDATE, (d) => onCacheUpdate(d));
     return () => unsubscribe();
-  }, []);
+  }, [onCacheUpdate]);
 
   return (
     <DataCacheContext.Provider value={{ chats, loading: !populated }}>

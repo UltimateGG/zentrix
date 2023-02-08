@@ -5,7 +5,6 @@ import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import Image from '../components/Image';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
-import useNotifications from '../contexts/NotificationContext';
 import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
 
 
@@ -20,7 +19,6 @@ const TitleStyle = styled.h4`
 const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
   const { theme } = useContext(ThemeContext);
   const { chats, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
@@ -35,14 +33,8 @@ const ChatPage = () => {
     setIndex(index);
 
     if (index !== -1) return;
-
-    addNotification({
-      variant: 'danger',
-      text: 'You do not have access to this chat',
-      dismissable: true
-    });
     navigate('/chats');
-  }, [user, loading, chatId, chats, addNotification, navigate]);
+  }, [user, loading, chatId, chats, navigate]);
 
   const chat = chats[index];
   if (!user || !chat || loading)

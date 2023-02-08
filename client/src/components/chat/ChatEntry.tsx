@@ -46,7 +46,7 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
           <Icon icon={IconEnum.lock} style={{
             position: 'absolute',
             left: '3.4rem',
-            top: '1rem',
+            top: '0.6rem',
             zIndex: 1,
           }} size={24} />
         )}

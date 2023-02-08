@@ -4,7 +4,6 @@ import LoadingScreen from '../pages/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connect, emit } from '../api/websocket';
 import { logout as apiLogout } from '../api/api';
-import useDataCache from './DataCacheContext';
 
 
 interface AuthContextProps {
@@ -17,7 +16,6 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [user, setUser] = React.useState<User | null>(null);
   const [loggingIn, setLoggingIn] = React.useState(true);
   const [firstLoad, setFirstLoad] = React.useState(true);
-  const { loading } = useDataCache();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,12 +58,11 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   const getLoadingScreenStatus = () => {
     if (loggingIn) return 'Logging in...';
-    if (loading) return 'Loading chats...';
     return 'Loading...';
   }
 
   const getContent = () => {
-    if (loggingIn || loading)
+    if (loggingIn)
       return (<LoadingScreen status={getLoadingScreenStatus()} />);
 
     return children;
