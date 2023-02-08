@@ -25,8 +25,10 @@ export const connect = async () => {
 
     ws.onclose = () => {
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      reconnectTimeout = setTimeout(connect, reconnectDelay);
-      connecting = false;
+      reconnectTimeout = setTimeout(() => {
+        connecting = false;
+        connect();
+      }, reconnectDelay);
     }
 
     ws.onmessage = (event) => {

@@ -1,19 +1,27 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const multer = require('multer');
-const fs = require('fs');
+const multerS3 = require('multer-s3');
+const { s3, bucket } = require('../utils/s3');
 
 
-const userStorage = (req, file, cb) => {
-  const path = `public/media/user/${req.user.id}/`;
-  if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true });
+const truncate = (str, length) => str.length > length ? `${str.substring(0, length)}...` : str;
 
-  cb(null, path);
-}
-
-const maxFileSize = 100 * 1024 * 1024; // 100 MB
-const fileStorage = multer.diskStorage({ destination: userStorage, limits: { fileSize: maxFileSize } });
-const uploadFile = multer({ storage: fileStorage });
+const cacheControl = 'max-age=' + 60 * 60 * 24 * 30; // 30 days
+const maxFileSize = 1 * 1024 * 1024 * 1024; // 1 GB cuz s3 is awesome
+const uploadFile = multer({
+  storage: multerS3({
+    s3,
+    bucket,
+    cacheControl,
+    key: (req, file, cb) => {
+      const path = `uploads/${req.user.id}/${Date.now()}`; // TODO: Make this more secure by using a random string instead of the user id
+      const fileName = truncate(file.originalname, 100).replace(/ |\/|\\/g, '_');
+      cb(null, `${path}${fileName}`);
+    }
+  }),
+  limits: { fileSize: maxFileSize }
+});
 
 router.post('/upload', uploadFile.single('file'), asyncHandler(async (req, res) => {
   const file = req.file;
@@ -29,14 +37,26 @@ const pfpFilter = (req, file, cb) => {
 }
 
 const maxPfpSize = 12 * 1024 * 1024; // 12 MB
-const pfpStorage = multer.diskStorage({ destination: userStorage, limits: { fileSize: maxPfpSize }, fileFilter: pfpFilter });
-const uploadPfp = multer({ storage: pfpStorage });
+const uploadPfp = multer({
+  storage: multerS3({
+    s3,
+    bucket,
+    cacheControl,
+    key: (req, file, cb) => {
+      const path = `uploads/profile/${req.user.id}/`;
+      const fileName = `${Date.now()}.${file.mimetype.split('/')[1] || 'png'}`;
+      cb(null, `${path}${fileName}`);
+    }
+  }),
+  limits: { fileSize: maxPfpSize },
+  fileFilter: pfpFilter
+});
 
 router.post('/pfp', uploadPfp.single('file'), asyncHandler(async (req, res) => {
   const file = req.file;
   if (!file) throw new Error('No file was uploaded');
 
-  req.user.iconURL = `${process.env.APP_URL}${file.path.replace('public', '')}`.replace(/\\/g, '/');
+  req.user.iconURL = file.location;
   await req.user.save();
 
   res.status(200).json({ path: req.user.iconURL });

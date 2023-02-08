@@ -5,6 +5,7 @@ import { Chat, SocketEvent } from '../../api/apiTypes';
 import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
+import Image from '../Image';
 
 
 const BoxStyle = styled(Box).attrs((props: any) => props)`
@@ -21,7 +22,7 @@ const TitleStyle = styled.h4`
   white-space: nowrap;
 `;
 
-const IconStyle = styled.img`
+const IconStyle = styled(Image)`
   width: 3.6rem;
   height: 3.6rem;
   border-radius: 50%;

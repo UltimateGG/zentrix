@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 
+export const LOGO_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/logo192.png';
+
 axios.interceptors.response.use((response) => response, (error) => {
   return Promise.resolve({
     data: error.response.data || {

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { loginWithGoogle } from '../api/api';
+import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box } from '../Jet';
 import styled from 'styled-components';
+import Image from '../components/Image';
 
 
 const IOSFix = styled.div`
@@ -35,7 +36,7 @@ const LoginPage = () => {
 
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
-      <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="Zentrix" style={{ width: '6rem', height: '6rem' }} />
+      <Image src={LOGO_URL} alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
       
       <IOSFix>

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { bucket, region } = require('../utils/s3');
 
 
 const UserSchema = new Schema({
@@ -38,7 +39,7 @@ const getRandomIcon = () => {
   const max = 5;
   const num = Math.floor(Math.random() * max) + 1;
 
-  return `${process.env.APP_URL}/static/default${num}.png`;
+  return `https://${bucket}.s3.${region}.amazonaws.com/static/default${num}.png`;
 }
 
 module.exports = {

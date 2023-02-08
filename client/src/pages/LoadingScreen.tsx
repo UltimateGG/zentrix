@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import { LOGO_URL } from '../api/api';
+import Image from '../components/Image';
 import { Box } from '../Jet';
 
 
@@ -13,10 +15,7 @@ const LogoAnim = keyframes`
   }
 `;
 
-const LogoStyle = styled.img`
-  position: absolute;
-  width: 64px;
-  height: 64px;
+const LogoStyle = styled(Image)`
   animation: ${LogoAnim} 1.5s infinite;
 `;
 
@@ -34,7 +33,7 @@ const LoadingScreen = ({ status }: { status: string }) => {
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
       <StatusStyle>{status}</StatusStyle>
 
-      <LogoStyle src={`${process.env.PUBLIC_URL}/logo192.png`} alt="Zentrix" />
+      <LogoStyle src={LOGO_URL} alt="Zentrix" style={{ width: '64px', height: '64px', borderRadius: '50%' }} />
     </Box>
   );
 }

@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { uploadProfilePicture } from '../api/api';
 import { SocketEvent } from '../api/apiTypes';
 import { emit } from '../api/websocket';
+import Image from '../components/Image';
 import useAuth from '../contexts/AuthContext';
+import useNotifications from '../contexts/NotificationContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
 
 
@@ -27,6 +29,7 @@ const SettingStyle = styled(Box).attrs((props: any) => props)`
 const SettingsPage = () => {
   const { user, logout } = useAuth();
   const { theme } = React.useContext(ThemeContext);
+  const { addNotification } = useNotifications();
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
   const [uploadingIcon, setUploadingIcon] = React.useState(false);
@@ -63,13 +66,17 @@ const SettingsPage = () => {
     try { // Upload to storage
       setUploadingIcon(true);
       const data = await uploadProfilePicture(file);
+
+      if (data.error)
+        return addNotification({ variant: 'danger', text: data.message, dismissable: true });
+
       user.iconURL = data.path;
     } catch (err) {
       console.error(err);
+    } finally {
+      setUploadingIcon(false);
+      clearFilePicker();
     }
-
-    setUploadingIcon(false);
-    clearFilePicker();
   }
 
   if (!user) return null;
@@ -89,7 +96,7 @@ const SettingsPage = () => {
           {uploadingIcon ? (
             <Progress circular indeterminate />
           ) : (
-            <img referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+            <Image referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
           )}
           <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
 
