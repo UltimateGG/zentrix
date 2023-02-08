@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { uploadProfilePicture } from '../api/api';
+import { uploadFile } from '../api/api';
 import { SocketEvent } from '../api/apiTypes';
 import { emit } from '../api/websocket';
 import Image from '../components/Image';
@@ -34,6 +34,7 @@ const SettingsPage = () => {
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
   const [uploadingIcon, setUploadingIcon] = React.useState(false);
   const [error, setError] = React.useState('');
+  const ref = useRef<HTMLInputElement>(null);
 
 
   const updateDisplayName = async () => {
@@ -49,23 +50,13 @@ const SettingsPage = () => {
     setEditingDisplayName(false);
   }
 
-  const openFilePicker = () => {
-    const filePicker = document.getElementById('filePicker');
-    if (filePicker) filePicker.click();
-  }
-
-  const clearFilePicker = () => {
-    const filePicker = document.getElementById('filePicker') as HTMLInputElement;
-    if (filePicker) filePicker.value = '';
-  }
-
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!user || !file || !file.type.startsWith('image/')) return;
 
     try { // Upload to storage
       setUploadingIcon(true);
-      const data = await uploadProfilePicture(file);
+      const data = await uploadFile('/media/pfp', file);
 
       if (data.error)
         return addNotification({ variant: 'danger', text: data.message, dismissable: true });
@@ -75,7 +66,7 @@ const SettingsPage = () => {
       console.error(err);
     } finally {
       setUploadingIcon(false);
-      clearFilePicker();
+      if (ref && ref.current) ref.current.value = '';
     }
   }
 
@@ -92,7 +83,7 @@ const SettingsPage = () => {
       </Box>
 
       <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ margin: '1rem 0' }}>
-        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ cursor: 'pointer' }} onClick={openFilePicker}>
+        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ cursor: 'pointer' }} onClick={() => ref?.current?.click()}>
           {uploadingIcon ? (
             <Progress circular indeterminate />
           ) : (
@@ -100,7 +91,7 @@ const SettingsPage = () => {
           )}
           <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
 
-          <input type="file" style={{ display: 'none' }} id="filePicker" accept="image/*" onChange={onFileChange} />
+          <input type="file" style={{ display: 'none' }} ref={ref} accept="image/*" onChange={onFileChange} />
         </Box>
 
         {editingDisplayName ? (

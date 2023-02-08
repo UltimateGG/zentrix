@@ -23,6 +23,7 @@ const SocketEvent = {
   // Chat
   CREATE_CHAT: 'createChat',
   UPDATE_CHAT: 'updateChat',
+  DELETE_CHAT: 'deleteChat',
 };
 
 const onUpgrade = async (req, socket, head) => {
@@ -90,6 +91,7 @@ const eventHandlers = [
 
   { event: SocketEvent.CREATE_CHAT, handler: require('./chat/createChat') },
   { event: SocketEvent.UPDATE_CHAT, handler: require('./chat/updateChat') },
+  { event: SocketEvent.DELETE_CHAT, handler: require('./chat/deleteChat') },
 ];
 
 wss.on('connection', (ws, req, user) => {
@@ -107,7 +109,7 @@ wss.on('connection', (ws, req, user) => {
         if (!replyTo) return;
 
         if (result) send(ws, event, { ...result, replyTo });
-        else send(ws, SocketEvent.ACK, { replyTo });
+        else send(ws, SocketEvent.ACK, { ack: true, replyTo });
       }).catch((e) => {
         logger.logError(`Error handling event ${event}`, e);
         if (replyTo) send(ws, event, { error: true, message: e.message || 'Unknown error', replyTo });

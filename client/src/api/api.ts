@@ -27,12 +27,10 @@ export const logout = async () => {
   return res.data;
 }
 
-export const uploadProfilePicture = async (file: File) => {
+export const uploadFile = async (path: string, file: File) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await axios.post('/media/pfp', formData);
-
+  const res = await axios.post(path, formData);
   return res.data;
 }
-

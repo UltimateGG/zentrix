@@ -35,8 +35,10 @@ export enum SocketEvent {
   // Chat
   CREATE_CHAT = 'createChat',
   UPDATE_CHAT = 'updateChat',
+  DELETE_CHAT = 'deleteChat',
 }
 
 export interface CacheUpdate {
   chats?: Chat[];
+  deletedChats?: string[];
 }

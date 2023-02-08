@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Chat, CacheUpdate, SocketEvent } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 
@@ -34,35 +34,46 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       }
 
       clearInterval(interval);
-      setPopulated(true);
       await populateCache();
+      setPopulated(true);
     }, 100);
 
     return () => clearInterval(interval);
   }, [populated]);
 
-  const onCacheUpdate = useCallback((data: CacheUpdate) => {
+  const onCacheUpdate = (data: CacheUpdate) => {
     if (data.chats && data.chats.length > 0) {
       data.chats.forEach(chat => {
-        const index = chats.findIndex(c => c._id === chat._id);
-
-        if (index === -1) {
-          setChats(chats => [...chats, chat]);
-        } else {
-          setChats(chats => {
+        setChats(chats => {
+          const index = chats.findIndex(c => c._id === chat._id);
+  
+          if (index === -1) {
+            return [...chats, chat];
+          } else {
             const newChats = [...chats];
             newChats[index] = chat;
             return newChats;
-          });
-        }
+          }
+        });
       });
     }
-  }, [chats]);
+
+    if (data.deletedChats && data.deletedChats.length > 0) {
+      data.deletedChats.forEach(chatId => {
+          setChats(chats => {
+            const newChats = [...chats];
+            const index = newChats.findIndex(c => c._id === chatId);
+            if (index !== -1) newChats.splice(index, 1);
+            return newChats;
+          });
+      });
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = subscribe(SocketEvent.CACHE_UPDATE, (d) => onCacheUpdate(d));
     return () => unsubscribe();
-  }, [onCacheUpdate]);
+  }, []);
 
   return (
     <DataCacheContext.Provider value={{ chats, loading: !populated }}>

@@ -29,6 +29,7 @@ const Image = ({ src, style, ...rest }: any) => {
   return (
     <>
       {loading && <LoaderStyle theme={theme} style={style} />}
+      {/* eslint-disable-next-line */}
       <img
         src={src}
         onLoad={() => setLoading(false)}
