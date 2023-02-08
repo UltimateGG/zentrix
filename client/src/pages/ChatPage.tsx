@@ -17,13 +17,6 @@ const TitleStyle = styled.h4`
   max-width: calc(100% - 7.6rem);
 `;
 
-const IconStyle = styled(Image)`
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  margin-right: 0.8rem;
-`;
-
 const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
@@ -72,7 +65,7 @@ const ChatPage = () => {
         backgroundColor: theme.colors.background[1]
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
-        <IconStyle src={chat.iconURL} alt="chat" />
+        <Image src={chat.iconURL} alt="chat" style={{ width: '2.2rem', height: '2.2rem', borderRadius: '50%', marginRight: '0.8rem' }} />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />

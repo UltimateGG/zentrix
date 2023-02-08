@@ -10,7 +10,7 @@ import Image from '../Image';
 
 const BoxStyle = styled(Box).attrs((props: any) => props)`
   border-bottom: 1px solid ${props => props.theme.colors.background[2]};
-  padding: 1rem;
+  padding: 0.6rem 1rem;
   cursor: pointer;
   position: relative;
 `;
@@ -20,13 +20,6 @@ const TitleStyle = styled.h4`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`;
-
-const IconStyle = styled(Image)`
-  width: 3.6rem;
-  height: 3.6rem;
-  border-radius: 50%;
-  margin-right: 1rem;
 `;
 
 interface ChatEntryProps {
@@ -47,7 +40,7 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
 
   return (
     <BoxStyle theme={theme} onClick={openChat}>
-      <IconStyle src={chat.iconURL} alt="icon" />
+      <Image src={chat.iconURL} alt="icon" style={{ width: '3.6rem', height: '3.6rem', borderRadius: '50%', marginRight: '0.8rem' }} />
       <Box style={{ maxWidth: 'calc(100% - 4rem)' }}>
         {chat.encrypted && (
           <Icon icon={IconEnum.lock} style={{

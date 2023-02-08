@@ -107,6 +107,7 @@ const SettingsPage = () => {
         ) : (
           <h2 style={{ textAlign: 'center', marginTop: '0.6rem', marginBottom: 0 }}>{displayName}</h2>
         )}
+
         <p style={{ textAlign: 'center', marginTop: '0.2rem' }}>{user.email}</p>
       </Box>
 

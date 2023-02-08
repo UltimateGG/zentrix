@@ -10,8 +10,8 @@ interface DataCacheContextProps {
 
 export const DataCacheContext = React.createContext<DataCacheContextProps | undefined>(undefined);
 export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [chats, setChats] = React.useState<Chat[]>([]);
   const [populated, setPopulated] = React.useState<boolean>(false);
+  const [chats, setChats] = React.useState<Chat[]>([]);
 
 
   // Should only run once, rest is handled through cache update
