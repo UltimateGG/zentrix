@@ -82,16 +82,20 @@ module.exports = {
   cacheUpdate,
 };
 
+const { createChat, updateChat, deleteChat } = require('./chatEvents');
+const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
+const { cachePopulate } = require('./cacheEvents');
+
 const eventHandlers = [
-  { event: SocketEvent.CACHE_POPULATE, handler: require('./cachePopulate') },
+  { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
 
-  { event: SocketEvent.SET_DISPLAY_NAME, handler: require('./user/setDisplayName') },
-  { event: SocketEvent.SET_LAST_SCREEN, handler: require('./user/setLastScreen') },
-  { event: SocketEvent.SET_LAST_CHAT, handler: require('./user/setLastChat') },
+  { event: SocketEvent.SET_DISPLAY_NAME, handler: setDisplayName },
+  { event: SocketEvent.SET_LAST_SCREEN, handler: setLastScreen },
+  { event: SocketEvent.SET_LAST_CHAT, handler: setLastChat },
 
-  { event: SocketEvent.CREATE_CHAT, handler: require('./chat/createChat') },
-  { event: SocketEvent.UPDATE_CHAT, handler: require('./chat/updateChat') },
-  { event: SocketEvent.DELETE_CHAT, handler: require('./chat/deleteChat') },
+  { event: SocketEvent.CREATE_CHAT, handler: createChat },
+  { event: SocketEvent.UPDATE_CHAT, handler: updateChat },
+  { event: SocketEvent.DELETE_CHAT, handler: deleteChat },
 ];
 
 wss.on('connection', (ws, req, user) => {
