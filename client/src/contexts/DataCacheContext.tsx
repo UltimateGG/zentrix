@@ -1,11 +1,13 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { Chat, CacheUpdate, SocketEvent } from '../api/apiTypes';
+import { Chat, CacheUpdate, SocketEvent, User } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 
 
 interface DataCacheContextProps {
   chats: Chat[];
+  users: User[];
+  getUsers: (ids: string[]) => User[];
   loading: boolean;
 }
 
@@ -13,6 +15,7 @@ export const DataCacheContext = React.createContext<DataCacheContextProps | unde
 export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [populated, setPopulated] = React.useState<boolean>(false);
   const [chats, setChats] = React.useState<Chat[]>([]);
+  const [users, setUsers] = React.useState<User[]>([]);
 
   const { user } = useAuth();
 
@@ -76,6 +79,22 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
         user.lastChat = null;
       }
     }
+
+    if (data.users && data.users.length > 0) {
+      data.users.forEach(user => {
+        setUsers(users => {
+          const index = users.findIndex(u => u._id === user._id);
+  
+          if (index === -1) {
+            return [...users, user];
+          } else {
+            const newUsers = [...users];
+            newUsers[index] = user;
+            return newUsers;
+          }
+        });
+      });
+    }
   }, [user]);
 
   useEffect(() => {
@@ -83,8 +102,21 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     return () => unsubscribe();
   }, [onCacheUpdate]);
 
+  const getUsers = (ids: string[]) => {
+    const usersToFetch = ids.filter(id => !users.find(u => u._id === id));
+    if (usersToFetch.length === 0) return users;
+    
+    emitWithRes(SocketEvent.CACHE_GET_USERS, { ids: usersToFetch }).catch(e => {
+      console.error('Error getting users from cache', e);
+    });
+
+    const addedUsers = usersToFetch.map(id => ({ _id: id, loading: true } as User));
+    setUsers(users => [...users, ...addedUsers]);
+    return addedUsers;
+  }
+
   return (
-    <DataCacheContext.Provider value={{ chats, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, getUsers, loading: !populated }}>
       {children}
     </DataCacheContext.Provider>
   );

@@ -6,6 +6,7 @@ export interface User {
   displayName: string;
   lastChat: string | null;
   lastScreen: string | null;
+  loading?: boolean;
 }
 
 export interface Chat {
@@ -26,6 +27,7 @@ export enum SocketEvent {
 
   CACHE_POPULATE = 'cachePopulate',
   CACHE_UPDATE = 'cacheUpdate',
+  CACHE_GET_USERS = 'cacheGetUsers',
 
   // User
   SET_DISPLAY_NAME = 'setDisplayName',
@@ -41,4 +43,5 @@ export enum SocketEvent {
 export interface CacheUpdate {
   chats?: Chat[];
   deletedChats?: string[];
+  users?: User[];
 }

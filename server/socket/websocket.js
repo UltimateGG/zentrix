@@ -14,6 +14,7 @@ const SocketEvent = {
   // Cache
   CACHE_POPULATE: 'cachePopulate',
   CACHE_UPDATE: 'cacheUpdate',
+  CACHE_GET_USERS: 'cacheGetUsers',
 
   // User
   SET_DISPLAY_NAME: 'setDisplayName',
@@ -84,10 +85,11 @@ module.exports = {
 
 const { createChat, updateChat, deleteChat } = require('./chatEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
-const { cachePopulate } = require('./cacheEvents');
+const { cachePopulate, getUsers } = require('./cacheEvents');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
+  { event: SocketEvent.CACHE_GET_USERS, handler: getUsers },
 
   { event: SocketEvent.SET_DISPLAY_NAME, handler: setDisplayName },
   { event: SocketEvent.SET_LAST_SCREEN, handler: setLastScreen },
