@@ -14,7 +14,6 @@ const SocketEvent = {
   // Cache
   CACHE_POPULATE: 'cachePopulate',
   CACHE_UPDATE: 'cacheUpdate',
-  CACHE_GET_USERS: 'cacheGetUsers',
 
   // User
   SET_DISPLAY_NAME: 'setDisplayName',
@@ -25,6 +24,7 @@ const SocketEvent = {
   CREATE_CHAT: 'createChat',
   UPDATE_CHAT: 'updateChat',
   DELETE_CHAT: 'deleteChat',
+  CHAT_UPDATE_MEMBERS: 'chatUpdateMembers',
 };
 
 const onUpgrade = async (req, socket, head) => {
@@ -69,9 +69,11 @@ const broadcast = (event, payload) => {
 
 const cacheUpdate = (payload, affectedUsers) => {
   const clients = Array.from(wss.clients);
+  affectedUsers = affectedUsers.map(id => id.toString());
 
-  for (const client of clients)
-    if (affectedUsers.includes(client.user._id)) send(client, SocketEvent.CACHE_UPDATE, payload);
+  for (const client of clients) {
+    if (affectedUsers.includes(client.user._id.toString())) send(client, SocketEvent.CACHE_UPDATE, payload);
+  }
 }
 
 module.exports = {
@@ -83,14 +85,13 @@ module.exports = {
   cacheUpdate,
 };
 
-const { createChat, updateChat, deleteChat } = require('./chatEvents');
+const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
-const { cachePopulate, getUsers } = require('./cacheEvents');
+const { cachePopulate } = require('./cacheEvents');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
-  { event: SocketEvent.CACHE_GET_USERS, handler: getUsers },
-
+  
   { event: SocketEvent.SET_DISPLAY_NAME, handler: setDisplayName },
   { event: SocketEvent.SET_LAST_SCREEN, handler: setLastScreen },
   { event: SocketEvent.SET_LAST_CHAT, handler: setLastChat },
@@ -98,6 +99,7 @@ const eventHandlers = [
   { event: SocketEvent.CREATE_CHAT, handler: createChat },
   { event: SocketEvent.UPDATE_CHAT, handler: updateChat },
   { event: SocketEvent.DELETE_CHAT, handler: deleteChat },
+  { event: SocketEvent.CHAT_UPDATE_MEMBERS, handler: updateMembers },
 ];
 
 wss.on('connection', (ws, req, user) => {

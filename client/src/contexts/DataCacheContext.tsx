@@ -7,7 +7,6 @@ import useAuth from './AuthContext';
 interface DataCacheContextProps {
   chats: Chat[];
   users: User[];
-  getUsers: (ids: string[]) => User[];
   loading: boolean;
 }
 
@@ -27,7 +26,8 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     });
     if (!res || res.error) return;
 
-    setChats(res.chats);
+    if (res.chats) setChats(res.chats);
+    if (res.users) setUsers(res.users);
   }
 
   useEffect(() => {
@@ -38,6 +38,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
         if (!isConnecting()) await connect().catch(() => {});
         return;
       }
+      if (!user) return;
 
       clearInterval(interval);
       await populateCache();
@@ -45,15 +46,26 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     }, 100);
 
     return () => clearInterval(interval);
-  }, [populated]);
+  }, [populated, user]);
 
   const onCacheUpdate = useCallback((data: CacheUpdate) => {
     if (data.chats && data.chats.length > 0) {
       data.chats.forEach(chat => {
         setChats(chats => {
           const index = chats.findIndex(c => c._id === chat._id);
+          const removeFromCache = chat.members.length === 0 || !chat.members.includes(user?._id || ''); // User shouldnt be null
   
-          if (index === -1) {
+          if (removeFromCache && index !== -1) {
+            const newChats = [...chats];
+            newChats.splice(index, 1);
+
+            if (user && user.lastChat && chat._id === user.lastChat) {
+              emitWithRes(SocketEvent.SET_LAST_CHAT, { id: null }).catch(e => {});
+              user.lastChat = null;
+            }
+
+            return newChats;
+          } else if (index === -1) {
             return [...chats, chat];
           } else {
             const newChats = [...chats];
@@ -62,22 +74,6 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
           }
         });
       });
-    }
-
-    if (data.deletedChats && data.deletedChats.length > 0) {
-      data.deletedChats.forEach(chatId => {
-          setChats(chats => {
-            const newChats = [...chats];
-            const index = newChats.findIndex(c => c._id === chatId);
-            if (index !== -1) newChats.splice(index, 1);
-            return newChats;
-          });
-      });
-
-      if (user && user.lastChat && data.deletedChats.includes(user.lastChat)) {
-        emitWithRes(SocketEvent.SET_LAST_CHAT, { chatId: null }).catch(e => {});
-        user.lastChat = null;
-      }
     }
 
     if (data.users && data.users.length > 0) {
@@ -102,21 +98,8 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     return () => unsubscribe();
   }, [onCacheUpdate]);
 
-  const getUsers = (ids: string[]) => {
-    const usersToFetch = ids.filter(id => !users.find(u => u._id === id));
-    if (usersToFetch.length === 0) return users;
-    
-    emitWithRes(SocketEvent.CACHE_GET_USERS, { ids: usersToFetch }).catch(e => {
-      console.error('Error getting users from cache', e);
-    });
-
-    const addedUsers = usersToFetch.map(id => ({ _id: id, loading: true } as User));
-    setUsers(users => [...users, ...addedUsers]);
-    return addedUsers;
-  }
-
   return (
-    <DataCacheContext.Provider value={{ chats, users, getUsers, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, loading: !populated }}>
       {children}
     </DataCacheContext.Provider>
   );

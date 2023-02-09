@@ -75,7 +75,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
   const createChat = async () => {
     if (!validate()) return;
     setLoading(true);
-    await emitWithRes(SocketEvent.CREATE_CHAT, { title: name, encrypted, password, participants: [] }).catch(e => {
+    await emitWithRes(SocketEvent.CREATE_CHAT, { title: name, encrypted, password, members: [] }).catch(e => {
       addNotification({ text: e.message, variant: 'danger', dismissable: true });
     });
 
@@ -92,7 +92,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
     >
       <label htmlFor="chat-name">Chat Name</label><br />
       <TextField
-        placeholder="Something cool.."
+        placeholder="Enter name.."
         name="chat-name"
         style={{ marginBottom: '1rem' }}
         autoFocus
@@ -121,7 +121,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
         <>
           <label htmlFor="chat-password">Password</label><br />
           <TextField
-            placeholder="Password"
+            placeholder="Enter password.."
             name="chat-password"
             style={{ marginBottom: '1rem' }}
             fullWidth

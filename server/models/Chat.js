@@ -29,13 +29,13 @@ const ChatSchema = new Schema({
     maxLength: 100,
     default: null
   },
-  participants: [{
+  members: [{
     type: Schema.Types.ObjectId,
     ref: 'users',
     required: true,
-    maxLength: 500 // 500 group chat users max
+    maxLength: 100 // 100 group chat users max
   }]
-});
+}, { toJSON: { versionKey: false } });
 
 const getRandomChatIcon = () => {
   const max = 6;

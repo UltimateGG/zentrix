@@ -3,6 +3,8 @@ const fs = require('fs');
 let currentLogFile = `./logs/${getDate().replace(/\//g, '-')}.log`;
 let lastLogTime = Date.now();
 
+// Create logs folder if it doesn't exist
+if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
 
 // Every 5 min check to make a new log
 setInterval(() => {

@@ -21,7 +21,7 @@ const UserSchema = new Schema({
   displayName: {
     type: String,
     required: true,
-    maxLength: 100,
+    maxLength: 20,
   },
   lastChat: {
     type: Schema.Types.ObjectId,
@@ -33,7 +33,7 @@ const UserSchema = new Schema({
     maxLength: 500,
     default: null
   }
-});
+}, { toJSON: { versionKey: false } });
 
 const getRandomUserIcon = () => {
   const max = 6;

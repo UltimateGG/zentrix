@@ -74,7 +74,7 @@ router.post('/:chatId/icon', uploadPfp.single('file'), asyncHandler(async (req, 
   chat.iconURL = file.location;
   await chat.save();
 
-  cacheUpdate({ chats: [chat.toJSON()] }, chat.participants);
+  cacheUpdate({ chats: [chat.toJSON()] }, chat.members);
   res.status(200).json({ path: chat.iconURL });
 }));
 

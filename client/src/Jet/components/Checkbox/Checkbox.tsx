@@ -78,7 +78,6 @@ const CheckIconStyle = styled(Icon)`
 const Checkbox = (props: CheckboxProps) => {
   const { onCheck, checked, disabled, label, ...rest } = props;
   const { theme } = React.useContext(ThemeContext);
-  const [elemRef, setElemRef] = React.useState<HTMLInputElement | null>(null);
 
   const toggle = useCallback(() => {
     if (disabled) return;
@@ -96,10 +95,9 @@ const Checkbox = (props: CheckboxProps) => {
           onClick={toggle}
           onChange={toggle}
           id={props.name}
-          ref={setElemRef}
         />
 
-        {(checked || elemRef?.checked) && <CheckIconStyle size={18} icon={IconEnum.checkmark} color={(disabled || elemRef?.disabled) ? theme.colors.background[5] : theme.colors.text[7]} />}
+        {checked && <CheckIconStyle size={18} icon={IconEnum.checkmark} color={disabled ? theme.colors.background[5] : theme.colors.text[7]} />}
       </Box>
 
       {label && <label htmlFor={props.name} style={{ marginLeft: '0.6rem' }}>{label}</label>}

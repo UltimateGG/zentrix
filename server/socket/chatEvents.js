@@ -4,19 +4,19 @@ const { cacheUpdate } = require('./websocket');
 
 
 const createChat = async (user, payload) => {
-  const { title, encrypted, password, participants } = payload;
+  const { title, encrypted, password, members } = payload;
 
   const newChat = new Chat({
     title,
     iconURL: getRandomChatIcon(),
     encrypted,
     password,
-    participants: [...new Set([user.id, ...participants])]
+    members: [...new Set([user.id, ...members])]
   });
   
   await newChat.save();
 
-  cacheUpdate({ chats: [newChat.toJSON()] }, newChat.participants);
+  cacheUpdate({ chats: [newChat.toJSON()] }, newChat.members);
 }
 
 const updateChat = async (user, payload) => {
@@ -25,12 +25,12 @@ const updateChat = async (user, payload) => {
   const chat = await Chat.findById(payload.id);
   if (!chat) return;
 
-  if (!chat.participants.includes(user.id)) return;
+  if (!chat.members.includes(user.id)) return;
 
   chat.title = payload.title;
   await chat.save();
 
-  cacheUpdate({ chats: [chat.toJSON()] }, chat.participants);
+  cacheUpdate({ chats: [chat.toJSON()] }, chat.members);
 }
 
 const deleteChat = async (user, payload) => {
@@ -41,12 +41,29 @@ const deleteChat = async (user, payload) => {
 
   await chat.remove();
 
-  cacheUpdate({ deletedChats: [chat._id] }, chat.participants);
+  cacheUpdate({ chats: [{ ...chat.toJSON(), members: [] }] }, chat.members);
+}
+
+const updateMembers = async (user, payload) => {
+  if (!payload.id || !payload.members) return;
+
+  const chat = await Chat.findById(payload.id);
+  if (!chat) return;
+
+  if (!chat.members.includes(user.id)) return;
+
+  const oldMembers = [...chat.members].map(id => id.toString());
+  chat.members = [...new Set([user.id, ...payload.members])];
+  await chat.save();
+
+  const sendTo = [...new Set([...oldMembers, ...chat.members.map(id => id.toString())])];
+  cacheUpdate({ chats: [chat.toJSON()] }, sendTo);
 }
 
 
 module.exports = {
   createChat,
   updateChat,
-  deleteChat
+  deleteChat,
+  updateMembers,
 };

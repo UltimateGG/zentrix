@@ -16,7 +16,7 @@ export interface Chat {
   lastMessage: string | null;
   encrypted: boolean;
   password: string | null;
-  participants: string[];
+  members: string[];
 }
 
 export enum SocketEvent {
@@ -27,7 +27,6 @@ export enum SocketEvent {
 
   CACHE_POPULATE = 'cachePopulate',
   CACHE_UPDATE = 'cacheUpdate',
-  CACHE_GET_USERS = 'cacheGetUsers',
 
   // User
   SET_DISPLAY_NAME = 'setDisplayName',
@@ -38,6 +37,7 @@ export enum SocketEvent {
   CREATE_CHAT = 'createChat',
   UPDATE_CHAT = 'updateChat',
   DELETE_CHAT = 'deleteChat',
+  CHAT_UPDATE_MEMBERS = 'chatUpdateMembers',
 }
 
 export interface CacheUpdate {

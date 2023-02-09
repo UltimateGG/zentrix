@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField } from '../../Jet';
+import React, { useContext, useRef, useState } from 'react';
+import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, ThemeContext } from '../../Jet';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
 import { emitWithRes } from '../../api/websocket';
@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Image from '../Image';
 import { uploadFile } from '../../api/api';
 import DeleteChatModal from './DeleteChatModal';
-import ChatMembersModal from './ChatMembersModal';
+import ChatMembersList from './ChatMembersList';
 
 
 const LabelStyle = styled.label`
@@ -27,10 +27,10 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
   const [nameError, setNameError] = useState<string>('');
   const [uploadingIcon, setUploadingIcon] = useState(false);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
-  const [chatMembersModal, setChatMembersModal] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
 
   const { addNotification } = useNotifications();
+  const { theme } = useContext(ThemeContext);
 
 
   const onNameChange = (str: string) => {
@@ -94,10 +94,20 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           <input type="file" style={{ display: 'none' }} ref={ref} accept="image/*" onChange={onFileChange} />
         </Box>
 
-        <Button block style={{ marginTop: '1.4rem', padding: '0.4rem 0.8rem' }} onClick={() => setChatMembersModal(true)}>
-          <Icon icon={IconEnum.members} size={24} />
-          Manage Members
-        </Button>
+        <LabelStyle htmlFor="icon">Chat Members</LabelStyle>
+        <div
+          style={{
+            marginTop: '0.4rem',
+            maxHeight: '450px',
+            overflowY: 'auto',
+            backgroundColor: theme.colors.background[1],
+            border: '2px solid ' + theme.colors.background[5],
+            padding: '0.4rem 0.8rem',
+            borderRadius: theme.rounded
+          }}
+        >
+          <ChatMembersList chat={chat} />
+        </div>
 
         <Box justifyContent="center">
           <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: '0.4rem', padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
@@ -108,7 +118,6 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
       </Drawer>
 
-      <ChatMembersModal open={chatMembersModal} onClose={() => setChatMembersModal(false)} chat={chat} />
       <DeleteChatModal open={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)} chat={chat} />
     </>
   );

@@ -20,5 +20,5 @@ const setLastScreen = async (user, payload) => {
 module.exports = {
   setDisplayName,
   setLastChat,
-  setLastScreen,
+  setLastScreen
 };
