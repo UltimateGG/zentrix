@@ -25,6 +25,9 @@ const SocketEvent = {
   UPDATE_CHAT: 'updateChat',
   DELETE_CHAT: 'deleteChat',
   CHAT_UPDATE_MEMBERS: 'chatUpdateMembers',
+
+  // Message
+  MESSAGE_CREATE: 'messageCreate',
 };
 
 const onUpgrade = async (req, socket, head) => {
@@ -84,9 +87,10 @@ module.exports = {
   cacheUpdate,
 };
 
-const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
-const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
 const { cachePopulate } = require('./cacheEvents');
+const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
+const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
+const { messageCreate } = require('./messageEvents');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
@@ -99,6 +103,8 @@ const eventHandlers = [
   { event: SocketEvent.UPDATE_CHAT, handler: updateChat },
   { event: SocketEvent.DELETE_CHAT, handler: deleteChat },
   { event: SocketEvent.CHAT_UPDATE_MEMBERS, handler: updateMembers },
+
+  { event: SocketEvent.MESSAGE_CREATE, handler: messageCreate },
 ];
 
 wss.on('connection', (ws, req, user) => {

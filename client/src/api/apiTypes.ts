@@ -19,6 +19,30 @@ export interface Chat {
   members: string[];
 }
 
+export enum MessageType {
+  USER,
+  SYSTEM,
+
+  // Client side only
+  PENDING,
+  ERROR
+}
+
+export interface Message {
+  clientSideId?: string;
+  _id?: string;
+  type: MessageType;
+  author?: string;
+  chat: string;
+  content: string;
+  createdAt: number;
+}
+
+export interface ChatMessages {
+  chat: string;
+  messages: Message[];
+}
+
 export enum SocketEvent {
   _ALL = '_all',
   CONNECT = 'connect', // Inbound only
@@ -38,10 +62,13 @@ export enum SocketEvent {
   UPDATE_CHAT = 'updateChat',
   DELETE_CHAT = 'deleteChat',
   CHAT_UPDATE_MEMBERS = 'chatUpdateMembers',
+
+  // Message
+  MESSAGE_CREATE = 'messageCreate',
 }
 
 export interface CacheUpdate {
   chats?: Chat[];
-  deletedChats?: string[];
   users?: User[];
+  messages?: Message[];
 }

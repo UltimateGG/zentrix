@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { Chat, CacheUpdate, SocketEvent, User } from '../api/apiTypes';
+import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 
@@ -7,6 +7,8 @@ import useAuth from './AuthContext';
 interface DataCacheContextProps {
   chats: Chat[];
   users: User[];
+  messages: ChatMessages[];
+  addMessage: (message: Message) => void;
   loading: boolean;
 }
 
@@ -15,6 +17,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   const [populated, setPopulated] = React.useState<boolean>(false);
   const [chats, setChats] = React.useState<Chat[]>([]);
   const [users, setUsers] = React.useState<User[]>([]);
+  const [messages, setMessages] = React.useState<ChatMessages[]>([]);
 
   const { user } = useAuth();
 
@@ -91,6 +94,9 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
         });
       });
     }
+
+    if (data.messages && data.messages.length > 0)
+      data.messages.forEach(addMessage);
   }, [user]);
 
   useEffect(() => {
@@ -98,8 +104,26 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     return () => unsubscribe();
   }, [onCacheUpdate]);
 
+  const addMessage = (message: Message) => {
+    setMessages(messages => {
+      const chatStore = messages.find(m => m.chat === message.chat);
+
+      if (chatStore) {
+        if (chatStore.messages.some(m => m._id === message._id || m._id === message.clientSideId)) {
+          chatStore.messages = chatStore.messages.map(m => m._id === message._id|| m._id === message.clientSideId ? message : m);
+        } else {
+          chatStore.messages.push(message);
+        }
+      } else {
+        messages.push({ chat: message.chat, messages: [message] });
+      }
+
+      return [...messages];
+    });
+  }
+
   return (
-    <DataCacheContext.Provider value={{ chats, users, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, loading: !populated }}>
       {children}
     </DataCacheContext.Provider>
   );

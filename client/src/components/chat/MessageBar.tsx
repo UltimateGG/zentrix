@@ -9,7 +9,6 @@ interface MessageBoxProps {
 const MessageBox = ({ onSend }: MessageBoxProps) => {
   const [message, setMessage] = useState('');
   const [canSend, setCanSend] = useState(false);
-  const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [rows, setRows] = useState(1);
 
@@ -80,22 +79,20 @@ const MessageBox = ({ onSend }: MessageBoxProps) => {
     setMessage(string);
 
     const maxMessageLength = 4096;
-    setCanSend(string.trim().length > 0 && string.trim().length <= maxMessageLength);
+    setCanSend(string.trim().length > 0 && string.length <= maxMessageLength);
 
-    if (string.trim().length > maxMessageLength) setError(`${string.trim().length} / ${maxMessageLength}`);
+    if (string.length > maxMessageLength) setError(`${string.length} / ${maxMessageLength}`);
     else setError('');
   }
 
   const send = async () => {
-    if (!canSend || sending) return;
+    if (!canSend) return;
 
-    setSending(true);
     setCanSend(false);
     setMessage('');
 
     await onSend(message);
 
-    setSending(false);
     setTimeout(() => {
       const messageBox = document.getElementById('message-box') as HTMLTextAreaElement;
       if (messageBox) messageBox.focus();
@@ -123,7 +120,6 @@ const MessageBox = ({ onSend }: MessageBoxProps) => {
         fullWidth
         value={message}
         onChanged={onType}
-        disabled={sending}
         style={{
           width: '100%',
           border: 'none',
@@ -140,7 +136,7 @@ const MessageBox = ({ onSend }: MessageBoxProps) => {
       <Icon
         icon={IconEnum.send}
         style={{ cursor: canSend ? 'pointer' : 'not-allowed' }}
-        color={canSend && !sending ? theme.colors.primary[0] : theme.colors.background[4]} size={32}
+        color={canSend ? theme.colors.primary[0] : theme.colors.background[4]} size={32}
         onClick={send} 
       />
     </Box>

@@ -1,6 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Message, MessageType, SocketEvent } from '../api/apiTypes';
+import { emitWithRes } from '../api/websocket';
+import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import MessageBox from '../components/chat/MessageBar';
 import Image from '../components/Image';
@@ -21,7 +24,7 @@ const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
   const { theme } = useContext(ThemeContext);
-  const { chats, loading } = useDataCache();
+  const { chats, messages, addMessage, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -40,7 +43,24 @@ const ChatPage = () => {
   const onSend = async (string: string) => {
     if (!user || !chat) return;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const message: Message = {
+      _id: Math.random().toString(36) + Date.now().toString(36),
+      type: MessageType.PENDING,
+      chat: chat._id,
+      content: string,
+      createdAt: Date.now(),
+    };
+
+    addMessage({ ...message, type: MessageType.PENDING });
+    await emitWithRes(SocketEvent.MESSAGE_CREATE, message).catch(e => {
+      addMessage({
+        _id: Math.random().toString(36) + Date.now().toString(36),
+        type: MessageType.ERROR,
+        chat: chat._id,
+        content: `Failed to send message: ${e.message}`,
+        createdAt: Date.now()
+      } as Message);
+    });
   }
 
   const chat = chats[index];
@@ -51,6 +71,7 @@ const ChatPage = () => {
       </Box>
     );
 
+  const chatMessages = messages.find(m => m.chat === chat._id);
   return (
     <>
       <Box alignItems="center" style={{
@@ -71,6 +92,10 @@ const ChatPage = () => {
       </Box>
       <div style={{ height: '3.6rem' }} />
 
+      {chatMessages && chatMessages.messages.map((message, i) => (
+        <ChatMessage key={i} message={message} />
+      ))}
+
       <MessageBox onSend={onSend} />
 
       <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />      
@@ -79,3 +104,4 @@ const ChatPage = () => {
 }
 
 export default ChatPage;
+

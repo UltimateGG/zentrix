@@ -24,7 +24,7 @@ const DrawerStyle = styled.div.attrs((props: DrawerProps) => props)`
   min-width: 8vw;
   max-width: 30vw;
   overflow: auto;
-  background-color: ${props => props.theme.colors.background[3]};
+  background-color: ${props => props.theme.colors.background[2]};
   color: ${props => props.theme.colors.text[0]};
   font-size: 1.2rem;
   box-shadow: 0px 0px 0.6rem 0.4rem rgba(0, 0, 0, 0.5);
