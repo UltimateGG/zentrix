@@ -42,7 +42,7 @@ const Navbar = () => {
   const { theme } = React.useContext(ThemeContext);
 
 
-  if (EXCLUDED_PATHS.includes(location.pathname) || !user)
+  if (EXCLUDED_PATHS.includes(location.pathname) || location.pathname.startsWith('/chats/') || !user)
     return null;
 
   return (

@@ -1,37 +1,41 @@
 import React from 'react';
 import { ThemeContext } from '../../theme/JetDesign';
 import styled from 'styled-components';
+import ReactTextareaAutosize from 'react-textarea-autosize';
 
 
-export interface TextAreaProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
   value?: string;
   placeholder?: string;
   onChanged?: (value: string) => void;
   onBlur?: () => void;
   disabled?: boolean;
   fullWidth?: boolean;
-  rows?: number;
+  minRows?: number;
+  maxRows?: number;
   roomForError?: boolean;
   error?: string;
   name?: string;
+  onHeightChange?: (height: number) => void;
 }
 
 const TextAreaContainerStyle = styled.div.attrs((props: TextAreaProps) => props)`
   display: inline-block;
+  position: relative;
   width: ${props => props.fullWidth ? '100%' : 'auto'};
   margin: 0.4rem 0;
 `;
 
-const TextAreaStyle = styled.textarea.attrs((props: TextAreaProps) => props)`
+const TextAreaStyle = styled(ReactTextareaAutosize).attrs((props: TextAreaProps) => props)`
   display: block;
   color: ${props => props.theme.colors.text[0]};
   background-color: ${props => props.theme.colors.background[1]};
   border: 1px solid ${props => props.error ? props.theme.colors.danger[0] : props.theme.colors.background[5]};
   border-radius: ${props => props.theme.rounded};
   margin: 0;
-  ${props => props.error || props.roomForError ? 'margin-bottom: 0;' : ''}
+  ${props => props.error || props.props.roomForError ? 'margin-bottom: 0;' : ''}
   padding: 0.8rem;
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  width: ${props => props.props.fullWidth ? '100%' : 'auto'};
   min-height: 2.4rem;
   font-size: 1rem;
   transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
@@ -73,6 +77,9 @@ const TextAreaStyle = styled.textarea.attrs((props: TextAreaProps) => props)`
 `;
 
 const ErrorTextStyle = styled.small`
+  position: absolute;
+  bottom: -0.1rem;
+  right: 0.4rem;
   display: inline-block;
   color: ${props => props.theme.colors.danger[0]};
   margin-top: 0.2rem;
@@ -83,7 +90,7 @@ const ErrorTextStyle = styled.small`
  * @param props Use onChanged for onChange event
  */
 const TextArea = (props: TextAreaProps) => {
-  let { value, placeholder, onChanged, onBlur, disabled, fullWidth, rows = 3, roomForError, error, ...rest } = props;
+  let { value, placeholder, onChanged, onBlur, disabled, fullWidth, minRows, maxRows, roomForError, error, onHeightChange, ...rest } = props;
   const { theme } = React.useContext(ThemeContext);
 
   if (error === '' || (error && error.trim() === ''))
@@ -93,16 +100,17 @@ const TextArea = (props: TextAreaProps) => {
     <TextAreaContainerStyle fullWidth={fullWidth} {...rest}>
       <TextAreaStyle
         theme={theme}
+        props={{ fullWidth, roomForError }}
         value={value}
         placeholder={placeholder}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChanged && onChanged(e.target.value)}
         onBlur={onBlur}
         disabled={disabled}
-        fullWidth={fullWidth}
-        rows={rows}
-        roomForError={roomForError}
+        minRows={minRows}
+        maxRows={maxRows}
         error={error}
         id={props.name}
+        onHeightChange={onHeightChange}
       />
 
       {(error || roomForError) && <ErrorTextStyle style={{ visibility: roomForError && !error ? 'hidden' : 'visible' }} theme={theme}>

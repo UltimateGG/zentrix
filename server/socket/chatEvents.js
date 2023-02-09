@@ -52,11 +52,11 @@ const updateMembers = async (user, payload) => {
 
   if (!chat.members.includes(user.id)) return;
 
-  const oldMembers = [...chat.members].map(id => id.toString());
+  const oldMembers = [...chat.members];
   chat.members = [...new Set([user.id, ...payload.members])];
   await chat.save();
 
-  const sendTo = [...new Set([...oldMembers, ...chat.members.map(id => id.toString())])];
+  const sendTo = [...new Set([...oldMembers, ...chat.members])];
   cacheUpdate({ chats: [chat.toJSON()] }, sendTo);
 }
 

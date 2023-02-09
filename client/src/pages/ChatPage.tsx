@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
+import MessageBox from '../components/chat/MessageBar';
 import Image from '../components/Image';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
@@ -25,7 +26,7 @@ const ChatPage = () => {
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     if (!user || loading) return;
 
@@ -35,6 +36,12 @@ const ChatPage = () => {
     if (index !== -1) return;
     navigate('/chats');
   }, [user, loading, chatId, chats, navigate]);
+
+  const onSend = async (string: string) => {
+    if (!user || !chat) return;
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
 
   const chat = chats[index];
   if (!user || !chat || loading)
@@ -63,6 +70,8 @@ const ChatPage = () => {
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
       <div style={{ height: '3.6rem' }} />
+
+      <MessageBox onSend={onSend} />
 
       <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />      
     </>
