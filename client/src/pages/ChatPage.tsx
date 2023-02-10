@@ -70,7 +70,7 @@ const ChatPage = () => {
     const element = document.getElementById('messages-container');
     if (!element) return;
 
-    element.scrollTop = element.scrollHeight;
+    element.scroll({ top: element.scrollHeight });
   }, [scrolledToBottom, messageBarHeight, messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -119,7 +119,8 @@ const ChatPage = () => {
         style={{
           overflowY: 'auto',
           height: '100%',
-          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem)`
+          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem)`,
+          scrollBehavior: 'auto',
         }}
       >
         {chatMessages && chatMessages.messages.map((message, i) => (
