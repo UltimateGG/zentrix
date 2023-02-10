@@ -4,9 +4,10 @@ import { Box, Icon, IconEnum, TextArea, ThemeContext } from '../../Jet';
 
 interface MessageBoxProps {
   onSend: (value: string) => Promise<any>;
+  onResize?: (height: number) => any;
 }
 
-const MessageBox = ({ onSend }: MessageBoxProps) => {
+const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   const [message, setMessage] = useState('');
   const [canSend, setCanSend] = useState(false);
   const [error, setError] = useState('');
@@ -141,7 +142,11 @@ const MessageBox = ({ onSend }: MessageBoxProps) => {
         }}
         minRows={1}
         maxRows={5}
-        onHeightChange={(height) => setRows(Math.round(height / 20))}
+        onHeightChange={height => {
+          const rows = Math.round(height / 20);
+          setRows(rows);
+          onResize && onResize(4 + (rows - 2) * 1.2);
+        }}
         error={error}
       />
 

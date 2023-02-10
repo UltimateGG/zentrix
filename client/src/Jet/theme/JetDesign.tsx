@@ -27,8 +27,8 @@ const getGlobalStyles = (props: any) => `
     font-family: ${props.theme.fontFamily};
   }
 
-  body, #root {
-    height: 100vh;
+  html, body, #root {
+    height: 100%;
     background-color: ${props.theme.colors.background[0]};
     font-size: ${props.theme.fontSize};
   }

@@ -5,7 +5,7 @@ import { Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emitWithRes } from '../api/websocket';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
-import MessageBox from '../components/chat/MessageBar';
+import MessageBar from '../components/chat/MessageBar';
 import Image from '../components/Image';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
@@ -27,6 +27,8 @@ const ChatPage = () => {
   const { chats, messages, addMessage, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
+  const [messageBarHeight, setMessageBarHeight] = React.useState(4);
+  const [scrolledToBottom, setScrolledToBottom] = React.useState(true);
   const navigate = useNavigate();
 
 
@@ -63,6 +65,26 @@ const ChatPage = () => {
     });
   }
 
+  useEffect(() => {
+    if (!scrolledToBottom) return;
+    const element = document.getElementById('messages-container');
+    if (!element) return;
+
+    element.scrollTop = element.scrollHeight;
+  }, [scrolledToBottom, messageBarHeight, messages]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const element = e.currentTarget;
+    if (element.scrollTop === 0) {
+      console.log('load more'); // TODO
+      return;
+    }
+
+    const tolerance = 15; // px
+    const scrolledToBottom = element.scrollHeight - element.scrollTop - element.clientHeight < tolerance;
+    setScrolledToBottom(scrolledToBottom);
+  }
+
   const chat = chats[index];
   if (!user || !chat || loading)
     return (
@@ -75,7 +97,6 @@ const ChatPage = () => {
   return (
     <>
       <Box alignItems="center" style={{
-        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
@@ -90,13 +111,23 @@ const ChatPage = () => {
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
-      <div style={{ height: '3.6rem' }} />
 
-      {chatMessages && chatMessages.messages.map((message, i) => (
-        <ChatMessage key={i} message={message} />
-      ))}
+      <Box
+        flexDirection="column"
+        id="messages-container"
+        onScroll={handleScroll}
+        style={{
+          overflowY: 'auto',
+          height: '100%',
+          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem)`
+        }}
+      >
+        {chatMessages && chatMessages.messages.map((message, i) => (
+          <ChatMessage key={i} message={message} />
+        ))}
+      </Box>
 
-      <MessageBox onSend={onSend} />
+      <MessageBar onSend={onSend} onResize={height => setMessageBarHeight(height)} />
 
       <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />      
     </>

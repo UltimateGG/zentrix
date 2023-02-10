@@ -11,6 +11,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   alignContent?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch';
   flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   spacing?: string;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
 const BoxStyle = styled.div.attrs((props: BoxProps) => props)`
@@ -29,6 +30,7 @@ const Box = (props: BoxProps) => {
   return (
     <BoxStyle
       theme={theme}
+      ref={props.innerRef}
       {...props}
     />
   );
