@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages } from '../api/apiTypes';
+import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, isClientSide } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 
@@ -133,6 +133,15 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
       messages.forEach(m => m.messages.sort((a, b) => a.createdAt - b.createdAt));
       return [...messages];
+    });
+
+    if (isClientSide(message.type)) return;
+    setChats(chats => {
+      const chat = chats.find(c => c._id === message.chat);
+      if (chat && message._id && (!chat.lastMessage || chat.lastMessage.createdAt < message.createdAt))
+        chat.lastMessage = message;
+
+      return [...chats];
     });
   }
 

@@ -15,11 +15,13 @@ const BoxStyle = styled(Box).attrs((props: any) => props)`
   position: relative;
 `;
 
-const TitleStyle = styled.h4`
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+const TruncatedTextStyle = styled.div`
+  > * {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 interface ChatEntryProps {
@@ -52,8 +54,10 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
         )}
         
         <Box flexDirection="column" style={{ maxWidth: '100%' }}>
-          <TitleStyle>{chat.title}</TitleStyle>
-          <p style={{ color: theme.colors.text[5] }}>{chat.lastMessage}</p>
+          <TruncatedTextStyle>
+            <h4>{chat.title}</h4>
+            <p style={{ color: theme.colors.text[5] }}>{chat.lastMessage?.content || ''}</p>
+          </TruncatedTextStyle>
         </Box>
       </Box>
     </BoxStyle>

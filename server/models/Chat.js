@@ -19,9 +19,9 @@ const ChatSchema = new Schema({
     required: true,
     maxLength: 1000
   },
-  lastMessage: {// TODO ref?
-    type: String,
-    maxLength: 1000,
+  lastMessage: {
+    type: Schema.Types.ObjectId,
+    ref: 'messages',
     default: null
   },
   encrypted: {

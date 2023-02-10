@@ -23,6 +23,10 @@ const messageCreate = async (user, payload) => {
   });
 
   await message.save();
+
+  chat.lastMessage = message._id;
+  await chat.save();
+
   cacheUpdate({ messages: [{...message.toJSON(), clientSideId: payload._id}] }, chat.members);
 }
 

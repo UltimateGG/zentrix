@@ -5,6 +5,7 @@ import { formatTime } from '../../api/utils';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, ThemeContext } from '../../Jet';
 import Image from '../Image';
+import FormattedMessageContent from './FormattedMessageContext';
 
 
 const ChatMessageStyle = styled(Box)`
@@ -56,13 +57,14 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
           </Box>
         )}
         
+        {/* TODO finish formatting for system, etc. */}
         <p
           style={{
             marginLeft: shouldStack && profilePicturesEnabled ? 'calc(2.6rem + 1rem)' : '0',
             color: getMessageColor(),
           }}
         >
-          {message.content}
+          <FormattedMessageContent content={message.content} />
         </p>
       </Box>
     </ChatMessageStyle>
