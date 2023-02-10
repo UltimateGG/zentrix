@@ -43,7 +43,7 @@ const Image = ({ src, fallbackURL, style, ...rest }: any) => {
       {loading && <LoaderStyle theme={theme} style={style} />}
       {/* eslint-disable-next-line */}
       <img
-        src={failed ? (fallbackURL || FALLBACK_IMAGE_URL) : src}
+        src={failed ? (fallbackURL || FALLBACK_IMAGE_URL) : src || FALLBACK_IMAGE_URL}
         onLoad={() => setLoading(false)}
         onError={() => setFailed(true)}
         style={{ ...style, display: loading ? 'none' : 'block' }}

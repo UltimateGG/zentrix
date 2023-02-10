@@ -4,8 +4,8 @@ import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useDataCache from '../../contexts/DataCacheContext';
 import useNotifications from '../../contexts/NotificationContext';
-import { Box, Checkbox, Progress, ThemeContext, Tooltip } from '../../Jet';
-import Image from '../Image';
+import { Box, Checkbox, Progress, ThemeContext } from '../../Jet';
+import Avatar from '../Avatar';
 
 
 interface ChatMemberProps {
@@ -37,7 +37,7 @@ const ChatMember = ({ user, isOwner, added, onToggle, disabled, style }: ChatMem
       }}
     >
       <Box alignItems="center" spacing="1rem">
-        <Image src={user.iconURL} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} />
+        <Avatar src={user.iconURL} size={3} />
 
         <Box flexDirection="column">
           <p>{isOwner ? <b>&#128081; {user.displayName}</b> : user.displayName}</p>

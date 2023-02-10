@@ -21,6 +21,7 @@ const MessageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'chats',
     required: true,
+    index: true,
   },
   content: {
     type: String,

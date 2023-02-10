@@ -5,11 +5,11 @@ import { isAsciiPrintable } from './CreateChatModal';
 import { emitWithRes } from '../../api/websocket';
 import useNotifications from '../../contexts/NotificationContext';
 import styled from 'styled-components';
-import Image from '../Image';
 import { uploadFile } from '../../api/api';
 import DeleteChatModal from './DeleteChatModal';
 import ChatMembersList from './ChatMembersList';
 import useAuth from '../../contexts/AuthContext';
+import Avatar from '../Avatar';
 
 
 const LabelStyle = styled.label`
@@ -89,7 +89,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           {uploadingIcon ? (
             <Progress circular indeterminate />
           ) : (
-            <Image referrerPolicy="no-referrer" src={chat.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+            <Avatar src={chat.iconURL} size={6} />
           )}
           <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
 

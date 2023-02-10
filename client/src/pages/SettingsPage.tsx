@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { uploadFile } from '../api/api';
 import { SocketEvent } from '../api/apiTypes';
 import { emit } from '../api/websocket';
-import Image from '../components/Image';
+import Avatar from '../components/Avatar';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../contexts/NotificationContext';
 import { Box, Progress, TextField, ThemeContext } from '../Jet';
@@ -87,7 +87,7 @@ const SettingsPage = () => {
           {uploadingIcon ? (
             <Progress circular indeterminate />
           ) : (
-            <Image referrerPolicy="no-referrer" src={user.iconURL} alt="profile" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+            <Avatar src={user.iconURL} size={6} />
           )}
           <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
 

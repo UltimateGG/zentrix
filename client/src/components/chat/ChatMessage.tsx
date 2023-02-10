@@ -4,7 +4,7 @@ import { Message, MessageType } from '../../api/apiTypes';
 import { formatTime } from '../../api/utils';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, ThemeContext } from '../../Jet';
-import Image from '../Image';
+import Avatar from '../Avatar';
 import FormattedMessageContent from './FormattedMessageContext';
 
 
@@ -47,7 +47,7 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
 
   return (
     <ChatMessageStyle spacing="1rem" style={{ marginTop: !shouldStack ? '1rem' : '0.2rem' }}>
-      {!shouldStack && profilePicturesEnabled && <Image src={author?.iconURL || ''} style={{ width: '2.6rem', height: '2.6rem', borderRadius: '50%' }} />}
+      {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || ''} size={2.6} />}
 
       <Box flexDirection="column" style={{ width: '100%' }}>
         {!shouldStack && (

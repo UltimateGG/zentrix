@@ -5,7 +5,7 @@ import { Chat, SocketEvent } from '../../api/apiTypes';
 import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
-import Image from '../Image';
+import Avatar from '../Avatar';
 
 
 const BoxStyle = styled(Box).attrs((props: any) => props)`
@@ -42,7 +42,7 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
 
   return (
     <BoxStyle theme={theme} onClick={openChat}>
-      <Image src={chat.iconURL} alt="icon" style={{ width: '3.6rem', height: '3.6rem', borderRadius: '50%', marginRight: '0.8rem' }} />
+      <Avatar src={chat.iconURL} size={3.6} mr={0.8} />
       <Box style={{ maxWidth: 'calc(100% - 4rem)' }}>
         {chat.encrypted && (
           <Icon icon={IconEnum.lock} style={{

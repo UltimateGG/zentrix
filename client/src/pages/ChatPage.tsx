@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { isClientSide, Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emitWithRes } from '../api/websocket';
+import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import MessageBar from '../components/chat/MessageBar';
-import Image from '../components/Image';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
@@ -122,7 +122,7 @@ const ChatPage = () => {
         backgroundColor: theme.colors.background[1]
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
-        <Image src={chat.iconURL} alt="chat" style={{ width: '2.2rem', height: '2.2rem', borderRadius: '50%', marginRight: '0.8rem' }} />
+        <Avatar src={chat.iconURL} size={2.2} mr={0.8} />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />

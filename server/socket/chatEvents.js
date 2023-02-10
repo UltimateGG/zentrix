@@ -2,7 +2,6 @@ const { Chat } = require('../models/Chat');
 const { Message, ChatType } = require('../models/Message');
 const { getRandomChatIcon } = require('../models/Chat');
 const { cacheUpdate } = require('./websocket');
-const mongoose = require('mongoose');
 
 
 const createChat = async (user, payload) => {
@@ -25,7 +24,7 @@ const createChat = async (user, payload) => {
 const updateChat = async (user, payload) => {
   if (!payload.id || !payload.title || !payload.title.trim() || payload.title.length > 50) return;
 
-  const chat = await Chat.findById(payload.id);
+  const chat = await Chat.findById(payload.id).populate('lastMessage');
   if (!chat) return;
 
   if (!chat.members.includes(user.id)) return;
@@ -53,7 +52,7 @@ const updateMembers = async (user, payload) => {
   if (!payload.id || !payload.member) return;
 
   const add = payload.add;
-  const chat = await Chat.findById(payload.id);
+  const chat = await Chat.findById(payload.id).populate('lastMessage');
   if (!chat || payload.member.toString() === chat.owner.toString()) return;
   if (!add && !chat.members.includes(payload.member)) return;
   if (add && chat.members.includes(payload.member)) return;

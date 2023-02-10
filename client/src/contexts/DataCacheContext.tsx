@@ -138,7 +138,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     if (isClientSide(message.type)) return;
     setChats(chats => {
       const chat = chats.find(c => c._id === message.chat);
-      if (chat && message._id && (!chat.lastMessage || chat.lastMessage.createdAt < message.createdAt))
+      if (chat && (!chat.lastMessage || chat.lastMessage.createdAt < message.createdAt))
         chat.lastMessage = message;
 
       return [...chats];
@@ -149,6 +149,8 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     setMessages(messages => {
       const chatStore = messages.find(m => m.chat === chat._id);
       if (chatStore) chatStore.hasFirstMessage = true;
+      else messages.push({ chat: chat._id, messages: [], hasFirstMessage: true });
+
       return [...messages];
     });
   }

@@ -36,7 +36,7 @@ const LoginPage = () => {
 
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
-      <Image src={LOGO_URL} alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
+      <Image src={LOGO_URL} referrerPolicy="no-referrer" alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
       
       <IOSFix>
