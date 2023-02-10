@@ -64,14 +64,11 @@ const ChatMembersList = ({ chat }: ChatMembersListProps) => {
 
 
   const onToggleMember = async (user: User) => {
-    const newMembers = [...chat.members];
-
-    if (newMembers.includes(user._id)) newMembers.splice(newMembers.indexOf(user._id), 1);
-    else newMembers.push(user._id);
+    const isMember = chat.members.includes(user._id);
 
     setUpdating(true);
-    await emitWithRes(SocketEvent.CHAT_UPDATE_MEMBERS, { id: chat._id, members: newMembers }).catch(e => {
-      addNotification({ variant: 'danger', text: 'Error updating chat members', dismissable: true });
+    await emitWithRes(SocketEvent.CHAT_UPDATE_MEMBERS, { id: chat._id, member: user._id, add: !isMember }).catch(e => {
+      addNotification({ variant: 'danger', text: 'Failed to update chat member', dismissable: true });
     });
     setUpdating(false);
   }

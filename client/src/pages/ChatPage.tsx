@@ -50,12 +50,14 @@ const ChatPage = () => {
       _id: Math.random().toString(36) + Date.now().toString(36),
       type: MessageType.PENDING,
       chat: chat._id,
+      author: user._id,
       content: string,
       createdAt: Date.now(),
     };
 
     addMessage({ ...message, type: MessageType.PENDING });
     await emitWithRes(SocketEvent.MESSAGE_CREATE, message).catch(e => {
+      if (e.message === 'Request timed out') return;
       addMessage({
         _id: Math.random().toString(36) + Date.now().toString(36),
         type: MessageType.ERROR,
@@ -149,7 +151,16 @@ const ChatPage = () => {
           </Box>
         )}
         {chatMessages && chatMessages.messages.map((message, i) => (
-          <ChatMessage key={i} message={message} />
+          <React.Fragment key={i}>
+            <ChatMessage
+              message={message}
+              shouldStack={i !== 0 &&
+                chatMessages.messages[i - 1].author === message.author
+                && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
+              }
+            />
+            {i === chatMessages.messages.length - 1 && (<div style={{ paddingTop: '2rem' }} />)}
+          </React.Fragment>
         ))}
       </Box>
 

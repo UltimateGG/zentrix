@@ -1,7 +1,8 @@
 const { Chat } = require('../models/Chat');
-const { Message } = require('../models/Message');
+const { Message, ChatType } = require('../models/Message');
 const { getRandomChatIcon } = require('../models/Chat');
 const { cacheUpdate } = require('./websocket');
+const mongoose = require('mongoose');
 
 
 const createChat = async (user, payload) => {
@@ -49,20 +50,30 @@ const deleteChat = async (user, payload) => {
 }
 
 const updateMembers = async (user, payload) => {
-  if (!payload.id || !payload.members) return;
+  if (!payload.id || !payload.member) return;
 
+  const add = payload.add;
   const chat = await Chat.findById(payload.id);
-  if (!chat) return;
+  if (!chat || payload.member.toString() === chat.owner.toString()) return;
+  if (!add && !chat.members.includes(payload.member)) return;
+  if (add && chat.members.includes(payload.member)) return;
 
-  if (!chat.members.includes(user.id)) return;
-  if (!payload.members.includes(chat.owner.toString())) return;
-
-  const oldMembers = [...chat.members];
-  chat.members = [...new Set([user.id, ...payload.members])];
+  if (add) chat.members.push(payload.member);
+  else chat.members = chat.members.filter(m => m.toString() !== payload.member.toString());
   await chat.save();
-
-  const sendTo = [...new Set([...oldMembers, ...chat.members])];
-  cacheUpdate({ chats: [chat.toJSON()] }, sendTo);
+  
+  const systemMessage = new Message({
+    type: ChatType.SYSTEM,
+    chat: chat._id,
+    content: `${user.displayName} ${add ? 'added' : 'removed'} <@${payload.member}> ${add ? 'to ' : 'from'} the chat`,
+  });
+  
+  await systemMessage.save();
+  
+  cacheUpdate({
+    chats: [chat.toJSON()],
+    messages: [systemMessage.toJSON()],
+  }, chat.members);
 }
 
 
