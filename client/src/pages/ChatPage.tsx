@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Message, MessageType, SocketEvent } from '../api/apiTypes';
+import { isClientSide, Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emitWithRes } from '../api/websocket';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
@@ -24,11 +24,12 @@ const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
   const { theme } = useContext(ThemeContext);
-  const { chats, messages, addMessage, loading } = useDataCache();
+  const { chats, messages, addMessage, foundFirstMessage, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const [messageBarHeight, setMessageBarHeight] = React.useState(4);
   const [scrolledToBottom, setScrolledToBottom] = React.useState(true);
+  const [loadingMore, setLoadingMore] = React.useState(false);
   const navigate = useNavigate();
 
 
@@ -75,14 +76,24 @@ const ChatPage = () => {
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const element = e.currentTarget;
-    if (element.scrollTop === 0) {
-      console.log('load more'); // TODO
-      return;
-    }
+    const chatMessages = messages.find(m => m.chat === chat._id);
+    const hasFirstMessage = chatMessages?.hasFirstMessage;
+    if (element.scrollTop === 0 && !hasFirstMessage) loadMoreMessages();
 
     const tolerance = 15; // px
     const scrolledToBottom = element.scrollHeight - element.scrollTop - element.clientHeight < tolerance;
     setScrolledToBottom(scrolledToBottom);
+  }
+
+  const loadMoreMessages = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true); // find first msg that isnt client side
+    const firstMsg = messages.find(m => m.chat === chat._id)?.messages.find(m => !isClientSide(m.type));
+    
+    const res = await emitWithRes(SocketEvent.GET_MESSAGES, { chat: chat._id, before: firstMsg?.createdAt || Date.now() }).catch(e => {});
+
+    if (res.end) foundFirstMessage(chat);
+    setLoadingMore(false);
   }
 
   const chat = chats[index];
@@ -94,6 +105,9 @@ const ChatPage = () => {
     );
 
   const chatMessages = messages.find(m => m.chat === chat._id);
+  const hasFirstMessage = chatMessages?.hasFirstMessage;
+  if ((!chatMessages || !chatMessages.messages.length) && !hasFirstMessage) loadMoreMessages();
+
   return (
     <>
       <Box alignItems="center" style={{
@@ -123,6 +137,17 @@ const ChatPage = () => {
           scrollBehavior: 'auto',
         }}
       >
+        {hasFirstMessage && (
+          <Box justifyContent="center" alignItems="center" style={{ marginTop: '1rem' }}>
+            <small>This is the beginning of the chat</small>
+          </Box>
+        )}
+
+        {loadingMore && (
+          <Box justifyContent="center" alignItems="center" style={{ marginTop: '1rem' }}>
+            <Progress circular indeterminate />
+          </Box>
+        )}
         {chatMessages && chatMessages.messages.map((message, i) => (
           <ChatMessage key={i} message={message} />
         ))}

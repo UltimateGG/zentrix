@@ -1,4 +1,5 @@
 const { Chat } = require('../models/Chat');
+const { Message } = require('../models/Message');
 const { getRandomChatIcon } = require('../models/Chat');
 const { cacheUpdate } = require('./websocket');
 
@@ -42,6 +43,7 @@ const deleteChat = async (user, payload) => {
   if (chat.owner.toString() !== user.id) return;
 
   await chat.remove();
+  await Message.deleteMany({ chat: chat._id });
 
   cacheUpdate({ chats: [{ ...chat.toJSON(), members: [] }] }, chat.members);
 }

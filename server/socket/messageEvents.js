@@ -26,7 +26,23 @@ const messageCreate = async (user, payload) => {
   cacheUpdate({ messages: [{...message.toJSON(), clientSideId: payload._id}] }, chat.members);
 }
 
+const loadAmount = 50;
+const getMessages = async (user, payload) => {
+  if (!payload.chat || !payload.before || isNaN(Number(payload.before))) return;
+
+  const chat = await Chat.findById(payload.chat);
+  if (!chat) throw new Error('Chat not found');
+
+  if (!chat.members.includes(user._id)) throw new Error('You are not a member of this chat');
+
+  const messages = await Message.find({ chat: chat._id, createdAt: { $lt: payload.before } }).sort({ createdAt: -1 }).limit(loadAmount);
+
+  cacheUpdate({ messages: messages.map(m => m.toJSON()) }, [user.id]);
+  if (messages.length < loadAmount) return { end: true };
+}
+
 
 module.exports = {
-  messageCreate
+  messageCreate,
+  getMessages,
 };

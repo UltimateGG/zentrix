@@ -9,6 +9,7 @@ interface DataCacheContextProps {
   users: User[];
   messages: ChatMessages[];
   addMessage: (message: Message) => void;
+  foundFirstMessage: (chat: Chat) => void;
   loading: boolean;
 }
 
@@ -61,6 +62,18 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
           if (removeFromCache && index !== -1) {
             const newChats = [...chats];
             newChats.splice(index, 1);
+
+            setMessages(messages => {
+              const chatIndex = messages.findIndex(m => m.chat === chat._id);
+
+              if (chatIndex !== -1) {
+                const newMessages = [...messages];
+                newMessages.splice(chatIndex, 1);
+                return newMessages;
+              } else {
+                return messages;
+              }
+            });
 
             if (user && user.lastChat && chat._id === user.lastChat) {
               emitWithRes(SocketEvent.SET_LAST_CHAT, { id: null }).catch(e => {});
@@ -118,12 +131,21 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
         messages.push({ chat: message.chat, messages: [message] });
       }
 
+      messages.forEach(m => m.messages.sort((a, b) => a.createdAt - b.createdAt));
+      return [...messages];
+    });
+  }
+
+  const foundFirstMessage = (chat: Chat) => {
+    setMessages(messages => {
+      const chatStore = messages.find(m => m.chat === chat._id);
+      if (chatStore) chatStore.hasFirstMessage = true;
       return [...messages];
     });
   }
 
   return (
-    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, foundFirstMessage, loading: !populated }}>
       {children}
     </DataCacheContext.Provider>
   );

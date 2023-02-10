@@ -28,6 +28,7 @@ const SocketEvent = {
 
   // Message
   MESSAGE_CREATE: 'messageCreate',
+  GET_MESSAGES: 'getMessages',
 };
 
 const onUpgrade = async (req, socket, head) => {
@@ -90,7 +91,7 @@ module.exports = {
 const { cachePopulate } = require('./cacheEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
 const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
-const { messageCreate } = require('./messageEvents');
+const { messageCreate, getMessages } = require('./messageEvents');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
@@ -105,6 +106,7 @@ const eventHandlers = [
   { event: SocketEvent.CHAT_UPDATE_MEMBERS, handler: updateMembers },
 
   { event: SocketEvent.MESSAGE_CREATE, handler: messageCreate },
+  { event: SocketEvent.GET_MESSAGES, handler: getMessages },
 ];
 
 wss.on('connection', (ws, req, user) => {

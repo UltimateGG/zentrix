@@ -29,7 +29,7 @@ const MessageSchema = new Schema({
     maxlength: 4096,
   },
   createdAt: {
-    type: Date,
+    type: Number,
     required: true,
     default: Date.now,
   }

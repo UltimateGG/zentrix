@@ -29,6 +29,10 @@ export enum MessageType {
   ERROR
 }
 
+export const isClientSide = (type: MessageType) => {
+  return type === MessageType.PENDING || type === MessageType.ERROR;
+}
+
 export interface Message {
   clientSideId?: string;
   _id?: string;
@@ -42,6 +46,7 @@ export interface Message {
 export interface ChatMessages {
   chat: string;
   messages: Message[];
+  hasFirstMessage?: boolean;
 }
 
 export enum SocketEvent {
@@ -66,6 +71,7 @@ export enum SocketEvent {
 
   // Message
   MESSAGE_CREATE = 'messageCreate',
+  GET_MESSAGES = 'getMessages',
 }
 
 export interface CacheUpdate {
