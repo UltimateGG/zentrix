@@ -7,6 +7,7 @@ const createChat = async (user, payload) => {
   const { title, encrypted, password, members } = payload;
 
   const newChat = new Chat({
+    owner: user._id,
     title,
     iconURL: getRandomChatIcon(),
     encrypted,
@@ -38,6 +39,7 @@ const deleteChat = async (user, payload) => {
 
   const chat = await Chat.findById(payload.id);
   if (!chat) return;
+  if (chat.owner.toString() !== user.id) return;
 
   await chat.remove();
 
@@ -51,6 +53,7 @@ const updateMembers = async (user, payload) => {
   if (!chat) return;
 
   if (!chat.members.includes(user.id)) return;
+  if (!payload.members.includes(chat.owner.toString())) return;
 
   const oldMembers = [...chat.members];
   chat.members = [...new Set([user.id, ...payload.members])];

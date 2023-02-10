@@ -68,11 +68,23 @@ const MessageBox = ({ onSend }: MessageBoxProps) => {
       }
     }
 
+    const windowKeyDown = (e: KeyboardEvent) => {
+      if (e.key.length === 1 && e.key.match(/[a-zA-Z0-9 ]/)) {
+        const messageBox = document.getElementById('message-box') as HTMLTextAreaElement;
+        if (messageBox) messageBox.focus();
+      }
+    }
+
     const messageBox = document.getElementById('message-box') as HTMLTextAreaElement;
     if (!messageBox) return;
 
     messageBox.addEventListener('keydown', onKeyDown);
-    return () => messageBox.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', windowKeyDown);
+
+    return () => {
+      messageBox.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keydown', windowKeyDown);
+    };
   });
 
   const onType = (string: string) => {

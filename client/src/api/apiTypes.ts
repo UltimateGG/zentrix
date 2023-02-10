@@ -11,6 +11,7 @@ export interface User {
 
 export interface Chat {
   _id: string;
+  owner: string;
   title: string;
   iconURL: string;
   lastMessage: string | null;

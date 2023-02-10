@@ -4,19 +4,20 @@ import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useDataCache from '../../contexts/DataCacheContext';
 import useNotifications from '../../contexts/NotificationContext';
-import { Box, Checkbox, Progress, ThemeContext } from '../../Jet';
+import { Box, Checkbox, Progress, ThemeContext, Tooltip } from '../../Jet';
 import Image from '../Image';
 
 
 interface ChatMemberProps {
   user: User;
+  isOwner: boolean;
   added: boolean;
   onToggle?: () => void;
   disabled?: boolean;
   style?: React.CSSProperties;
 }
 
-const ChatMember = ({ user, added, onToggle, disabled, style }: ChatMemberProps) => {
+const ChatMember = ({ user, isOwner, added, onToggle, disabled, style }: ChatMemberProps) => {
   const { theme } = useContext(ThemeContext);
 
 
@@ -39,7 +40,8 @@ const ChatMember = ({ user, added, onToggle, disabled, style }: ChatMemberProps)
         <Image src={user.iconURL} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} />
 
         <Box flexDirection="column">
-          <p>{user.displayName}</p>
+          <p>{isOwner ? <b>&#128081; {user.displayName}</b> : user.displayName}</p>
+          
           <small>{user.email}</small>
         </Box>
       </Box>
@@ -75,6 +77,7 @@ const ChatMembersList = ({ chat }: ChatMembersListProps) => {
   }
 
   const sortedUsers = users.sort((a, b) => {
+    if (chat.owner === a._id) return -1;
     if (a._id === user?._id) return -1;
     const aInChat = chat.members.includes(a._id);
     const bInChat = chat.members.includes(b._id);
@@ -93,9 +96,10 @@ const ChatMembersList = ({ chat }: ChatMembersListProps) => {
           <ChatMember
             key={u._id}
             user={u}
+            isOwner={chat.owner === u._id}
             added={chat.members.includes(u._id)}
             onToggle={() => onToggleMember(u)}
-            disabled={updating || u._id === user?._id}
+            disabled={updating || u._id === user?._id || chat.owner === u._id}
             style={{
               borderBottom: index === sortedUsers.length - 1 ? 'none' : undefined
             }}

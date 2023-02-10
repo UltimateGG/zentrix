@@ -9,6 +9,7 @@ import Image from '../Image';
 import { uploadFile } from '../../api/api';
 import DeleteChatModal from './DeleteChatModal';
 import ChatMembersList from './ChatMembersList';
+import useAuth from '../../contexts/AuthContext';
 
 
 const LabelStyle = styled.label`
@@ -29,6 +30,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
 
+  const { user } = useAuth();
   const { addNotification } = useNotifications();
   const { theme } = useContext(ThemeContext);
 
@@ -109,13 +111,14 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           <ChatMembersList chat={chat} />
         </div>
 
-        <Box justifyContent="center">
-          <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: '0.4rem', padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
-            <Icon icon={IconEnum.trash} size={24} />
-            Delete Chat
-          </Button>
+        {chat.owner === user?._id && (
+          <Box justifyContent="center">
+            <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: '0.4rem', padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
+              <Icon icon={IconEnum.trash} size={24} />
+              Delete Chat
+            </Button>
         </Box>
-
+        )}
       </Drawer>
 
       <DeleteChatModal open={confirmDeleteModal} onClose={() => setConfirmDeleteModal(false)} chat={chat} />

@@ -4,6 +4,11 @@ const { bucket, region } = require('../utils/s3');
 
 
 const ChatSchema = new Schema({
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
+    required: true
+  },
   title: {
     type: String,
     required: true,
