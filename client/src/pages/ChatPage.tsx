@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { isClientSide, Message, MessageType, SocketEvent } from '../api/apiTypes';
+import { Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emitWithRes } from '../api/websocket';
 import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
@@ -24,7 +24,7 @@ const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
   const { theme } = useContext(ThemeContext);
-  const { chats, messages, addMessage, foundFirstMessage, loading } = useDataCache();
+  const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const [messageBarHeight, setMessageBarHeight] = React.useState(4);
@@ -58,12 +58,15 @@ const ChatPage = () => {
     addMessage({ ...message, type: MessageType.PENDING });
     await emitWithRes(SocketEvent.MESSAGE_CREATE, message).catch(e => {
       if (e.message === 'Request timed out') return;
+      removeMessage(message); // remove pending message
       addMessage({
         _id: Math.random().toString(36) + Date.now().toString(36),
-        type: MessageType.ERROR,
+        type: MessageType.SYSTEM,
         chat: chat._id,
-        content: `Failed to send message: ${e.message}`,
-        createdAt: Date.now()
+        content: `Could not send message. ${e.message}`,
+        createdAt: Date.now(),
+        error: true,
+        isClientSideOnly: true
       } as Message);
     });
   }
@@ -90,7 +93,7 @@ const ChatPage = () => {
   const loadMoreMessages = async () => {
     if (loadingMore) return;
     setLoadingMore(true); // find first msg that isnt client side
-    const firstMsg = messages.find(m => m.chat === chat._id)?.messages.find(m => !isClientSide(m.type));
+    const firstMsg = messages.find(m => m.chat === chat._id)?.messages.find(m => !m.isClientSideOnly);
     
     const res = await emitWithRes(SocketEvent.GET_MESSAGES, { chat: chat._id, before: firstMsg?.createdAt || Date.now() }).catch(e => {});
 

@@ -40,7 +40,7 @@ const ChatMember = ({ user, isOwner, added, onToggle, disabled, style }: ChatMem
         <Avatar src={user.iconURL} size={3} />
 
         <Box flexDirection="column">
-          <p>{isOwner ? <p>&#128081; {user.displayName}</p> : user.displayName}</p>
+          <p>{isOwner ? <>&#128081; {user.displayName}</> : user.displayName}</p>
           
           <small>{user.email}</small>
         </Box>

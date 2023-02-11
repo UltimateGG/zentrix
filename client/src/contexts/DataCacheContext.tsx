@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, isClientSide, MessageType } from '../api/apiTypes';
+import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
 import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 
@@ -9,6 +9,7 @@ interface DataCacheContextProps {
   users: User[];
   messages: ChatMessages[];
   addMessage: (message: Message) => void;
+  removeMessage: (message: Message) => void;
   foundFirstMessage: (chat: Chat) => void;
   loading: boolean;
 }
@@ -135,13 +136,23 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       return [...messages];
     });
 
-    if (message.type != MessageType.USER) return;
+    if (message.type !== MessageType.USER) return;
     setChats(chats => {
       const chat = chats.find(c => c._id === message.chat);
       if (chat && (!chat.lastMessage || chat.lastMessage.createdAt < message.createdAt))
         chat.lastMessage = message;
 
       return [...chats];
+    });
+  }
+
+  const removeMessage = (message: Message) => {
+    setMessages(messages => {
+      const chatStore = messages.find(m => m.chat === message.chat);
+      if (chatStore)
+        chatStore.messages = chatStore.messages.filter(m => m._id !== message._id);
+
+      return [...messages];
     });
   }
 
@@ -156,7 +167,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   }
 
   return (
-    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, foundFirstMessage, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, loading: !populated }}>
       {children}
     </DataCacheContext.Provider>
   );

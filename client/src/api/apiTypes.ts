@@ -23,14 +23,7 @@ export interface Chat {
 export enum MessageType {
   USER,
   SYSTEM,
-
-  // Client side only
-  PENDING,
-  ERROR
-}
-
-export const isClientSide = (type: MessageType) => {
-  return type === MessageType.PENDING || type === MessageType.ERROR;
+  PENDING, // Client side only
 }
 
 export interface Message {
@@ -41,6 +34,10 @@ export interface Message {
   chat: string;
   content: string;
   createdAt: number;
+
+  // Client side only
+  isClientSideOnly?: boolean;
+  error?: boolean; 
 }
 
 export interface ChatMessages {
