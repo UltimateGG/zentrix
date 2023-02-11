@@ -25,9 +25,7 @@ const updateChat = async (user, payload) => {
   if (!payload.id || !payload.title || !payload.title.trim() || payload.title.length > 50) return;
 
   const chat = await Chat.findById(payload.id).populate('lastMessage');
-  if (!chat) return;
-
-  if (!chat.members.includes(user.id)) return;
+  if (!chat || !chat.members.includes(user.id)) return;
 
   chat.title = payload.title;
   await chat.save();
@@ -50,8 +48,7 @@ const deleteChat = async (user, payload) => {
   if (!payload.id) return;
 
   const chat = await Chat.findById(payload.id);
-  if (!chat) return;
-  if (chat.owner.toString() !== user.id) return;
+  if (!chat || chat.owner.toString() !== user.id) return;
 
   await chat.remove();
   await Message.deleteMany({ chat: chat._id });
