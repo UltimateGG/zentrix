@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
 import { LOGO_URL } from '../../api/api';
 import { Message, MessageType } from '../../api/apiTypes';
 import { formatTime } from '../../api/utils';
@@ -8,14 +7,6 @@ import { Box, ThemeContext } from '../../Jet';
 import Avatar from '../Avatar';
 import FormattedMessageContent from './FormattedMessageContext';
 
-
-const ChatMessageStyle = styled(Box)`
-  padding: 0 0.8rem;
-  width: 100%;
-  word-break: break-word;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-`;
 
 interface ChatMessageProps {
   message: Message;
@@ -50,12 +41,16 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
   }
 
   return (
-    <ChatMessageStyle
+    <Box
       spacing="1rem"
       style={{
+        width: '100%',
+        wordBreak: 'break-word',
+        wordWrap: 'break-word',
+        whiteSpace: 'pre-wrap',
         marginTop: !shouldStack ? '1rem' : message.type === MessageType.SYSTEM ? '-1rem' : '0.2rem',
         backgroundColor: message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit',
-        padding: message.type === MessageType.SYSTEM ? '0.8rem' : undefined,
+        padding: message.type === MessageType.SYSTEM ? '0.8rem' : '0 0.8rem',
       }}
     >
       {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || LOGO_URL} size={2.6} />}
@@ -68,10 +63,9 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
           </Box>
         )}
         
-        {/* TODO finish formatting for system, etc. */}
         <p
           style={{
-            marginLeft: shouldStack && profilePicturesEnabled ? 'calc(2.6rem + 1rem)' : '0',
+            marginLeft: shouldStack && profilePicturesEnabled ? 'calc(2.6rem + 1rem)' : 0,
             color: getMessageColor(),
           }}
         >
@@ -88,7 +82,7 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
           </>}
         </p>
       </Box>
-    </ChatMessageStyle>
+    </Box>
   );
 }
 
