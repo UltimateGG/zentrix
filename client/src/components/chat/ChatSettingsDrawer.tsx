@@ -82,6 +82,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           onChanged={onNameChange}
           error={nameError}
           onBlur={setChatName}
+          fullWidth
         />
 
         <LabelStyle htmlFor="icon">Chat Icon</LabelStyle>
@@ -103,7 +104,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
             maxHeight: '450px',
             overflowY: 'auto',
             backgroundColor: theme.colors.background[1],
-            border: '2px solid ' + theme.colors.background[5],
+            border: '1px solid ' + theme.colors.background[5],
             padding: '0.4rem 0.8rem',
             borderRadius: theme.rounded
           }}

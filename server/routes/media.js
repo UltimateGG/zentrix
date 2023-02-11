@@ -4,6 +4,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { s3, bucket } = require('../utils/s3');
 const { Chat } = require('../models/Chat');
+const { Message, ChatType } = require('../models/Message');
 const { cacheUpdate } = require('../socket/websocket');
 
 
@@ -68,13 +69,24 @@ router.post('/:chatId/icon', uploadPfp.single('file'), asyncHandler(async (req, 
   const file = req.file;
   if (!file) throw new Error('No file was uploaded');
 
-  const chat = await Chat.findById(req.params.chatId);
+  const chat = await Chat.findById(req.params.chatId).populate('lastMessage');
   if (!chat) throw new Error('Chat not found');
 
   chat.iconURL = file.location;
   await chat.save();
 
-  cacheUpdate({ chats: [chat.toJSON()] }, chat.members);
+  const systemMessage = new Message({
+    chat: chat._id,
+    type: ChatType.SYSTEM,
+    content: `<@${req.user._id}> changed the chat icon`
+  });
+
+  await systemMessage.save();
+
+  cacheUpdate({
+    chats: [chat.toJSON()],
+    messages: [systemMessage.toJSON()]
+  }, chat.members);
   res.status(200).json({ path: chat.iconURL });
 }));
 

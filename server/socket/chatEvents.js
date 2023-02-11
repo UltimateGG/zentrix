@@ -32,7 +32,18 @@ const updateChat = async (user, payload) => {
   chat.title = payload.title;
   await chat.save();
 
-  cacheUpdate({ chats: [chat.toJSON()] }, chat.members);
+  const systemMessage = new Message({
+    type: ChatType.SYSTEM,
+    chat: chat._id,
+    content: `<@${user._id}> renamed the chat to "${payload.title}"`
+  });
+
+  await systemMessage.save();
+
+  cacheUpdate({
+    chats: [chat.toJSON()],
+    messages: [systemMessage.toJSON()],
+  }, chat.members);
 }
 
 const deleteChat = async (user, payload) => {
@@ -64,7 +75,7 @@ const updateMembers = async (user, payload) => {
   const systemMessage = new Message({
     type: ChatType.SYSTEM,
     chat: chat._id,
-    content: `${user.displayName} ${add ? 'added' : 'removed'} <@${payload.member}> ${add ? 'to ' : 'from'} the chat`,
+    content: `<@${user._id}> ${add ? 'added' : 'removed'} <@${payload.member}> ${add ? 'to ' : 'from'} the chat`
   });
   
   await systemMessage.save();
