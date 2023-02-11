@@ -73,10 +73,11 @@ const broadcast = (event, payload) => {
 
 const cacheUpdate = (payload, affectedUsers) => {
   const clients = Array.from(wss.clients);
-  affectedUsers = affectedUsers.map(id => id.toString());
+  const doAll = affectedUsers === '*';
+  if (!doAll) affectedUsers = affectedUsers.map(id => id.toString());
 
   for (const client of clients)
-    if (affectedUsers.includes(client.user._id.toString())) send(client, SocketEvent.CACHE_UPDATE, payload);
+    if (doAll || affectedUsers.includes(client.user._id.toString())) send(client, SocketEvent.CACHE_UPDATE, payload);
 }
 
 module.exports = {
