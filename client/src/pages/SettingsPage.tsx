@@ -5,30 +5,29 @@ import { SocketEvent } from '../api/apiTypes';
 import { emit } from '../api/websocket';
 import Avatar from '../components/Avatar';
 import useAuth from '../contexts/AuthContext';
-import useNotifications from '../contexts/NotificationContext';
-import { Box, Progress, TextField, ThemeContext } from '../Jet';
+import useNotifications from '../Jet/NotificationContext';
+import { Box, Progress, TextField, theme } from '../Jet';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
   width: 100%;
-  background-color: ${props => props.theme.colors.background[1]};
+  background-color: ${theme.colors.background[1]};
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-top: 1px solid ${props => props.theme.colors.background[3]};
-  border-bottom: ${props => props.nb ? `none` : `1px solid ${props.theme.colors.background[3]}`};
+  border-top: 1px solid ${theme.colors.background[3]};
+  border-bottom: ${props => props.nb ? `none` : `1px solid ${theme.colors.background[3]}`};
   padding: 0.4rem;
   cursor: pointer;
 
   p {
     margin: 0;
-    color: ${props => props.theme.colors.text[7]};
+    color: ${theme.colors.text[7]};
   }
 `;
 
 const SettingsPage = () => {
   const { user, logout } = useAuth();
-  const { theme } = React.useContext(ThemeContext);
   const { addNotification } = useNotifications();
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');

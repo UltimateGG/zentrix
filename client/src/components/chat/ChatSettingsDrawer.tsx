@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useState } from 'react';
-import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, ThemeContext } from '../../Jet';
+import React, { useRef, useState } from 'react';
+import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, theme } from '../../Jet';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
 import { emitWithRes } from '../../api/websocket';
-import useNotifications from '../../contexts/NotificationContext';
+import useNotifications from '../../Jet/NotificationContext';
 import styled from 'styled-components';
 import { uploadFile } from '../../api/api';
 import DeleteChatModal from './DeleteChatModal';
@@ -32,7 +32,6 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  const { theme } = useContext(ThemeContext);
 
 
   const onNameChange = (str: string) => {

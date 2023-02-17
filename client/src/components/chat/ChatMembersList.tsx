@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Chat, SocketEvent, User } from '../../api/apiTypes';
 import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useDataCache from '../../contexts/DataCacheContext';
-import useNotifications from '../../contexts/NotificationContext';
-import { Box, Checkbox, Progress, ThemeContext } from '../../Jet';
+import useNotifications from '../../Jet/NotificationContext';
+import { Box, Checkbox, Progress, theme } from '../../Jet';
 import Avatar from '../Avatar';
 
 
@@ -18,9 +18,6 @@ interface ChatMemberProps {
 }
 
 const ChatMember = ({ user, isOwner, added, onToggle, disabled, style }: ChatMemberProps) => {
-  const { theme } = useContext(ThemeContext);
-
-
   return (
     <Box
       justifyContent="space-between"

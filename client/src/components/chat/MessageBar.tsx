@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Icon, IconEnum, TextArea, ThemeContext } from '../../Jet';
+import React, { useEffect, useState } from 'react';
+import { Box, Icon, IconEnum, TextArea, theme } from '../../Jet';
 
 
 interface MessageBoxProps {
@@ -12,8 +12,6 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   const [canSend, setCanSend] = useState(false);
   const [error, setError] = useState('');
   const [rows, setRows] = useState(1);
-
-  const { theme } = useContext(ThemeContext);
 
 
   useEffect(() => {
@@ -130,7 +128,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         }}
         minRows={1}
         maxRows={5}
-        onHeightChange={height => {
+        onHeightChange={(height: number) => {
           const rows = Math.round(height / 20);
           setRows(rows);
           onResize && onResize(4 + (rows - 2) * 1.2);

@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
-import { Box, Icon, IconEnum, ThemeContext } from '../../Jet';
+import { Box, Icon, IconEnum, theme } from '../../Jet';
 import Avatar from '../Avatar';
 
 
 const BoxStyle = styled(Box).attrs((props: any) => props)`
-  border-bottom: 1px solid ${props => props.theme.colors.background[2]};
+  border-bottom: 1px solid ${theme.colors.background[2]};
   padding: 0.6rem 1rem;
   cursor: pointer;
   position: relative;
@@ -29,7 +29,6 @@ interface ChatEntryProps {
 }
 
 const ChatEntry = ({ chat }: ChatEntryProps) => {
-  const { theme } = useContext(ThemeContext);
   const { user } = useAuth();
   const navigate = useNavigate();
   

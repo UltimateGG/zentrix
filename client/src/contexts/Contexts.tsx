@@ -2,7 +2,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react';
 import { AuthContextProvider } from './AuthContext';
 import { DataCacheContextProvider } from './DataCacheContext';
-import { NotificationProvider } from './NotificationContext';
 
 
 const Contexts = ({ children }: { children: React.ReactNode }) => {
@@ -10,9 +9,7 @@ const Contexts = ({ children }: { children: React.ReactNode }) => {
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || ''}>
       <AuthContextProvider>
         <DataCacheContextProvider>
-          <NotificationProvider>
-            {children}
-          </NotificationProvider>
+          {children}
         </DataCacheContextProvider>
       </AuthContextProvider>
     </GoogleOAuthProvider>

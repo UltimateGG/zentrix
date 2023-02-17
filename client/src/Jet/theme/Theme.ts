@@ -29,7 +29,7 @@ const hex2 = (c: number) => {
   if (c > 255) c = 255;
 
   let s = c.toString(16);
-  if (s.length < 2) s = "0" + s;
+  if (s.length < 2) s = '0' + s;
 
   return s;
 }
@@ -64,7 +64,7 @@ export const generateColorsArray = (hex: string, amt: number, shade: Shade, inc:
   return colors;
 }
 
-export const themeDefault: Theme = {
+export const theme: Theme = {
   fontFamily: '\'Rubik\', Arial, sans-serif',
   font: 'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap',
   rounded: '8px',

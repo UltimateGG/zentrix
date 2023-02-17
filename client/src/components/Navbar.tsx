@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { User } from '../api/apiTypes';
 import useAuth from '../contexts/AuthContext';
-import { Box, Icon, IconEnum, ThemeContext } from '../Jet';
+import { Box, Icon, IconEnum, theme } from '../Jet';
 
 
 const EXCLUDED_PATHS = ['/'];
@@ -29,8 +29,8 @@ const FooterStyle = styled(Box).attrs((props: any) => props)`
   left: 0;
   right: 0;
   height: 3.6rem;
-  background-color: ${props => props.theme.colors.background[1]};
-  border-top: 1px solid ${props => props.theme.colors.background[3]};
+  background-color: ${theme.colors.background[1]};
+  border-top: 1px solid ${theme.colors.background[3]};
   padding: 1rem 2rem;
 `;
 
@@ -39,7 +39,6 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { theme } = React.useContext(ThemeContext);
 
 
   if (EXCLUDED_PATHS.includes(location.pathname) || location.pathname.startsWith('/chats/') || !user)

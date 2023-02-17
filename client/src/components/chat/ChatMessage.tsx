@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { LOGO_URL } from '../../api/api';
 import { Message, MessageType } from '../../api/apiTypes';
 import { formatTime } from '../../api/utils';
 import useDataCache from '../../contexts/DataCacheContext';
-import { Box, ThemeContext } from '../../Jet';
+import { Box, theme } from '../../Jet';
 import Avatar from '../Avatar';
 import FormattedMessageContent from './FormattedMessageContext';
 
@@ -16,7 +16,6 @@ interface ChatMessageProps {
 const profilePicturesEnabled = true;
 
 const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
-  const { theme } = useContext(ThemeContext);
   const { users, removeMessage } = useDataCache();
 
 

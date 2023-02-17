@@ -3,13 +3,12 @@ import ChatEntry from '../components/chat/ChatEntry';
 import CreateChatModal from '../components/chat/CreateChatModal';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
-import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
+import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
 
 
 const ChatListPage = () => {
   const { user } = useAuth();
   const { chats, loading } = useDataCache();
-  const { theme } = React.useContext(ThemeContext);
   const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
 
 

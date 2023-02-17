@@ -9,7 +9,7 @@ import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import MessageBar from '../components/chat/MessageBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
-import { Box, Icon, IconEnum, Progress, ThemeContext } from '../Jet';
+import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
 
 
 const TitleStyle = styled.h4`
@@ -23,7 +23,6 @@ const TitleStyle = styled.h4`
 const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
-  const { theme } = useContext(ThemeContext);
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);

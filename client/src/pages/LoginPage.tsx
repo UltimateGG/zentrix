@@ -3,7 +3,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
-import useNotifications from '../contexts/NotificationContext';
+import useNotifications from '../Jet/NotificationContext';
 import { Box } from '../Jet';
 import styled from 'styled-components';
 import Image from '../components/Image';

@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FALLBACK_IMAGE_URL } from '../api/api';
-import { ThemeContext } from '../Jet';
+import { theme } from '../Jet';
 
 
 const FlashKeyFrames = (fromColor: string, toColor: string) => keyframes`
@@ -19,13 +19,12 @@ const FlashKeyFrames = (fromColor: string, toColor: string) => keyframes`
 `;
 
 const LoaderStyle = styled.div.attrs((props: any) => props)`
-  animation: ${props => FlashKeyFrames(props.theme.colors.background[1], props.theme.colors.background[2])} 1.2s ease-in-out infinite;
+  animation: ${props => FlashKeyFrames(theme.colors.background[1], theme.colors.background[2])} 1.2s ease-in-out infinite;
 `;
 
 const Image = ({ src, fallbackURL, style, ...rest }: any) => {
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
-  const { theme } = useContext(ThemeContext);
   const ref = useRef<HTMLImageElement | null>(null);
 
 

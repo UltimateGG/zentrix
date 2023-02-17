@@ -2,7 +2,7 @@ import React from 'react';
 import { SocketEvent } from '../../api/apiTypes';
 import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
-import useNotifications from '../../contexts/NotificationContext';
+import useNotifications from '../../Jet/NotificationContext';
 import { Button, Modal, Progress, Switch, TextField } from '../../Jet';
 
 
@@ -108,7 +108,7 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
         label="Encrypt Chat"
         name="encrypt-chat"
         checked={encrypted}
-        onCheck={v => {
+        onCheck={(v: boolean) => {
           setEncrypted(v);
           setPasswordError('');
         }}
