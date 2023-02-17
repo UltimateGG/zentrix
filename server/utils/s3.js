@@ -1,11 +1,14 @@
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 
 
 const bucket = 'zentrixapp';
 const region = 'us-east-2';
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AMAZON_S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AMAZON_S3_ACCESS_KEY_SECRET,
+const s3 = new S3Client({
+  region,
+  credentials: {
+    accessKeyId: process.env.AMAZON_S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AMAZON_S3_ACCESS_KEY_SECRET,
+  }
 });
 
 
