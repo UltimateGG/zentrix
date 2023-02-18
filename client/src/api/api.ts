@@ -1,11 +1,12 @@
 import axios from 'axios';
 
 
+export const API_URL = `zentrix.app${process.env.NODE_ENV === 'development' ? ':5000' : ''}`;
 export const LOGO_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/logo192.png';
 export const FALLBACK_IMAGE_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/image_failed.png';
 
 const api = axios.create({
-  baseURL: window.location.origin + (process.env.NODE_ENV === 'development' ? ':5000' : ''),
+  baseURL: `https://${API_URL}`,
   withCredentials: true,
 });
 

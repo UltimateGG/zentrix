@@ -1,3 +1,4 @@
+import { API_URL } from './api';
 import { SocketEvent, User } from './apiTypes';
 
 
@@ -8,9 +9,8 @@ let connecting = false;
 
 
 const getWSUrl = (path: string) => {
-  const host = window.location.host;
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${protocol}//${host}${process.env.NODE_ENV === 'development' ? ':5000' : ''}${path}`;
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  return protocol + API_URL + path;
 }
 
 export const connect = async () => {
