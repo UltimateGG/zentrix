@@ -122,7 +122,7 @@ const Slider = (props: SliderProps) => {
     if (valueRef)
       valueRef.style.left = `calc(${newVal}% + (0.7rem - ${newVal * 0.225}px))`;
     onValueChange && onValueChange(Number(elemRef.value));
-  }, [onValueChange, elemRef, valueRef, color, theme]);
+  }, [onValueChange, elemRef, valueRef, color]);
 
   useEffect(() => {
     update();

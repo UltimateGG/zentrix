@@ -1,11 +1,8 @@
-const { useBabelRc, override, addWebpackModuleRule, addWebpackAlias } = require('customize-cra');
+const { useBabelRc, override, addWebpackAlias } = require('customize-cra');
 
 
 module.exports = override(
   useBabelRc(),
-  /*addWebpackModuleRule({
-    
-  }),*/
   addWebpackAlias({
     'react': 'preact/compat',
     'react-dom': 'preact/compat',

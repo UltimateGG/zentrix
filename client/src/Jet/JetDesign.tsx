@@ -3,7 +3,7 @@ import { NotificationProvider } from './NotificationContext';
 import { theme } from './theme/Theme';
 
 
-const getGlobalStyles = (props: any) => `
+const getGlobalStyles = () => `
   @import url('${theme.font}');
 
   * {
@@ -83,7 +83,7 @@ const getGlobalStyles = (props: any) => `
   }
 
   ::-webkit-scrollbar-thumb:active {
-    background-color: ${theme.colors.background[5]};a
+    background-color: ${theme.colors.background[5]};
   }
 `;
 
@@ -92,13 +92,13 @@ const JetDesign = ({ children }: { children: ReactNode }) => {
     if (document.head.querySelector('[data-jet-injected]')) return;
 
     const globalStyles = document.createElement('style');
-    globalStyles.innerHTML = getGlobalStyles({ theme });
+    globalStyles.innerHTML = getGlobalStyles();
     document.head.appendChild(globalStyles);
 
     const configElem = document.createElement('div');
     configElem.setAttribute('data-jet-injected', 'true');
     document.head.appendChild(configElem);
-  }, [theme]);
+  }, []);
 
   return (
     <NotificationProvider>

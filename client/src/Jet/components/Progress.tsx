@@ -89,7 +89,7 @@ const Progress = (props: ProgressProps) => {
     } else {
       setRotation(0);
     }
-  }, [indeterminate, glowState, circular, barRef, circleRef, rotation, color, theme]);
+  }, [indeterminate, glowState, circular, barRef, circleRef, rotation, color]);
 
   const stroke = 4;
   const normalizedRadius = radius - stroke * 2;
