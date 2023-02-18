@@ -22,8 +22,9 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1');
   res.removeHeader('X-Powered-By');
-  // res.setHeader('Access-Control-Allow-Origin', '*');
-  // res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+  res.setHeader('Access-Control-Allow-Origin', 'https://zentrix.app');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
@@ -33,8 +34,6 @@ app.use(require('cookie-parser')());
 // Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/media', auth, require('./routes/media'));
-
-server.on('upgrade', websocket.onUpgrade);
 
 app.use(errorHandler);
 

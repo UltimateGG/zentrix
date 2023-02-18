@@ -1,5 +1,5 @@
 const WSServer = require('ws').Server;
-const wss = new WSServer({ server: require('../server') });
+const wss = new WSServer({ server: require('../server'), path: '/socket', verifyClient });
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logging');
 const { User } = require('../models/User');
@@ -31,35 +31,32 @@ const SocketEvent = {
   GET_MESSAGES: 'getMessages',
 };
 
-const onUpgrade = async (req, socket, head) => {
+async function verifyClient(info, done) {
   try {
-    if (req.url !== '/socket') return socket.destroy();
+    const { req } = info;
     const cookies = req.headers.cookie?.split('; ').reduce((acc, cookie) => {
       const [key, value] = cookie.split('=');
       acc[key] = value;
       return acc;
     }, {}) || {};
-  
-    if (!cookies.zxtoken) return socket.destroy();
+
+    if (!cookies.zxtoken) return done(false);
   
     const token = cookies.zxtoken;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded || !decoded.id) return socket.destroy();
+    if (!decoded || !decoded.id) return done(false);
   
     const user = await User.findById(decoded.id);
-    if (!user) return socket.destroy();
+    if (!user) return done(false);
 
     req.user = user;
-
-    wss.handleUpgrade(req, socket, head, (ws) => {
-      ws.user = req.user;
-  
-      wss.emit('connection', ws, req, req.user);
-    });
+    done(true);
+    return;
   } catch (e) {
     console.error(e);
-    socket.destroy();
   }
+
+  done(false);
 }
 
 const send = (ws, event, payload) => {
@@ -83,7 +80,6 @@ const cacheUpdate = (payload, affectedUsers) => {
 module.exports = {
   SocketEvent,
   wss,
-  onUpgrade,
   send,
   broadcast,
   cacheUpdate,
@@ -110,8 +106,8 @@ const eventHandlers = [
   { event: SocketEvent.GET_MESSAGES, handler: getMessages },
 ];
 
-wss.on('connection', (ws, req, user) => {
-  send(ws, 'connect', user);
+wss.on('connection', (ws, req) => {
+  send(ws, 'connect', req.user);
 
   ws.on('message', (message) => {
     try {
@@ -121,7 +117,7 @@ wss.on('connection', (ws, req, user) => {
       const handler = eventHandlers.find((h) => h.event === event)?.handler;
       if (!handler) return logger.logWarn(`No handler for event ${event}`);
 
-      handler(user, payload).then(result => {
+      handler(req.user, payload).then(result => {
         if (!replyTo) return;
 
         if (result) send(ws, event, { ...result, replyTo });
