@@ -2,6 +2,8 @@ import { SocketEvent, User } from './apiTypes';
 
 
 let ws: WebSocket | null = null;
+const reconnectDelay = 1500;
+let reconnectTimeout: NodeJS.Timeout | null = null;
 let connecting = false;
 
 
@@ -22,6 +24,11 @@ export const connect = async () => {
     }
 
     ws.onclose = () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      reconnectTimeout = setTimeout(() => {
+        connecting = false;
+        connect();
+      }, reconnectDelay);
       reject();
     }
 

@@ -107,6 +107,7 @@ const eventHandlers = [
 ];
 
 wss.on('connection', (ws, req) => {
+  ws.user = req.user;
   send(ws, 'connect', req.user);
 
   ws.on('message', (message) => {
