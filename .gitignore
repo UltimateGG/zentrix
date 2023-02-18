@@ -1,6 +1,9 @@
 node_modules/
 /client/build/
 /server/logs/
+server.pem
+key.pem
+cert.pem
 
 .env
 

@@ -2,15 +2,13 @@ import { SocketEvent, User } from './apiTypes';
 
 
 let ws: WebSocket | null = null;
-const reconnectDelay = 1500;
-let reconnectTimeout: NodeJS.Timeout | null = null;
 let connecting = false;
 
 
 const getWSUrl = (path: string) => {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = window.location.host;
-  return `${protocol}//${host.replace(':3000', ':5000')}${path}`;
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${host}${process.env.NODE_ENV === 'development' ? ':5000' : ''}${path}`;
 }
 
 export const connect = async () => {
@@ -24,11 +22,7 @@ export const connect = async () => {
     }
 
     ws.onclose = () => {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      reconnectTimeout = setTimeout(() => {
-        connecting = false;
-        connect();
-      }, reconnectDelay);
+      reject();
     }
 
     ws.onmessage = (event) => {

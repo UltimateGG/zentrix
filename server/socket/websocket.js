@@ -1,5 +1,5 @@
 const WSServer = require('ws').Server;
-const wss = new WSServer({ noServer: true });
+const wss = new WSServer({ server: require('../server') });
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/logging');
 const { User } = require('../models/User');

@@ -4,9 +4,10 @@ import axios from 'axios';
 export const LOGO_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/logo192.png';
 export const FALLBACK_IMAGE_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/image_failed.png';
 
+axios.defaults.baseURL = window.location.origin + (process.env.NODE_ENV === 'development' ? ':5000' : '');
 axios.interceptors.response.use((response) => response, (error) => {
   return Promise.resolve({
-    data: error.response.data || {
+    data: error.response?.data || {
       error: true,
       message: 'Network Error'
     },

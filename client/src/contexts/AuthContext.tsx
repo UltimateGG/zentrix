@@ -45,7 +45,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     await connect().then(user => {
       if (user) setUser(user);
       navigate(user.lastScreen || '/chats');
-    }).catch(() => {});
+    }).catch(console.error);
 
     setLoggingIn(false);
   }

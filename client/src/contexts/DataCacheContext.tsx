@@ -48,7 +48,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       clearInterval(interval);
       await populateCache();
       setPopulated(true);
-    }, 100);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [populated, user]);

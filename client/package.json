@@ -2,8 +2,10 @@
   "name": "zentrix-client",
   "version": "0.0.1",
   "private": true,
-  "proxy": "http://localhost:5000/",
   "dependencies": {
+    "@capacitor/android": "^4.6.3",
+    "@capacitor/core": "^4.6.3",
+    "@capacitor/ios": "^4.6.3",
     "@react-oauth/google": "^0.7.0",
     "@types/node": "^16.18.11",
     "@types/react": "^18.0.27",
@@ -18,6 +20,7 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
+    "prestart": "rm ./node_modules/.cache/webpack-dev-server/server.pem && cp -f ./server.pem ./node_modules/.cache/webpack-dev-server/",
     "start": "react-app-rewired start",
     "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build"
   },
@@ -40,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@capacitor/cli": "^4.6.3",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.2.1"

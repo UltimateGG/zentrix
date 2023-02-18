@@ -5,10 +5,15 @@ const logger = require('./utils/logging');
 const { errorHandler } = require('./middleware/errorHandler');
 const { connectToDatabase } = require('./utils/database');
 const { auth } = require('./middleware/authMiddleware');
+const fs = require('fs');
+
+const server = require('https').createServer({
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem'),
+}, app);
+
+module.exports = server;
 const websocket = require('./socket/websocket');
-
-const server = require('http').createServer(app);
-
 
 // Middleware
 app.set('trust proxy', true);
@@ -17,6 +22,8 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1');
   res.removeHeader('X-Powered-By');
+  // res.setHeader('Access-Control-Allow-Origin', '*');
+  // res.setHeader('Access-Control-Allow-Headers', 'Authorization');
   next();
 });
 
