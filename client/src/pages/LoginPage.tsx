@@ -3,10 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
-import { Box } from '../Jet';
-import styled from 'styled-components';
+import { Box, Button } from '../Jet';
 import Image from '../components/Image';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { Capacitor } from '@capacitor/core';
 
+
+if (!Capacitor.isNativePlatform()) {
+  GoogleAuth.initialize({
+    clientId: '1081704696779-p54joiqdcdck56d1951q175r73ekmomm.apps.googleusercontent.com',
+    scopes: ['profile', 'email'],
+    grantOfflineAccess: true,
+  });
+}
 
 const LoginPage = () => {
   const { user } = useAuth();
@@ -18,10 +27,11 @@ const LoginPage = () => {
     if (user) navigate(user.lastScreen || '/chats');
   }, [user, navigate]);
 
-  const onSuccess = async (res: CredentialResponse) => {
-    if (!res.credential) return;
+  const signIn = async () => {
+    const res = await GoogleAuth.signIn();
+    const credential = res.authentication.idToken;
 
-    const data = await loginWithGoogle(res.credential);
+    const data = await loginWithGoogle(credential);
 
     if (data.error) return addNotification({ text: data.message || 'An unknown error occurred', variant: 'danger', dismissable: true });
     window.location.reload();
@@ -32,7 +42,9 @@ const LoginPage = () => {
       <Image src={LOGO_URL} referrerPolicy="no-referrer" alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
       
-      <GoogleLogin onSuccess={onSuccess} />
+      <Button onClick={signIn}>
+        Sign in with Google
+      </Button>
     </Box>
   );
 }

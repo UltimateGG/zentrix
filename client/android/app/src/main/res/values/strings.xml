@@ -4,4 +4,5 @@
     <string name="title_activity_main">Zentrix</string>
     <string name="package_name">me.ultimate.zentrix</string>
     <string name="custom_url_scheme">me.ultimate.zentrix</string>
+    <string name="server_client_id">1081704696779-p54joiqdcdck56d1951q175r73ekmomm.apps.googleusercontent.com</string>
 </resources>

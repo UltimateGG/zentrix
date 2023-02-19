@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
-import { connect, emitWithRes, isConnected, isConnecting, subscribe } from '../api/websocket';
+import { emitWithRes, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 
 

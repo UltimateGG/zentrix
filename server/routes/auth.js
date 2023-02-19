@@ -37,7 +37,14 @@ router.get('/login', asyncHandler(async (req, res) => {
   }
   
   const authToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-  res.cookie('zxtoken', authToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 60 * 24 * 30 });
+
+  res.cookie('zxtoken', authToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'DEVELOPMENT',
+    sameSite: process.env.NODE_ENV === 'DEVELOPMENT' ? 'none' : 'strict',
+    maxAge: 1000 * 60 * 60 * 24 * 30
+  });
+
   res.json({ message: 'Successfully logged in' });
 }));
 
