@@ -7,7 +7,7 @@ const { connectToDatabase } = require('./utils/database');
 const { auth } = require('./middleware/authMiddleware');
 const fs = require('fs');
 
-const server = require('https').createServer({
+const server = require('http' + (process.env.NODE_ENV !== 'DEVELOPMENT' ? 's' : '')).createServer({
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem'),
 }, app);
