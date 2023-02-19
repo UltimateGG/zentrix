@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
@@ -8,12 +7,6 @@ import { Box } from '../Jet';
 import styled from 'styled-components';
 import Image from '../components/Image';
 
-
-const IOSFix = styled.div`
-  * {
-    color: #000 !important;
-  }
-`;
 
 const LoginPage = () => {
   const { user } = useAuth();
@@ -39,9 +32,7 @@ const LoginPage = () => {
       <Image src={LOGO_URL} referrerPolicy="no-referrer" alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
       
-      <IOSFix>
-        <GoogleLogin onSuccess={onSuccess} />
-      </IOSFix>
+      <GoogleLogin onSuccess={onSuccess} />
     </Box>
   );
 }
