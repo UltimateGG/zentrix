@@ -1,12 +1,13 @@
 # Zentrix
 
 A chat app with message encryption.
+Built with Preact and CapacitorJS
 
 
 Messages are only decrypted on the client side in memory.
 
 client/ 
-	- React Frontend
+	- Preact Frontend
 server/
 	- Express & MongoDB Backend
 	

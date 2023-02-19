@@ -96,7 +96,7 @@ const ChatPage = () => {
     
     const res = await emitWithRes(SocketEvent.GET_MESSAGES, { chat: chat._id, before: firstMsg?.createdAt || Date.now() }).catch(e => {});
 
-    if (res.end) foundFirstMessage(chat);
+    if (res && res.end) foundFirstMessage(chat);
     setLoadingMore(false);
   }
 

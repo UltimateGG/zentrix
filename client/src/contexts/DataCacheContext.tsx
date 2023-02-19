@@ -39,16 +39,12 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     if (populated) return;
 
     const interval = setInterval(async () => {
-      if (!isConnected()) {
-        if (!isConnecting()) await connect().catch(() => {});
-        return;
-      }
-      if (!user) return;
+      if (!isConnected() || !user) return;
 
       clearInterval(interval);
       await populateCache();
       setPopulated(true);
-    }, 1500);
+    }, 10);
 
     return () => clearInterval(interval);
   }, [populated, user]);
