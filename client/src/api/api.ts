@@ -2,7 +2,11 @@ import { Capacitor } from '@capacitor/core';
 import axios from 'axios';
 
 export const DEV = process.env.NODE_ENV === 'development' || Capacitor.DEBUG;
-export const API_URL = DEV ? `${Capacitor.getPlatform() === 'android' ? '10.0.2.2' : 'localhost'}:5000` : 'zentrix.app';
+const devIp = Capacitor.getPlatform() === 'android' ? '10.0.2.2' // android emulator tunnel
+                        : Capacitor.getPlatform() === 'ios' ? process.env.REACT_APP_REMOTE_API
+                        : 'localhost'; // web
+
+export const API_URL = DEV ? `${devIp}:5000` : 'zentrix.app';
 
 export const LOGO_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/logo192.png';
 export const FALLBACK_IMAGE_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com/static/image_failed.png';
