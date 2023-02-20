@@ -22,7 +22,6 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "prestart": "rm ./node_modules/.cache/webpack-dev-server/server.pem && cp -f ./server.pem ./node_modules/.cache/webpack-dev-server/",
     "start": "react-app-rewired start",
     "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build"
   },
