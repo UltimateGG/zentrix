@@ -1,6 +1,7 @@
 import React from 'react';
 import ChatEntry from '../components/chat/ChatEntry';
 import CreateChatModal from '../components/chat/CreateChatModal';
+import StatusBar from '../components/StatusBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
@@ -15,6 +16,7 @@ const ChatListPage = () => {
   if (!user) return null;
   return (
     <>
+      <StatusBar color={theme.colors.background[1]} />
       <Box justifyContent="space-between" alignItems="center" style={{
         position: 'fixed',
         top: 0,

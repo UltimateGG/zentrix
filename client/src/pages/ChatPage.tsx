@@ -7,6 +7,7 @@ import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import MessageBar from '../components/chat/MessageBar';
+import StatusBar from '../components/StatusBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
@@ -114,6 +115,7 @@ const ChatPage = () => {
 
   return (
     <>
+      <StatusBar color={theme.colors.background[1]} />
       <Box alignItems="center" style={{
         top: 0,
         left: 0,

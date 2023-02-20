@@ -2,7 +2,8 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { LOGO_URL } from '../api/api';
 import Image from '../components/Image';
-import { Box } from '../Jet';
+import StatusBar from '../components/StatusBar';
+import { Box, theme } from '../Jet';
 
 
 const LogoAnim = keyframes`
@@ -31,6 +32,7 @@ const StatusStyle = styled.h1`
 const LoadingScreen = ({ status }: { status: string }) => {
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+      <StatusBar color={theme.colors.background[0]} />
       <StatusStyle>{status}</StatusStyle>
 
       <LogoStyle src={LOGO_URL} alt="Zentrix" style={{ width: '64px', height: '64px', borderRadius: '50%' }} />

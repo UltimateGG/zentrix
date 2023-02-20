@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
-import { Box, Button } from '../Jet';
+import { Box, Button, theme } from '../Jet';
 import Image from '../components/Image';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
+import StatusBar from '../components/StatusBar';
 
 
 if (!Capacitor.isNativePlatform()) {
@@ -22,7 +23,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { addNotification } = useNotifications();
 
-
+  
   useEffect(() => {
     if (user) navigate(user.lastScreen || '/chats');
   }, [user, navigate]);
@@ -39,6 +40,7 @@ const LoginPage = () => {
 
   return (
     <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+      <StatusBar color={theme.colors.background[0]} />
       <Image src={LOGO_URL} referrerPolicy="no-referrer" alt="Zentrix" style={{ width: '6rem', height: '6rem', borderRadius: '50%' }} />
       <h4 style={{ margin: '1rem 0' }}>Sign in to Zentrix</h4>
       

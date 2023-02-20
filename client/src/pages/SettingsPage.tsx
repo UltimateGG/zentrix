@@ -7,6 +7,7 @@ import Avatar from '../components/Avatar';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
 import { Box, Progress, TextField, theme } from '../Jet';
+import StatusBar from '../components/StatusBar';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
@@ -72,6 +73,7 @@ const SettingsPage = () => {
   if (!user) return null;
   return (
     <div>
+      <StatusBar color={theme.colors.background[1]} />
       <Box justifyContent="center" alignItems="center" style={{
         height: '3.6rem',
         padding: '1rem 2rem',
