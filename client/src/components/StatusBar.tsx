@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { StatusBar as NativeStatusBar } from '@capacitor/status-bar';
 import React, { useEffect } from 'react';
 
@@ -8,7 +9,8 @@ interface StatusBarProps {
 
 const StatusBar = ({ color } : StatusBarProps) => {
   useEffect(() => {
-    NativeStatusBar.setBackgroundColor({ color });
+    if (Capacitor.isNativePlatform())
+      NativeStatusBar.setBackgroundColor({ color });
   }, [color]);
 
 
