@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
 import { emitWithRes, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
+import { SafeArea, SafeAreaInsets } from 'capacitor-plugin-safe-area';
 
 
 interface DataCacheContextProps {
@@ -12,6 +13,7 @@ interface DataCacheContextProps {
   removeMessage: (message: Message) => void;
   foundFirstMessage: (chat: Chat) => void;
   loading: boolean;
+  safeArea: SafeAreaInsets | null;
 }
 
 export const DataCacheContext = React.createContext<DataCacheContextProps | undefined>(undefined);
@@ -20,6 +22,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   const [chats, setChats] = React.useState<Chat[]>([]);
   const [users, setUsers] = React.useState<User[]>([]);
   const [messages, setMessages] = React.useState<ChatMessages[]>([]);
+  const [safeArea, setSafeArea] = React.useState<SafeAreaInsets | null>(null);
 
   const { user } = useAuth();
 
@@ -33,6 +36,11 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
     if (res.chats) setChats(res.chats);
     if (res.users) setUsers(res.users);
+
+    try {
+      const area = await SafeArea.getSafeAreaInsets();
+      setSafeArea(area);
+    } catch (e) {}
   }
 
   useEffect(() => {
@@ -163,7 +171,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   }
 
   return (
-    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, loading: !populated }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, loading: !populated, safeArea }}>
       {children}
     </DataCacheContext.Provider>
   );

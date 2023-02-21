@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { User } from '../api/apiTypes';
 import useAuth from '../contexts/AuthContext';
+import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, theme } from '../Jet';
 
 
@@ -28,7 +29,7 @@ const FooterStyle = styled(Box).attrs((props: any) => props)`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 3.6rem;
+  height: calc(3.6rem + ${props => props.safeArea}px);
   background-color: ${theme.colors.background[1]};
   border-top: 1px solid ${theme.colors.background[3]};
   padding: 1rem 2rem;
@@ -39,13 +40,14 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { safeArea } = useDataCache();
 
 
   if (EXCLUDED_PATHS.includes(location.pathname) || location.pathname.startsWith('/chats/') || !user)
     return null;
 
   return (
-    <FooterStyle theme={theme} alignItems="center" justifyContent="space-between">
+    <FooterStyle theme={theme} alignItems="flex-start" justifyContent="space-between" safeArea={safeArea?.insets.bottom || 0}>
       {icons.map(({ path, icon, shouldShow }) => (
           shouldShow && !shouldShow(user) ? null :
           <Icon
