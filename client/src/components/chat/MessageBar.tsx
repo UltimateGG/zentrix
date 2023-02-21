@@ -85,7 +85,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      if (!target.closest('#message-box') && Capacitor.getPlatform() === 'ios')
+      if (!target.closest('#message-box') && Capacitor.isNativePlatform())
         Keyboard.hide();
     }
 
@@ -110,11 +110,6 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     setMessage('');
 
     await onSend(message);
-
-    setTimeout(() => {
-      const messageBox = document.getElementById('message-box') as HTMLTextAreaElement;
-      if (messageBox) messageBox.focus();
-    }, 1);
   }
 
   const safeAreaBottom = safeArea?.insets.bottom || 0;

@@ -42,7 +42,7 @@ const SettingsPage = () => {
 
 
   useEffect(() => {
-    if (Capacitor.getPlatform() !== 'ios') return;
+    if (!Capacitor.isNativePlatform()) return;
     Keyboard.setResizeMode({ mode: KeyboardResize.None });
 
     return () => {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, theme } from '../../Jet';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
@@ -11,6 +11,8 @@ import ChatMembersList from './ChatMembersList';
 import useAuth from '../../contexts/AuthContext';
 import Avatar from '../Avatar';
 import useDataCache from '../../contexts/DataCacheContext';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 
 const LabelStyle = styled.label`
@@ -35,6 +37,15 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
   const { safeArea } = useDataCache();
   const { addNotification } = useNotifications();
 
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    Keyboard.setResizeMode({ mode: KeyboardResize.None });
+
+    return () => {
+      Keyboard.setResizeMode({ mode: KeyboardResize.Native });
+    }
+  }, [open]);
 
   const onNameChange = (str: string) => {
     const typed = str.slice(name.length);
@@ -83,7 +94,11 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           onChanged={onNameChange}
           error={nameError}
           onBlur={setChatName}
-          onKeyDown={e => e.key === 'Enter' && setChatName()}
+          onKeyDown={e => {
+            if (e.key !== 'Enter') return;
+            setChatName();
+            (e.target as HTMLInputElement).blur();
+          }}
           fullWidth
           enterKeyHint="done"
         />
@@ -117,7 +132,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
         {chat.owner === user?._id && (
           <Box justifyContent="center">
-            <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: `calc(0.4rem + 1.2rem + ${safeArea?.insets.bottom || 0}px)`, padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
+            <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: `calc(1.4rem)`, padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
               <Icon icon={IconEnum.trash} size={24} />
               Delete Chat
             </Button>
