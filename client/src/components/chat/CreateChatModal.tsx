@@ -101,7 +101,12 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
         onChanged={onNameChange}
         error={nameError}
         onBlur={validate}
+        onKeyDown={e => {
+          if (e.key === 'Enter') validate();
+          (e.target as HTMLInputElement).blur();
+        }}
         disabled={loading}
+        enterKeyHint="done"
       />
 
       <Switch
@@ -129,7 +134,12 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
             onChanged={onPasswordChange}
             error={passwordError}
             onBlur={validate}
+            onKeyDown={e => {
+              if (e.key === 'Enter') validate();
+              (e.target as HTMLInputElement).blur();
+            }}
             disabled={loading}
+            enterKeyHint="done"
           />
         </>
       )}

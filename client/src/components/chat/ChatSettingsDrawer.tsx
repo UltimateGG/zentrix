@@ -83,7 +83,9 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
           onChanged={onNameChange}
           error={nameError}
           onBlur={setChatName}
+          onKeyDown={e => e.key === 'Enter' && setChatName()}
           fullWidth
+          enterKeyHint="done"
         />
 
         <LabelStyle htmlFor="icon">Chat Icon</LabelStyle>
