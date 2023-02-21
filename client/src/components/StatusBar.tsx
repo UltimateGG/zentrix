@@ -10,7 +10,7 @@ interface StatusBarProps {
 const StatusBar = ({ color } : StatusBarProps) => {
   useEffect(() => {
     if (Capacitor.getPlatform() === 'android') NativeStatusBar.setBackgroundColor({ color });
-    else if (Capacitor.getPlatform() === 'ios') NativeStatusBar.setStyle({ style: Style.Light });
+    else if (Capacitor.getPlatform() === 'ios') NativeStatusBar.setStyle({ style: Style.Dark });
   }, [color]);
 
 
