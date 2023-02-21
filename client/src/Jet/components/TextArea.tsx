@@ -16,6 +16,7 @@ export interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement>
   roomForError?: boolean;
   error?: string;
   name?: string;
+  enterKeyHint?: string;
   onHeightChange?: (height: number) => void;
 }
 
@@ -110,6 +111,7 @@ const TextArea = (props: TextAreaProps) => {
         maxRows={maxRows}
         error={error}
         id={props.name}
+        enterKeyHint={props.enterKeyHint}
         onHeightChange={onHeightChange}
       />
 

@@ -119,6 +119,7 @@ const ChatPage = () => {
     <>
       <StatusBar color={theme.colors.background[1]} />
       <Box alignItems="center" style={{
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
@@ -134,6 +135,7 @@ const ChatPage = () => {
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
+      <div style={{ height: `calc(3.6rem + ${safeAreaTop}px` }} />
 
       <Box
         flexDirection="column"
@@ -142,7 +144,7 @@ const ChatPage = () => {
         style={{
           overflowY: 'auto',
           height: '100%',
-          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem)`,
+          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem - ${safeArea?.insets.bottom || 0}px)`,
           scrollBehavior: 'auto',
         }}
       >

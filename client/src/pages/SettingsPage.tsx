@@ -126,7 +126,7 @@ const SettingsPage = () => {
       </SettingStyle>
 
       {process.env.REACT_APP_VERSION && (
-        <small style={{ position: 'absolute', bottom: '4.2rem', left: '50%', transform: 'translateX(-50%)' }}>Zentrix v{process.env.REACT_APP_VERSION}</small>
+        <small style={{ position: 'absolute', bottom: `calc(4.2rem + ${safeArea?.insets.bottom || 0}px)`, left: '50%', transform: 'translateX(-50%)' }}>Zentrix v{process.env.REACT_APP_VERSION}</small>
       )}
     </div>
   );
