@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1');
   res.removeHeader('X-Powered-By');
-  res.setHeader('Access-Control-Allow-Origin', process.env.NODE_ENV === 'DEVELOPMENT' ? req.headers.origin : 'https://zentrix.app');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
   res.setHeader('Access-Control-Allow-Headers', 'Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();

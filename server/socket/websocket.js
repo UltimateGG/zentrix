@@ -34,15 +34,9 @@ const SocketEvent = {
 async function verifyClient(info, done) {
   try {
     const { req } = info;
-    const cookies = req.headers.cookie?.split('; ').reduce((acc, cookie) => {
-      const [key, value] = cookie.split('=');
-      acc[key] = value;
-      return acc;
-    }, {}) || {};
-
-    if (!cookies.zxtoken) return done(false);
+    const token = decryptToken(req.url.split('?n=')[1]);
+    if (!token || token === 'null') return done(false);
   
-    const token = cookies.zxtoken;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded || !decoded.id) return done(false);
   
@@ -52,9 +46,7 @@ async function verifyClient(info, done) {
     req.user = user;
     done(true);
     return;
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
 
   done(false);
 }
@@ -89,6 +81,7 @@ const { cachePopulate } = require('./cacheEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
 const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
 const { messageCreate, getMessages } = require('./messageEvents');
+const { dec, decryptToken } = require('../utils/utils');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },

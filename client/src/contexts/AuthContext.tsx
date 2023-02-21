@@ -3,7 +3,7 @@ import { SocketEvent, User } from '../api/apiTypes';
 import LoadingScreen from '../pages/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connect, emit } from '../api/websocket';
-import { logout as apiLogout } from '../api/api';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 
 interface AuthContextProps {
@@ -51,7 +51,8 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }
 
   const logout = async () => {
-    await apiLogout();
+    localStorage.removeItem('zxtoken');
+    await GoogleAuth.signOut();
     setUser(null);
     navigate('/');
   };

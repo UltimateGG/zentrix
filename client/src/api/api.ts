@@ -13,7 +13,12 @@ export const FALLBACK_IMAGE_URL = 'https://zentrixapp.s3.us-east-2.amazonaws.com
 
 const api = axios.create({
   baseURL: `http${DEV ? '' : 's'}://${API_URL}`,
-  withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('zxtoken');
+  if (token) config.headers.authorization = `Bearer ${token}`;
+  return config;
 });
 
 api.interceptors.response.use((response) => response, (error) => {
@@ -26,17 +31,16 @@ api.interceptors.response.use((response) => response, (error) => {
 });
 
 export const loginWithGoogle = async (token: string) => {
+  localStorage.removeItem('zxtoken');
   const res = await api.get('/auth/login', {
     headers: {
       authorization: `Bearer ${token}`,
     }
   });
 
-  return res.data;
-}
+  if (res.data && res.data.token)
+    localStorage.setItem('zxtoken', res.data.token);
 
-export const logout = async () => {
-  const res = await api.get('/auth/logout');
   return res.data;
 }
 

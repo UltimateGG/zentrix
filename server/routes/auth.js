@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const { User, getRandomUserIcon } = require('../models/User');
+const { encryptToken } = require('../utils/utils');
 
 const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
@@ -37,21 +38,8 @@ router.get('/login', asyncHandler(async (req, res) => {
   }
   
   const authToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-
-  res.cookie('zxtoken', authToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'DEVELOPMENT',
-    sameSite: process.env.NODE_ENV === 'DEVELOPMENT' ? 'none' : 'strict',
-    maxAge: 1000 * 60 * 60 * 24 * 30
-  });
-
-  res.json({ message: 'Successfully logged in' });
+  res.json({ token: encryptToken(authToken) });
 }));
-
-router.get('/logout', (req, res) => {
-  res.clearCookie('zxtoken');
-  res.json({ message: 'Successfully logged out' });
-});
 
 
 module.exports = router;

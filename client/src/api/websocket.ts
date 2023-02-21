@@ -9,7 +9,7 @@ let connecting = false;
 
 
 const getWSUrl = (path: string) => {
-  return `ws${DEV ? '' : 's'}://${API_URL}${path}`;
+  return `ws${DEV ? '' : 's'}://${API_URL}${path}?n=${localStorage.getItem('zxtoken')}`;
 }
 
 export const connect = async () => {
@@ -17,9 +17,16 @@ export const connect = async () => {
     if ((ws && ws.readyState !== WebSocket.CLOSED) || connecting) return reject();
     connecting = true;
     ws = new WebSocket(getWSUrl('/socket'));
+
+    const connectionTimeout = setTimeout(() => {
+      if (!ws || ws.readyState !== WebSocket.CONNECTING) return;
+      ws.close();
+      reject();
+    }, 10_000);
   
     ws.onopen = () => {
       connecting = false;
+      clearTimeout(connectionTimeout);
     }
 
     ws.onclose = () => {
@@ -28,6 +35,7 @@ export const connect = async () => {
         connecting = false;
         connect();
       }, reconnectDelay);
+      clearTimeout(connectionTimeout);
       reject();
     }
 
@@ -39,6 +47,7 @@ export const connect = async () => {
     }
   
     ws.onerror = () => {
+      clearTimeout(connectionTimeout);
       reject();
     }
   });
