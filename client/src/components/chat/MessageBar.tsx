@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, TextArea, theme } from '../../Jet';
 import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
+import { Keyboard, KeyboardResize, KeyboardInfo } from '@capacitor/keyboard';
 
 
 interface MessageBoxProps {
@@ -93,6 +93,26 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     return () => document.removeEventListener('click', onClickOutside);
   }, [focused]);
 
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    Keyboard.setResizeMode({ mode: KeyboardResize.Native });
+
+    const onKeyboardWillShow = (e: KeyboardInfo) => {
+      const height = e.keyboardHeight;
+      onResize && onResize(height + (4 + (rows - 2) * 1.2));
+    }
+
+    const onKeyboardWillHide = () => {
+      onResize && onResize(4 + (rows - 2) * 1.2);
+    }
+
+    Keyboard.addListener('keyboardWillShow', onKeyboardWillShow);
+    Keyboard.addListener('keyboardWillHide', onKeyboardWillHide);
+    return () => {
+      Keyboard.removeAllListeners();
+    }
+  }, [rows]);
+
   const onType = (string: string) => {
     setMessage(string);
 
@@ -149,7 +169,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         onHeightChange={(height: number) => {
           const rows = Math.round(height / 20);
           setRows(rows);
-          onResize && onResize((4 + (rows - 2) * 1.2));
+          onResize && onResize(4 + (rows - 2) * 1.2);
         }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}

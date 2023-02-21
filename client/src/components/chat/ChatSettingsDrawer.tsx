@@ -61,6 +61,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
     if (!isAsciiPrintable(name)) return setNameError('Invalid characters in name');
     setNameError('');
 
+    if (name === chat.title) return;
     emitWithRes(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name }).catch(e => {
       addNotification({ variant: 'danger', text: e.message, seconds: 10, dismissable: true });
     });
