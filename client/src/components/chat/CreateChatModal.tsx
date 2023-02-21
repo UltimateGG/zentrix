@@ -102,7 +102,8 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
         error={nameError}
         onBlur={validate}
         onKeyDown={e => {
-          if (e.key === 'Enter') validate();
+          if (e.key !== 'Enter') return;
+          validate();
           (e.target as HTMLInputElement).blur();
         }}
         disabled={loading}
@@ -135,7 +136,8 @@ const CreateChatModal = ({ open, onClose }: CreateChatModalProps) => {
             error={passwordError}
             onBlur={validate}
             onKeyDown={e => {
-              if (e.key === 'Enter') validate();
+              if (e.key !== 'Enter') return;
+              validate();
               (e.target as HTMLInputElement).blur();
             }}
             disabled={loading}
