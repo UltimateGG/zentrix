@@ -96,22 +96,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-
-    const onKeyboardWillShow = (e: KeyboardInfo) => {
-      const height = e.keyboardHeight;
-      onResize && onResize(height + (4 + (rows - 2) * 1.2));
-    }
-
-    const onKeyboardWillHide = () => {
-      onResize && onResize(4 + (rows - 2) * 1.2);
-    }
-
-    Keyboard.addListener('keyboardWillShow', onKeyboardWillShow);
-    Keyboard.addListener('keyboardWillHide', onKeyboardWillHide);
-    return () => {
-      Keyboard.removeAllListeners();
-    }
-  }, [rows]);
+  });
 
   const onType = (string: string) => {
     setMessage(string);
