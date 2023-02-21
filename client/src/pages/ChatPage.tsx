@@ -124,9 +124,9 @@ const ChatPage = () => {
         left: 0,
         right: 0,
         zIndex: 2,
-        height: `calc(3.6rem + ${safeAreaTop}px)`,
-        padding: '1rem 0.2rem',
-        paddingTop: safeAreaTop === 0 ? '1rem' : safeAreaTop,
+        height: `calc(3.2rem + ${safeAreaTop}px)`,
+        padding: '0.2rem',
+        paddingTop: safeAreaTop === 0 ? '0.2' : safeAreaTop,
         backgroundColor: theme.colors.background[1]
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
@@ -135,7 +135,7 @@ const ChatPage = () => {
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
-      <div style={{ height: `calc(3.6rem + ${safeAreaTop}px` }} />
+      <div style={{ height: `calc(3.2rem + ${safeAreaTop}px` }} />
 
       <Box
         flexDirection="column"
@@ -144,7 +144,7 @@ const ChatPage = () => {
         style={{
           overflowY: 'auto',
           height: '100%',
-          maxHeight: `calc(100vh - 3.6rem - ${messageBarHeight}rem - ${safeArea?.insets.bottom || 0}px)`,
+          maxHeight: `calc(100% - 3.2rem - ${messageBarHeight}rem - ${safeArea?.insets.bottom || 0}px)`,
           scrollBehavior: 'auto',
         }}
       >

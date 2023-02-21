@@ -79,6 +79,20 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     return () => messageBox.removeEventListener('keydown', onKeyDown);
   });
 
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (!focused) return;
+      const target = e.target as HTMLElement;
+      if (!target) return;
+
+      if (!target.closest('#message-box') && Capacitor.getPlatform() === 'ios')
+        Keyboard.hide();
+    }
+
+    document.addEventListener('click', onClickOutside);
+    return () => document.removeEventListener('click', onClickOutside);
+  }, [focused]);
+
   const onType = (string: string) => {
     setMessage(string);
 
@@ -145,7 +159,6 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         error={error}
-        enterKeyHint="send"
       />
 
       <Icon

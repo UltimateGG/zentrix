@@ -24,15 +24,15 @@ const ChatListPage = () => {
         left: 0,
         right: 0,
         zIndex: 2,
-        height: `calc(3.6rem + ${safeAreaTop}px)`,
-        padding: '1rem',
-        paddingTop: safeAreaTop === 0 ? '1rem' : safeAreaTop,
+        height: `calc(3.2rem + ${safeAreaTop}px)`,
+        padding: '0.2rem 1rem',
+        paddingTop: safeAreaTop === 0 ? '0.2rem' : safeAreaTop,
         backgroundColor: theme.colors.background[1]
       }}>
         <h2 style={{ margin: 0 }}>Chats</h2>
         <Icon icon={IconEnum.add_chat} style={{ cursor: 'pointer' }} size={32} onClick={() => setCreateChatModalOpen(true)} />
       </Box>
-      <div style={{ height: `calc(3.6rem + ${safeAreaTop}px` }} />
+      <div style={{ height: `calc(3.2rem + ${safeAreaTop}px` }} />
 
       {loading ? (
         <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
