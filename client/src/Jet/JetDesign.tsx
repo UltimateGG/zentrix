@@ -22,6 +22,8 @@ const getGlobalStyles = () => `
     height: 100%;
     background-color: ${theme.colors.background[0]};
     font-size: ${theme.fontSize};
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
   button {
