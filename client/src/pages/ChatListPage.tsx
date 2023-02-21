@@ -47,7 +47,7 @@ const ChatListPage = () => {
         )}
 
         {chats.length > 0 && (
-          <Box flexDirection="column" style={{ paddingBottom: '3.6rem' }}>
+          <Box flexDirection="column" style={{ paddingBottom: `calc(6.6rem + ${safeArea?.insets.bottom || 0}px)`, height: '100%', overflowY: 'auto' }}>
             {chats.map(chat => (
               <ChatEntry key={chat._id} chat={chat} />
             ))}

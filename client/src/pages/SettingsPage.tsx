@@ -121,6 +121,7 @@ const SettingsPage = () => {
             onBlur={updateDisplayName}
             style={{ marginTop: '1rem' }}
             autoFocus
+            enterKeyHint="done"
           />
         ) : (
           <h2 style={{ textAlign: 'center', marginTop: '0.6rem', marginBottom: 0 }}>{displayName}</h2>

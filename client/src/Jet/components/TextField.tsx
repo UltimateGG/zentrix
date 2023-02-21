@@ -16,6 +16,7 @@ export interface TextFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: string;
   name?: string;
   autoFocus?: boolean;
+  enterKeyHint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send';
 }
 
 const TextFieldContainerStyle = styled.div.attrs((props: TextFieldProps) => props)`
@@ -105,6 +106,7 @@ const TextField = (props: TextFieldProps) => {
         error={error}
         autoFocus={autoFocus}
         id={props.name}
+        enterKeyHint={props.enterKeyHint}
       />
       
       {(error || roomForError) && <ErrorTextStyle style={{ visibility: roomForError && !error ? 'hidden' : 'visible' }} theme={theme}>
