@@ -24,7 +24,7 @@ const TitleStyle = styled.h4`
 const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
-  const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading } = useDataCache();
+  const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading, safeArea } = useDataCache();
   const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
   const [messageBarHeight, setMessageBarHeight] = React.useState(4);
@@ -113,6 +113,8 @@ const ChatPage = () => {
   const hasFirstMessage = chatMessages?.hasFirstMessage;
   if ((!chatMessages || !chatMessages.messages.length) && !hasFirstMessage) loadMoreMessages();
 
+  const safeAreaTop = safeArea?.insets.top || 0;
+
   return (
     <>
       <StatusBar color={theme.colors.background[1]} />
@@ -121,8 +123,9 @@ const ChatPage = () => {
         left: 0,
         right: 0,
         zIndex: 2,
-        height: '3.6rem',
+        height: `calc(3.6rem + ${safeAreaTop}px)`,
         padding: '1rem 0.2rem',
+        paddingTop: safeAreaTop === 0 ? '1rem' : safeAreaTop,
         backgroundColor: theme.colors.background[1]
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />

@@ -10,6 +10,7 @@ import DeleteChatModal from './DeleteChatModal';
 import ChatMembersList from './ChatMembersList';
 import useAuth from '../../contexts/AuthContext';
 import Avatar from '../Avatar';
+import useDataCache from '../../contexts/DataCacheContext';
 
 
 const LabelStyle = styled.label`
@@ -31,6 +32,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
   const ref = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
+  const { safeArea } = useDataCache();
   const { addNotification } = useNotifications();
 
 
@@ -73,7 +75,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
   return (
     <>
-      <Drawer side="right" open={open} onClose={onClose} closeOnOutsideClick style={{ minWidth: '30vw' }}>
+      <Drawer side="right" open={open} onClose={onClose} closeOnOutsideClick style={{ minWidth: '30vw' }} pt={safeArea?.insets.top || 0} pb={safeArea?.insets.bottom || 0}>
         <LabelStyle htmlFor="name">Chat Name</LabelStyle>
         <TextField
           name="name"
@@ -113,7 +115,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
         {chat.owner === user?._id && (
           <Box justifyContent="center">
-            <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: '0.4rem', padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
+            <Button variant="outlined" color="danger" style={{ position: 'fixed', bottom: `calc(0.4rem + 1.2rem + ${safeArea?.insets.bottom || 0}px)`, padding: '0.4rem 0.8rem' }} onClick={() => setConfirmDeleteModal(true)}>
               <Icon icon={IconEnum.trash} size={24} />
               Delete Chat
             </Button>

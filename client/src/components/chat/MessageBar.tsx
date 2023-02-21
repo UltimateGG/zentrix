@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useDataCache from '../../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, TextArea, theme } from '../../Jet';
 
 
@@ -12,6 +13,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   const [canSend, setCanSend] = useState(false);
   const [error, setError] = useState('');
   const [rows, setRows] = useState(1);
+  const { safeArea } = useDataCache();
 
 
   useEffect(() => {
@@ -98,6 +100,8 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     }, 1);
   }
 
+  const safeAreaBottom = safeArea?.insets.bottom || 0;
+
   return (
     <Box
       alignItems="center"
@@ -108,8 +112,9 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         left: 0,
         right: 0,
         overflowY: 'auto',
-        height: 4 + (rows - 2) * 1.2 + 'rem',
+        height: `calc(${4 + (rows - 2) * 1.2 + 'rem'} + ${safeAreaBottom}px)`,
         padding: '0 1rem',
+        paddingBottom: safeAreaBottom,
         backgroundColor: theme.colors.background[1]
       }}
     >
@@ -131,7 +136,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         onHeightChange={(height: number) => {
           const rows = Math.round(height / 20);
           setRows(rows);
-          onResize && onResize(4 + (rows - 2) * 1.2);
+          onResize && onResize((4 + (rows - 2) * 1.2) + (safeAreaBottom / 16));
         }}
         error={error}
       />

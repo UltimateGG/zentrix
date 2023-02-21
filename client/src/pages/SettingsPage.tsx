@@ -8,6 +8,7 @@ import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
 import { Box, Progress, TextField, theme } from '../Jet';
 import StatusBar from '../components/StatusBar';
+import useDataCache from '../contexts/DataCacheContext';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
@@ -29,6 +30,7 @@ const SettingStyle = styled(Box).attrs((props: any) => props)`
 
 const SettingsPage = () => {
   const { user, logout } = useAuth();
+  const { safeArea } = useDataCache();
   const { addNotification } = useNotifications();
   const [editingDisplayName, setEditingDisplayName] = React.useState(false);
   const [displayName, setDisplayName] = React.useState(user?.displayName || '');
@@ -70,13 +72,16 @@ const SettingsPage = () => {
     }
   }
 
+  const safeAreaTop = safeArea?.insets.top || 0;
+
   if (!user) return null;
   return (
     <div>
       <StatusBar color={theme.colors.background[1]} />
       <Box justifyContent="center" alignItems="center" style={{
-        height: '3.6rem',
+        height: `calc(3.6rem + ${safeAreaTop}px)`,
         padding: '1rem 2rem',
+        paddingTop: safeAreaTop === 0 ? '1rem' : safeAreaTop,
         textAlign: 'center',
         backgroundColor: theme.colors.background[1]
       }}>

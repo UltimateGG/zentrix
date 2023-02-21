@@ -10,6 +10,8 @@ export interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   open?: boolean;
   onClose?: () => void;
   closeOnOutsideClick?: boolean;
+  pt: number;
+  pb: number;
 }
 
 const DrawerStyle = styled.div.attrs((props: DrawerProps) => props)`
@@ -20,7 +22,8 @@ const DrawerStyle = styled.div.attrs((props: DrawerProps) => props)`
   transition: transform 0.3s ease-in-out;
   transform: ${props => props.open ? 'translateX(0)' : `translateX(${props.side === 'right' ? '' : '-'}105%)`};
   padding: 0.6rem;
-  padding-top: 1.2rem;
+  padding-top: calc(1.2rem + ${props => props.pt || 0}px);
+  padding-bottom: calc(1.2rem + ${props => props.pb || 0}px);
   min-width: 8vw;
   max-width: 30vw;
   overflow: auto;
@@ -88,7 +91,7 @@ const Drawer = (props: DrawerProps) => {
         size={24}
         style={{
           position: 'absolute',
-          top: '0.2rem',
+          top: `calc(0.2rem + ${props.pt || 0}px)`,
           right: '0.2rem',
           cursor: 'pointer',
         }}
