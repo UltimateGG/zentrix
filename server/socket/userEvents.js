@@ -18,6 +18,7 @@ const setLastChat = async (user, payload) => {
 
 const setLastScreen = async (user, payload) => {
   user.lastScreen = payload.screen;
+  user.lastChat = null;
   await user.save();
 }
 

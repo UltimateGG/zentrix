@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
+import useNav from '../../contexts/NavigationContext';
 import { Box, Icon, IconEnum, theme } from '../../Jet';
 import Avatar from '../Avatar';
 
@@ -35,11 +35,11 @@ interface ChatEntryProps {
 
 const ChatEntry = ({ chat }: ChatEntryProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const { setCurrentChat } = useNav();
   
 
   const openChat = () => {
-    navigate(`/chats/${chat._id}`);
+    setCurrentChat(chat._id);
     emit(SocketEvent.SET_LAST_CHAT, { id: chat._id });
     if (user) user.lastChat = chat._id;
   }

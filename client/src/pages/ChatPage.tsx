@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emitWithRes } from '../api/websocket';
@@ -13,6 +12,7 @@ import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
 import { Haptics } from '@capacitor/haptics';
 import ContextMenu from '../components/chat/ContextMenu';
+import useNav, { Page } from '../contexts/NavigationContext';
 
 
 const TitleStyle = styled.h4`
@@ -24,27 +24,24 @@ const TitleStyle = styled.h4`
 `;
 
 const ChatPage = () => {
-  const { chatId } = useParams();
+  const { navigate, currentChat } = useNav();
   const { user } = useAuth();
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading, safeArea } = useDataCache();
-  const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === chatId));
+  const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === currentChat));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [messageBarHeight, setMessageBarHeight] = useState(4);
   const [scrolledToBottom, setScrolledToBottom] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [contextMenu, setContextMenu] = useState<Message | null>(null);
-  const navigate = useNavigate();
 
 
   useEffect(() => {
     if (!user || loading) return;
 
-    const index = chats.findIndex(chat => chat._id === chatId);
+    const index = chats.findIndex(chat => chat._id === currentChat);
     setIndex(index);
-
-    if (index !== -1) return;
-    navigate('/chats');
-  }, [user, loading, chatId, chats, navigate]);
+    if (index === -1) navigate(Page.CHAT_LIST);
+  }, [user, loading, currentChat, chats, navigate]);
 
   const onSend = async (string: string) => {
     if (!user || !chat) return;
@@ -132,7 +129,7 @@ const ChatPage = () => {
         paddingTop: safeAreaTop === 0 ? '0.2' : safeAreaTop,
         backgroundColor: theme.colors.background[1]
       }}>
-        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate('/chats')} />
+        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate(Page.CHAT_LIST)} />
         <Avatar src={chat.iconURL} size={2.2} mr={0.8} />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         

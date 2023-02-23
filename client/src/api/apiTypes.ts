@@ -1,3 +1,5 @@
+import { Page } from "../contexts/NavigationContext";
+
 export interface User {
   _id: string;
   googleId: string;
@@ -5,7 +7,7 @@ export interface User {
   iconURL: string;
   displayName: string;
   lastChat: string | null;
-  lastScreen: string | null;
+  lastScreen: Page | null;
   loading?: boolean;
 }
 

@@ -90,9 +90,9 @@ const SettingsPage = () => {
     <div>
       <StatusBar color={theme.colors.background[1]} />
       <Box justifyContent="center" alignItems="center" style={{
-        height: `calc(3.6rem + ${safeAreaTop}px)`,
-        padding: '1rem 2rem',
-        paddingTop: safeAreaTop === 0 ? '1rem' : safeAreaTop,
+        height: `calc(3.2rem + ${safeAreaTop}px)`,
+        padding: '0.2rem 1rem',
+        paddingTop: safeAreaTop === 0 ? '0.2rem' : safeAreaTop,
         textAlign: 'center',
         backgroundColor: theme.colors.background[1]
       }}>

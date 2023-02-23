@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
@@ -8,6 +7,7 @@ import Image from '../components/Image';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
 import StatusBar from '../components/StatusBar';
+import useNav, { Page } from '../contexts/NavigationContext';
 
 
 if (!Capacitor.isNativePlatform()) {
@@ -20,12 +20,12 @@ if (!Capacitor.isNativePlatform()) {
 
 const LoginPage = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const { navigate } = useNav();
   const { addNotification } = useNotifications();
 
   
   useEffect(() => {
-    if (user) navigate(user.lastScreen || '/chats');
+    if (user) navigate(user.lastScreen || Page.CHAT_LIST);
   }, [user, navigate]);
 
   const signIn = async () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { emitWithRes } from '../../api/websocket';
+import useNav, { Page } from '../../contexts/NavigationContext';
 import { Box, Button, Modal } from '../../Jet';
 
 
@@ -13,13 +13,13 @@ interface DeleteChatModalProps {
 
 const DeleteChatModal = ({ open, onClose, chat }: DeleteChatModalProps) => {
   const [deleting, setDeleting] = useState(false);
-  const navigate = useNavigate();
+  const { navigate } = useNav();
 
 
   const deleteChat = async () => {
     setDeleting(true);
     await emitWithRes(SocketEvent.DELETE_CHAT, { id: chat._id }).catch(e => {});
-    navigate('/chats');
+    navigate(Page.CHAT_LIST);
     setDeleting(false);
   }
 

@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { SocketEvent, User } from '../api/apiTypes';
 import LoadingScreen from '../pages/LoadingScreen';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { connect, emit } from '../api/websocket';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import useNav, { Page } from './NavigationContext';
+import LoginPage from '../pages/LoginPage';
 
 
 interface AuthContextProps {
@@ -17,8 +18,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [loggingIn, setLoggingIn] = React.useState(true);
   const [firstLoad, setFirstLoad] = React.useState(true);
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { currentPage, navigate, setCurrentChat } = useNav();
 
 
   useEffect(() => {
@@ -31,20 +31,20 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   // Update last screen
   useEffect(() => {
-    if (!user) return;
-    if (location.pathname === '' || location.pathname === '/') return;
-    if (location.pathname === user.lastScreen) return;
+    if (!user || currentPage === user.lastScreen) return;
 
-    emit(SocketEvent.SET_LAST_SCREEN, { screen: location.pathname });
-    user.lastScreen = location.pathname;
-  }, [location.pathname, user]);
+    emit(SocketEvent.SET_LAST_SCREEN, { screen: currentPage });
+    user.lastScreen = currentPage;
+  }, [currentPage, user]);
 
   const connectToSocket = async () => {
     setLoggingIn(true);
 
     await connect().then(user => {
-      if (user) setUser(user);
-      navigate(user.lastScreen || '/chats');
+      if (!user) return;
+      setUser(user);
+      navigate(user.lastScreen || Page.CHAT_LIST);
+      if (user.lastChat) setCurrentChat(user.lastChat);
     }).catch(console.error);
 
     setLoggingIn(false);
@@ -54,8 +54,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
     localStorage.removeItem('zxtoken');
     await GoogleAuth.signOut();
     setUser(null);
-    navigate('/');
-  };
+  }
 
   const getLoadingScreenStatus = () => {
     if (loggingIn) return 'Logging in...';
@@ -63,8 +62,8 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }
 
   const getContent = () => {
-    if (loggingIn)
-      return (<LoadingScreen status={getLoadingScreenStatus()} />);
+    if (loggingIn) return (<LoadingScreen status={getLoadingScreenStatus()} />);
+    else if (!user) return (<LoginPage />);
 
     return children;
   }
