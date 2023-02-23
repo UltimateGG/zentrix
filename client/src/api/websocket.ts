@@ -46,7 +46,7 @@ export const connect = async () => {
       onEvent(data.event as SocketEvent, data.payload);
     }
   
-    ws.onerror = (e) => {
+    ws.onerror = () => {
       clearTimeout(connectionTimeout);
       reject();
     }

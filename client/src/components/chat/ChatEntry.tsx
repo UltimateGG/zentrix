@@ -13,6 +13,11 @@ const BoxStyle = styled(Box).attrs((props: any) => props)`
   padding: 0.6rem 1rem;
   cursor: pointer;
   position: relative;
+  transition: background-color 0.2s ease-in-out;
+
+  &:active {
+    background-color: ${theme.colors.background[3]};
+  }
 `;
 
 const TruncatedTextStyle = styled.div`

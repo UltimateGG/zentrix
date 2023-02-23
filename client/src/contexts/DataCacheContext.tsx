@@ -123,6 +123,11 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   }, [onCacheUpdate]);
 
   const addMessage = (message: Message) => {
+    if (message.deleted) {
+      removeMessage(message);
+      return;
+    }
+
     setMessages(messages => {
       const chatStore = messages.find(m => m.chat === message.chat);
 

@@ -45,8 +45,22 @@ const getMessages = async (user, payload) => {
   if (messages.length < loadAmount) return { end: true };
 }
 
+const messageDelete = async (user, payload) => {
+  if (!payload.id) return;
+
+  const message = await Message.findById(payload.id);
+  if (!message || message.author.toString() !== user._id.toString()) return;
+
+  const chat = await Chat.findById(message.chat);
+  if (!chat) return;
+
+  await message.delete();
+  cacheUpdate({ messages: [{ _id: message._id, chat: chat._id, deleted: true }] }, chat.members);
+}
+
 
 module.exports = {
   messageCreate,
   getMessages,
+  messageDelete,
 };

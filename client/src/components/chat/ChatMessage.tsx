@@ -1,22 +1,41 @@
 import React from 'react';
+import styled from 'styled-components';
 import { LOGO_URL } from '../../api/api';
 import { Message, MessageType } from '../../api/apiTypes';
 import { formatTime } from '../../api/utils';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, theme } from '../../Jet';
 import Avatar from '../Avatar';
+import useLongPress from '../useLongPress';
 import FormattedMessageContent from './FormattedMessageContext';
 
 
 interface ChatMessageProps {
   message: Message;
   shouldStack?: boolean;
+  onContextMenu?: () => any;
 }
+
+const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
+  width: 100%;
+  word-break: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-top: ${props => !props.shouldStack ? '1rem' : '0.2rem'};
+  background-color: ${props => props.message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit'};
+  padding: ${props => props.message.type === MessageType.SYSTEM ? '0.8rem' : '0 0.8rem'};
+  transition: background-color 0.1s ease-in-out;
+
+  &:active {
+    background-color: ${({ message }) => message.type === MessageType.USER ? theme.colors.background[1] : 'inherit'};
+  }
+`;
 
 const profilePicturesEnabled = true;
 
-const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
+const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) => {
   const { users, removeMessage } = useDataCache();
+  const longPress = useLongPress(onContextMenu);
 
 
   const author = users.find(user => user._id === message.author);
@@ -40,18 +59,7 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
   }
 
   return (
-    <Box
-      spacing="1rem"
-      style={{
-        width: '100%',
-        wordBreak: 'break-word',
-        wordWrap: 'break-word',
-        whiteSpace: 'pre-wrap',
-        marginTop: !shouldStack ? '1rem' : message.type === MessageType.SYSTEM ? '-1rem' : '0.2rem',
-        backgroundColor: message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit',
-        padding: message.type === MessageType.SYSTEM ? '0.8rem' : '0 0.8rem',
-      }}
-    >
+    <MessageStyle spacing="1rem" {...longPress} message={message} shouldStack={shouldStack}>
       {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || LOGO_URL} size={2.6} />}
 
       <Box flexDirection="column" style={{ width: '100%' }}>
@@ -81,7 +89,7 @@ const ChatMessage = ({ message, shouldStack }: ChatMessageProps) => {
           </>}
         </p>
       </Box>
-    </Box>
+    </MessageStyle>
   );
 }
 

@@ -29,6 +29,7 @@ const SocketEvent = {
   // Message
   MESSAGE_CREATE: 'messageCreate',
   GET_MESSAGES: 'getMessages',
+  MESSAGE_DELETE: 'messageDelete',
 };
 
 async function verifyClient(info, done) {
@@ -80,7 +81,7 @@ module.exports = {
 const { cachePopulate } = require('./cacheEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
 const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
-const { messageCreate, getMessages } = require('./messageEvents');
+const { messageCreate, getMessages, messageDelete } = require('./messageEvents');
 const { dec, decryptToken } = require('../utils/utils');
 
 const eventHandlers = [
@@ -97,6 +98,7 @@ const eventHandlers = [
 
   { event: SocketEvent.MESSAGE_CREATE, handler: messageCreate },
   { event: SocketEvent.GET_MESSAGES, handler: getMessages },
+  { event: SocketEvent.MESSAGE_DELETE, handler: messageDelete },
 ];
 
 wss.on('connection', (ws, req) => {

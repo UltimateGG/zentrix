@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
@@ -11,6 +11,8 @@ import StatusBar from '../components/StatusBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
+import { Haptics } from '@capacitor/haptics';
+import ContextMenu from '../components/chat/ContextMenu';
 
 
 const TitleStyle = styled.h4`
@@ -25,11 +27,12 @@ const ChatPage = () => {
   const { chatId } = useParams();
   const { user } = useAuth();
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading, safeArea } = useDataCache();
-  const [index, setIndex] = React.useState<number>(chats.findIndex(chat => chat._id === chatId));
-  const [settingsDrawerOpen, setSettingsDrawerOpen] = React.useState(false);
-  const [messageBarHeight, setMessageBarHeight] = React.useState(4);
-  const [scrolledToBottom, setScrolledToBottom] = React.useState(true);
-  const [loadingMore, setLoadingMore] = React.useState(false);
+  const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === chatId));
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
+  const [messageBarHeight, setMessageBarHeight] = useState(4);
+  const [scrolledToBottom, setScrolledToBottom] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [contextMenu, setContextMenu] = useState<Message | null>(null);
   const navigate = useNavigate();
 
 
@@ -167,6 +170,10 @@ const ChatPage = () => {
                 chatMessages.messages[i - 1].author === message.author
                 && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
               }
+              onContextMenu={() => {
+                Haptics.selectionStart();
+                setContextMenu(message);
+              }}
             />
             {i === chatMessages.messages.length - 1 && (<div style={{ paddingTop: '2rem' }} />)}
           </React.Fragment>
@@ -175,7 +182,8 @@ const ChatPage = () => {
 
       <MessageBar onSend={onSend} onResize={height => setMessageBarHeight(height)} />
 
-      <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />      
+      <ContextMenu message={contextMenu} canDelete={contextMenu ? contextMenu.author === user._id : false} onClose={() => setContextMenu(null)} />
+      <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />
     </>
   );
 }

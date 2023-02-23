@@ -38,6 +38,7 @@ export interface Message {
   // Client side only
   isClientSideOnly?: boolean;
   error?: boolean; 
+  deleted?: boolean;
 }
 
 export interface ChatMessages {
@@ -69,6 +70,7 @@ export enum SocketEvent {
   // Message
   MESSAGE_CREATE = 'messageCreate',
   GET_MESSAGES = 'getMessages',
+  MESSAGE_DELETE = 'messageDelete',
 }
 
 export interface CacheUpdate {
