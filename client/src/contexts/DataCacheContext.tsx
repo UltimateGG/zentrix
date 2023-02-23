@@ -115,7 +115,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
     if (data.messages && data.messages.length > 0)
       data.messages.forEach(addMessage);
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const unsubscribe = subscribe(SocketEvent.CACHE_UPDATE, (d) => onCacheUpdate(d));
