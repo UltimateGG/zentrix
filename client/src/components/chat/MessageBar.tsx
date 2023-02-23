@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, TextArea, theme } from '../../Jet';
 import { Capacitor } from '@capacitor/core';
-import { Keyboard, KeyboardResize, KeyboardInfo } from '@capacitor/keyboard';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 
 interface MessageBoxProps {

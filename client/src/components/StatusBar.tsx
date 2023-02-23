@@ -1,6 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { StatusBar as NativeStatusBar, Style } from '@capacitor/status-bar';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 
 interface StatusBarProps {

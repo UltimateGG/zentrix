@@ -14,7 +14,7 @@ const getWSUrl = (path: string) => {
 
 export const connect = async () => {
   return new Promise<User>(async (resolve, reject) => {
-    if ((ws && ws.readyState !== WebSocket.CLOSED) || connecting) return reject();
+    if ((ws && ws.readyState !== WebSocket.CLOSED) || connecting || !localStorage.getItem('zxtoken')) return reject();
     connecting = true;
     ws = new WebSocket(getWSUrl('/socket'));
 
@@ -46,7 +46,7 @@ export const connect = async () => {
       onEvent(data.event as SocketEvent, data.payload);
     }
   
-    ws.onerror = () => {
+    ws.onerror = (e) => {
       clearTimeout(connectionTimeout);
       reject();
     }

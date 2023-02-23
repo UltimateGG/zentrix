@@ -4,7 +4,11 @@ import { theme } from './theme/Theme';
 
 
 const getGlobalStyles = () => `
-  @import url('${theme.font}');
+  @font-face {
+    font-family: 'Rubik';
+    src: url('${process.env.PUBLIC_URL}/fonts/Rubik-VariableFont_wght.ttf') format('truetype'),
+         url('${process.env.PUBLIC_URL}/fonts/Rubik-Italic-VariableFont_wght.ttf') format('truetype');
+  }
 
   * {
     margin: 0;

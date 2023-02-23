@@ -1,6 +1,5 @@
 export interface Theme {
   fontFamily: string;
-  font: string;
   rounded: string;
   roundedFull: string;
   fontSize: string;
@@ -66,7 +65,6 @@ export const generateColorsArray = (hex: string, amt: number, shade: Shade, inc:
 
 export const theme: Theme = {
   fontFamily: '\'Rubik\', Arial, sans-serif',
-  font: 'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap',
   rounded: '8px',
   roundedFull: '3rem',
   fontSize: '1rem',
