@@ -163,6 +163,15 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
       return [...messages];
     });
+
+    // Remove chat's last message if it was the deleted message
+    setChats(chats => {
+      const chat = chats.find(c => c._id === message.chat);
+      if (chat && chat.lastMessage && chat.lastMessage._id === message._id)
+        chat.lastMessage = null;
+
+      return [...chats];
+    });
   }
 
   const foundFirstMessage = (chat: Chat) => {
