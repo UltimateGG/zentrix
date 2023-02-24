@@ -23,11 +23,6 @@ const UserSchema = new Schema({
     required: true,
     maxLength: 20,
   },
-  lastChat: {
-    type: Schema.Types.ObjectId,
-    ref: 'chats',
-    default: null
-  },
   lastScreen: {
     type: Number,
     default: 0 // LOGIN

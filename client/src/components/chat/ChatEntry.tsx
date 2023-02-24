@@ -40,8 +40,6 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
 
   const openChat = () => {
     setCurrentChat(chat._id);
-    emit(SocketEvent.SET_LAST_CHAT, { id: chat._id });
-    if (user) user.lastChat = chat._id;
   }
 
   return (

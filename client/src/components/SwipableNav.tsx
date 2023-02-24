@@ -12,13 +12,12 @@ import SwipableOverlay from './SwipableOverlay';
 
 
 const SwipableNav = () => {
-  const { currentPage, currentChat, setCurrentChat, navigate, init, initilized } = useNav();
+  const { currentPage, currentChat, setCurrentChat, navigate, init, initialized } = useNav();
 
   
   const onCloseChat = () => {
     navigate(Page.CHAT_LIST);
     setCurrentChat(null);
-    emit(SocketEvent.SET_LAST_CHAT, { id: null });
   }
 
   return (
@@ -26,8 +25,8 @@ const SwipableNav = () => {
       <Swiper
         onInit={s => init(s)}
         onSlideChange={e => navigate(e.activeIndex)}
-        allowSlidePrev={!initilized || currentPage !== Page.CHAT_LIST}
-        allowSlideNext={!initilized || currentPage !== Page.SETTINGS}
+        allowSlidePrev={!initialized || currentPage !== Page.CHAT_LIST}
+        allowSlideNext={!initialized || currentPage !== Page.SETTINGS}
         style={{ height: '100%' }}
       >
         <SwiperSlide><ChatListPage /></SwiperSlide>

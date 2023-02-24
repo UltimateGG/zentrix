@@ -104,7 +104,6 @@ const ChatPage = () => {
   const handleClose = () => {
     navigate(Page.CHAT_LIST);
     setCurrentChat(null);
-    emit(SocketEvent.SET_LAST_CHAT, { id: null });
   }
 
   const chat = chats[index];

@@ -105,7 +105,7 @@ const queueRequest = (event: SocketEvent, payload: any) => {
   }
 
   // Remove any previous requests for the same event type
-  if (event === SocketEvent.SET_LAST_CHAT || event === SocketEvent.SET_LAST_SCREEN) {
+  if (event === SocketEvent.SET_LAST_SCREEN) {
     queue.forEach((request: any, index: number) => {
       if (request.event === event) queue.splice(index, 1);
     });

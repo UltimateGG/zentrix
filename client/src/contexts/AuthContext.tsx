@@ -26,7 +26,13 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
     try {
       const self = localStorage.getItem(CACHE_KEY + 'user');
-      if (self) setUser(JSON.parse(self));
+      if (self) {
+        const parsed = JSON.parse(self) as User;
+        setUser(parsed);
+
+        const lastScreen = localStorage.getItem('lastScreen');
+        if (lastScreen) navigate(parseInt(lastScreen));
+      }
     } catch (e) {}
 
     connectToSocket();
@@ -35,10 +41,11 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   // Update last screen
   useEffect(() => {
-    if (!user || currentPage === user.lastScreen) return;
+    if (!user || currentPage === user.lastScreen || currentPage === null) return;
 
     emit(SocketEvent.SET_LAST_SCREEN, { screen: currentPage });
     user.lastScreen = currentPage;
+    localStorage.setItem('lastScreen', currentPage + '');
   }, [currentPage, user]);
 
   const connectToSocket = async () => {
@@ -46,7 +53,6 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
       if (!user) return;
       setUser(user);
       navigate(user.lastScreen || Page.CHAT_LIST);
-      if (user.lastChat) setCurrentChat(user.lastChat);
     }).catch(console.error);
   }
 

@@ -141,11 +141,6 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
               }
             });
 
-            if (user && user.lastChat && chat._id === user.lastChat) {
-              emitWithRes(SocketEvent.SET_LAST_CHAT, { id: null }).catch(e => {});
-              user.lastChat = null;
-            }
-
             return newChats;
           } else if (index === -1) {
             return [...chats, chat];

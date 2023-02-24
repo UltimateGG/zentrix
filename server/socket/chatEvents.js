@@ -53,9 +53,6 @@ const deleteChat = async (user, payload) => {
   await chat.remove();
   await Message.deleteMany({ chat: chat._id });
 
-  user.lastChat = null;
-  await user.save();
-
   cacheUpdate({ chats: [{ ...chat.toJSON(), members: [] }] }, chat.members);
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { loginWithGoogle, LOGO_URL } from '../api/api';
 import useAuth from '../contexts/AuthContext';
 import useNotifications from '../Jet/NotificationContext';
@@ -10,19 +10,26 @@ import StatusBar from '../components/StatusBar';
 import useNav, { Page } from '../contexts/NavigationContext';
 
 
-if (!Capacitor.isNativePlatform()) {
-  GoogleAuth.initialize({
-    clientId: '1081704696779-p54joiqdcdck56d1951q175r73ekmomm.apps.googleusercontent.com',
-    scopes: ['profile', 'email'],
-    grantOfflineAccess: true,
-  });
-}
-
 const LoginPage = () => {
   const { user } = useAuth();
   const { navigate } = useNav();
   const { addNotification } = useNotifications();
+  const [init, setInit] = useState(false);
 
+
+  useEffect(() => {
+    if (init) return;
+
+    if (!Capacitor.isNativePlatform()) {
+      GoogleAuth.initialize({
+        clientId: '1081704696779-p54joiqdcdck56d1951q175r73ekmomm.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+        grantOfflineAccess: true,
+      });
+    }
+
+    setInit(true);
+  }, [init]);
   
   useEffect(() => {
     if (user) navigate(user.lastScreen || Page.CHAT_LIST);
