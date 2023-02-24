@@ -1,5 +1,3 @@
-import { Page } from "../contexts/NavigationContext";
-
 export interface User {
   _id: string;
   googleId: string;

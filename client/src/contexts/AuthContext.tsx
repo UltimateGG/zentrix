@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { SocketEvent, User } from '../api/apiTypes';
-import { connect, emit } from '../api/websocket';
+import { User } from '../api/apiTypes';
+import { connect } from '../api/websocket';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import useNav, { Page } from './NavigationContext';
+import useNav from './NavigationContext';
 import LoginPage from '../pages/LoginPage';
 import { CACHE_KEY } from './DataCacheContext';
 
@@ -17,7 +17,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   const [user, setUser] = useState<User | null>(null);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const { currentPage, navigate, setCurrentChat } = useNav();
+  const { currentPage, navigate } = useNav();
 
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   // Update last screen
   useEffect(() => {
-    if (!user || currentPage === null) return;
+    if (currentPage === null) return;
     localStorage.setItem('lastScreen', currentPage + '');
   }, [currentPage]);
 

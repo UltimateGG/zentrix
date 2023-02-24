@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
-import { emit, emitWithRes } from '../api/websocket';
+import { emitWithRes } from '../api/websocket';
 import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';

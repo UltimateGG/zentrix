@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Chat, SocketEvent } from '../../api/apiTypes';
-import { emit } from '../../api/websocket';
-import useAuth from '../../contexts/AuthContext';
+import { Chat } from '../../api/apiTypes';
 import useNav from '../../contexts/NavigationContext';
 import { Box, Icon, IconEnum, theme } from '../../Jet';
 import Avatar from '../Avatar';
@@ -34,7 +32,6 @@ interface ChatEntryProps {
 }
 
 const ChatEntry = ({ chat }: ChatEntryProps) => {
-  const { user } = useAuth();
   const { setCurrentChat } = useNav();
   
 

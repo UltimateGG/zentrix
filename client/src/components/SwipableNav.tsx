@@ -6,8 +6,6 @@ import useNav, { Page } from '../contexts/NavigationContext';
 import 'swiper/css';
 import Navbar from './Navbar';
 import ChatPage from '../pages/ChatPage';
-import { emit } from '../api/websocket';
-import { SocketEvent } from '../api/apiTypes';
 import SwipableOverlay from './SwipableOverlay';
 
 
