@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
-import { emitWithRes } from '../api/websocket';
+import { emit, emitWithRes } from '../api/websocket';
 import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
@@ -24,7 +24,7 @@ const TitleStyle = styled.h4`
 `;
 
 const ChatPage = () => {
-  const { navigate, currentChat } = useNav();
+  const { navigate, currentChat, setCurrentChat } = useNav();
   const { user } = useAuth();
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading, safeArea } = useDataCache();
   const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === currentChat));
@@ -101,10 +101,16 @@ const ChatPage = () => {
     setLoadingMore(false);
   }
 
+  const handleClose = () => {
+    navigate(Page.CHAT_LIST);
+    setCurrentChat(null);
+    emit(SocketEvent.SET_LAST_CHAT, { id: null });
+  }
+
   const chat = chats[index];
   if (!user || !chat || loading)
     return (
-      <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
+      <Box justifyContent="center" alignItems="center" style={{ marginTop: '6rem' }}>
         <Progress circular indeterminate />
       </Box>
     );
@@ -129,7 +135,7 @@ const ChatPage = () => {
         paddingTop: safeAreaTop === 0 ? '0.2' : safeAreaTop,
         backgroundColor: theme.colors.background[1]
       }}>
-        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={() => navigate(Page.CHAT_LIST)} />
+        <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={handleClose} />
         <Avatar src={chat.iconURL} size={2.2} mr={0.8} />
         <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
         

@@ -11,10 +11,6 @@ const icons = [
     icon: IconEnum.menu,
   },
   {
-    page: Page.CHAT_LIST,
-    icon: IconEnum.chat_filled,
-  },
-  {
     page: Page.SETTINGS,
     icon: IconEnum.user,
   }

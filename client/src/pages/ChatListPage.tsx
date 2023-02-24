@@ -35,7 +35,7 @@ const ChatListPage = () => {
       <div style={{ height: `calc(3.2rem + ${safeAreaTop}px` }} />
 
       {loading ? (
-        <Box justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
+        <Box justifyContent="center" alignItems="center" style={{ marginTop: '6rem' }}>
           <Progress circular indeterminate />
         </Box>
       ) : (<>

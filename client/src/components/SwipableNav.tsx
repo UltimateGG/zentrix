@@ -5,10 +5,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import useNav, { Page } from '../contexts/NavigationContext';
 import 'swiper/css';
 import Navbar from './Navbar';
+import ChatPage from '../pages/ChatPage';
+import DraggableOverlay from './DraggableOverlay';
+import { emit } from '../api/websocket';
+import { SocketEvent } from '../api/apiTypes';
 
 
 const SwipableNav = () => {
-  const { currentPage, navigate, init, initilized } = useNav();
+  const { currentPage, currentChat, setCurrentChat, navigate, init, initilized } = useNav();
 
 
   return (
@@ -23,6 +27,16 @@ const SwipableNav = () => {
         <SwiperSlide><ChatListPage /></SwiperSlide>
         <SwiperSlide><SettingsPage /></SwiperSlide>
       </Swiper>
+
+      {currentChat &&
+        <DraggableOverlay onClose={() => {
+          navigate(Page.CHAT_LIST);
+          setCurrentChat(null);
+          emit(SocketEvent.SET_LAST_CHAT, { id: null });
+        }}>
+          <ChatPage />
+        </DraggableOverlay>
+      }
 
       <Navbar />
     </>
