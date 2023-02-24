@@ -8,6 +8,14 @@ let reconnectTimeout: NodeJS.Timeout | null = null;
 let connecting = false;
 
 
+let lastPing = Date.now();
+
+setInterval(() => {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+  if (Date.now() - lastPing > 10_000 + 2_000) ws.close();
+}, 10_000);
+
 const getWSUrl = (path: string) => {
   return `ws${DEV ? '' : 's'}://${API_URL}${path}?n=${localStorage.getItem('zxtoken')}`;
 }
@@ -26,6 +34,7 @@ export const connect = async () => {
   
     ws.onopen = () => {
       connecting = false;
+      lastPing = Date.now();
       clearTimeout(connectionTimeout);
     }
 
@@ -42,6 +51,10 @@ export const connect = async () => {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.event === SocketEvent.CONNECT) return resolve(data.payload as User);
+      else if (data.event === SocketEvent.PING) {
+        lastPing = Date.now();
+        return ws?.send(JSON.stringify({ event: SocketEvent.PONG }));
+      }
 
       onEvent(data.event as SocketEvent, data.payload);
     }

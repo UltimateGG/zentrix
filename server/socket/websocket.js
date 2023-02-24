@@ -8,6 +8,8 @@ const { User } = require('../models/User');
 const SocketEvent = {
   _ALL: '_all',
   CONNECT: 'connect', // Outbound only
+  PING: 'ping', // Outbound only
+  PONG: 'pong', // Inbound only
 
   ACK: 'ack',
 
@@ -82,7 +84,7 @@ const { cachePopulate } = require('./cacheEvents');
 const { setDisplayName, setLastScreen, setLastChat } = require('./userEvents');
 const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
 const { messageCreate, getMessages, messageDelete } = require('./messageEvents');
-const { dec, decryptToken } = require('../utils/utils');
+const { decryptToken } = require('../utils/utils');
 
 const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
@@ -102,6 +104,7 @@ const eventHandlers = [
 ];
 
 wss.on('connection', (ws, req) => {
+  ws.isAlive = true;
   ws.user = req.user;
   send(ws, 'connect', req.user);
 
@@ -109,6 +112,11 @@ wss.on('connection', (ws, req) => {
     try {
       const { event, payload } = JSON.parse(message);
       const replyTo = payload?.replyTo;
+
+      if (event === SocketEvent.PONG) {
+        ws.isAlive = true;
+        return;
+      }
       
       const handler = eventHandlers.find((h) => h.event === event)?.handler;
       if (!handler) return logger.logWarn(`No handler for event ${event}`);
@@ -127,3 +135,13 @@ wss.on('connection', (ws, req) => {
     }
   });
 });
+
+setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (ws.isAlive === false) return ws.terminate();
+
+    ws.isAlive = false;
+    send(ws, SocketEvent.PING, {});
+  });
+}, 10_000);
+

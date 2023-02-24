@@ -52,6 +52,8 @@ export interface ChatMessages {
 export enum SocketEvent {
   _ALL = '_all',
   CONNECT = 'connect', // Inbound only
+  PING = 'ping', // Inbound only
+  PONG = 'pong', // Outbound only
 
   ACK = 'ack',
 

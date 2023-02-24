@@ -1,7 +1,6 @@
 const key = process.env.TOKEN_ENCRYPTION_KEY || 'tkn';
 
 
-
 const encryptToken = (str) => {
   let hexString = '';
   for (let i = 0; i < str.length; i++)
