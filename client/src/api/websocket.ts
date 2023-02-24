@@ -94,7 +94,11 @@ export const subscribe = (event: SocketEvent, callback: (payload: any) => void) 
   }
 }
 
+const OFFLINE_IGNORED_EVENTS = [
+  SocketEvent.GET_MESSAGES
+];
 const queueRequest = (event: SocketEvent, payload: any) => {
+  if (OFFLINE_IGNORED_EVENTS.includes(event)) return;
   let queue: any[] = [];
 
   try {
@@ -121,12 +125,7 @@ setInterval(() => {
   localStorage.setItem('wsQueue', JSON.stringify(queue));
 }, 300);
 
-export const emit = (event: SocketEvent, payload: any) => {
-  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ event, payload }));
-  else queueRequest(event, payload);
-}
-
-export const emitWithRes = async (event: SocketEvent, payload: any) => {
+export const emit = async (event: SocketEvent, payload: any) => {
   return new Promise<any>((resolve, reject) => {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
       queueRequest(event, payload);

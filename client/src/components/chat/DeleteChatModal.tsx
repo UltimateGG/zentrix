@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Chat, SocketEvent } from '../../api/apiTypes';
-import { emitWithRes } from '../../api/websocket';
+import { emit } from '../../api/websocket';
 import useNav, { Page } from '../../contexts/NavigationContext';
 import { Box, Button, Modal } from '../../Jet';
 
@@ -18,7 +18,7 @@ const DeleteChatModal = ({ open, onClose, chat }: DeleteChatModalProps) => {
 
   const deleteChat = async () => {
     setDeleting(true);
-    await emitWithRes(SocketEvent.DELETE_CHAT, { id: chat._id }).catch(e => {});
+    await emit(SocketEvent.DELETE_CHAT, { id: chat._id }).catch(e => {});
     navigate(Page.CHAT_LIST);
     setCurrentChat(null);
     setDeleting(false);

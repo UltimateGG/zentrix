@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
-import { emitWithRes } from '../api/websocket';
+import { emit } from '../api/websocket';
 import Avatar from '../components/Avatar';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
@@ -56,7 +56,7 @@ const ChatPage = () => {
     };
 
     addMessage({ ...message, type: MessageType.PENDING });
-    await emitWithRes(SocketEvent.MESSAGE_CREATE, message).catch(e => {
+    await emit(SocketEvent.MESSAGE_CREATE, message).catch(e => {
       if (e.message === 'Request timed out') return;
       removeMessage(message); // remove pending message
       addMessage({
@@ -95,7 +95,7 @@ const ChatPage = () => {
     setLoadingMore(true); // find first msg that isnt client side
     const firstMsg = messages.find(m => m.chat === chat._id)?.messages.find(m => !m.isClientSideOnly);
     
-    const res = await emitWithRes(SocketEvent.GET_MESSAGES, { chat: chat._id, before: firstMsg?.createdAt || Date.now() }).catch(e => {});
+    const res = await emit(SocketEvent.GET_MESSAGES, { chat: chat._id, before: firstMsg?.createdAt || Date.now() }).catch(e => {});
 
     if (res && res.end) foundFirstMessage(chat);
     setLoadingMore(false);

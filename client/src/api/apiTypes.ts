@@ -4,7 +4,6 @@ export interface User {
   email: string;
   iconURL: string;
   displayName: string;
-  loading?: boolean;
 }
 
 export interface Chat {

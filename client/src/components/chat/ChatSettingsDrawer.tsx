@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, theme } from '../../Jet';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
-import { emitWithRes } from '../../api/websocket';
+import { emit } from '../../api/websocket';
 import useNotifications from '../../Jet/NotificationContext';
 import styled from 'styled-components';
 import { uploadFile } from '../../api/api';
@@ -62,7 +62,7 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
     setNameError('');
 
     if (name === chat.title) return;
-    emitWithRes(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name }).catch(e => {
+    emit(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name }).catch(e => {
       addNotification({ variant: 'danger', text: e.message, seconds: 10, dismissable: true });
     });
   }

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
-import { emitWithRes, isConnected, subscribe } from '../api/websocket';
+import { emit, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 import { SafeArea, SafeAreaInsets } from 'capacitor-plugin-safe-area';
 
@@ -89,7 +89,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
   // Should only run once, rest is handled through cache update
   const populateCache = async () => {
-    const res = await emitWithRes(SocketEvent.CACHE_POPULATE, {}).catch(e => {
+    const res = await emit(SocketEvent.CACHE_POPULATE, {}).catch(e => {
       console.error('Error populating cache', e);
     });
     if (!res || res.error) return;

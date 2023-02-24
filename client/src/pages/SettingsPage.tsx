@@ -58,7 +58,9 @@ const SettingsPage = () => {
       return;
     }
 
-    emit(SocketEvent.SET_DISPLAY_NAME, { displayName: cleanDisplayName });
+    emit(SocketEvent.SET_DISPLAY_NAME, { displayName: cleanDisplayName }).catch(e => {
+      addNotification({ variant: 'danger', text: e.message, dismissable: true });
+    });
     if (user) user.displayName = cleanDisplayName;
     setEditingDisplayName(false);
   }

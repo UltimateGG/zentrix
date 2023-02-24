@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Message, SocketEvent } from '../../api/apiTypes';
 import { Box, Icon, IconEnum, theme } from '../../Jet';
 import { Clipboard } from '@capacitor/clipboard';
-import { emitWithRes } from '../../api/websocket';
+import { emit } from '../../api/websocket';
 import useNotifications from '../../Jet/NotificationContext';
 
 
@@ -81,10 +81,10 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
     if (open && e.target === e.currentTarget && canClose) close();
   }
 
-  const onDelete = async () => {
+  const onDelete = () => {
     if (!message) return;
 
-    await emitWithRes(SocketEvent.MESSAGE_DELETE, { id: message._id }).catch(e => {
+    emit(SocketEvent.MESSAGE_DELETE, { id: message._id }).catch(e => {
       addNotification({
         variant: 'danger',
         text: e.message || 'Failed to delete message'

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chat, SocketEvent, User } from '../../api/apiTypes';
-import { emitWithRes } from '../../api/websocket';
+import { emit } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useDataCache from '../../contexts/DataCacheContext';
 import useNotifications from '../../Jet/NotificationContext';
@@ -64,8 +64,8 @@ const ChatMembersList = ({ chat }: ChatMembersListProps) => {
     const isMember = chat.members.includes(user._id);
 
     setUpdating(true);
-    await emitWithRes(SocketEvent.CHAT_UPDATE_MEMBERS, { id: chat._id, member: user._id, add: !isMember }).catch(e => {
-      addNotification({ variant: 'danger', text: 'Failed to update chat member', dismissable: true });
+    await emit(SocketEvent.CHAT_UPDATE_MEMBERS, { id: chat._id, member: user._id, add: !isMember }).catch(e => {
+      addNotification({ variant: 'danger', text: e.message, dismissable: true });
     });
     setUpdating(false);
   }
