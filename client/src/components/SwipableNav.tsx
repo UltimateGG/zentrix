@@ -6,14 +6,20 @@ import useNav, { Page } from '../contexts/NavigationContext';
 import 'swiper/css';
 import Navbar from './Navbar';
 import ChatPage from '../pages/ChatPage';
-import DraggableOverlay from './DraggableOverlay';
 import { emit } from '../api/websocket';
 import { SocketEvent } from '../api/apiTypes';
+import SwipableOverlay from './SwipableOverlay';
 
 
 const SwipableNav = () => {
   const { currentPage, currentChat, setCurrentChat, navigate, init, initilized } = useNav();
 
+  
+  const onCloseChat = () => {
+    navigate(Page.CHAT_LIST);
+    setCurrentChat(null);
+    emit(SocketEvent.SET_LAST_CHAT, { id: null });
+  }
 
   return (
     <>
@@ -29,13 +35,9 @@ const SwipableNav = () => {
       </Swiper>
 
       {currentChat &&
-        <DraggableOverlay onClose={() => {
-          navigate(Page.CHAT_LIST);
-          setCurrentChat(null);
-          emit(SocketEvent.SET_LAST_CHAT, { id: null });
-        }}>
-          <ChatPage />
-        </DraggableOverlay>
+       <SwipableOverlay onClose={onCloseChat}>
+        <ChatPage />
+       </SwipableOverlay>
       }
 
       <Navbar />
