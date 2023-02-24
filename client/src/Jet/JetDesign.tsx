@@ -71,6 +71,44 @@ const getGlobalStyles = () => `
     height: auto;
   }
 
+  table {
+    border-collapse: collapse;
+    border: 1px solid ${theme.colors.background[2]};
+  }
+
+  thead {
+    background-color: ${theme.colors.background[2]};
+  }
+
+  th {
+    text-align: left;
+    padding: 0.4rem;
+    border-bottom: 1px solid ${theme.colors.background[2]};
+  }
+
+  td {
+    padding: 0.4rem;
+  }
+  
+  td:not(:last-child) {
+    border-right: 1px solid ${theme.colors.background[2]};
+  }
+
+  tr:not(:last-child) {
+    border-bottom: 1px solid ${theme.colors.background[2]};
+  }
+
+  tr:nth-child(even) {
+    background-color: ${theme.colors.background[1]};
+  }
+
+  code {
+    font-size: 0.9rem;
+    background-color: ${theme.colors.background[2]};
+    color: ${theme.colors.text[6]};
+    padding: 0.2rem 0.4rem;
+  }
+
   ::-webkit-scrollbar {
     width: 0.6rem;
   }

@@ -1,10 +1,27 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';
 
 
-// TODO https://github.com/remarkjs/react-markdown#when-should-i-use-this
-// and links
+// TODO links
 const FormattedMessageContent = ({ content } : { content: string }) => {
-  return (<>{content}</>);
+  return (
+    <ReactMarkdown
+      linkTarget="_blank"
+      remarkPlugins={[
+        [remarkGfm, { singleTilde: false }],
+      ]}
+      rehypePlugins={[
+        rehypeHighlight
+      ]}
+      components={{
+        
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 }
 
 export default FormattedMessageContent;
