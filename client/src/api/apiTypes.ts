@@ -6,7 +6,6 @@ export interface User {
   email: string;
   iconURL: string;
   displayName: string;
-  lastScreen: Page | null;
   loading?: boolean;
 }
 
@@ -61,7 +60,6 @@ export enum SocketEvent {
 
   // User
   SET_DISPLAY_NAME = 'setDisplayName',
-  SET_LAST_SCREEN = 'setLastScreen',
 
   // Chat
   CREATE_CHAT = 'createChat',

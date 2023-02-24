@@ -104,13 +104,6 @@ const queueRequest = (event: SocketEvent, payload: any) => {
     localStorage.setItem('wsQueue', '[]');
   }
 
-  // Remove any previous requests for the same event type
-  if (event === SocketEvent.SET_LAST_SCREEN) {
-    queue.forEach((request: any, index: number) => {
-      if (request.event === event) queue.splice(index, 1);
-    });
-  }
-
   queue.push({ event, payload });
   localStorage.setItem('wsQueue', JSON.stringify(queue));
 }

@@ -22,10 +22,6 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     maxLength: 20,
-  },
-  lastScreen: {
-    type: Number,
-    default: 0 // LOGIN
   }
 }, { toJSON: { versionKey: false } });
 

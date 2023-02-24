@@ -11,13 +11,7 @@ const setDisplayName = async (user, payload) => {
   cacheUpdate({ users: [user.toJSON()] }, '*');
 }
 
-const setLastScreen = async (user, payload) => {
-  user.lastScreen = payload.screen;
-  await user.save();
-}
-
 
 module.exports = {
   setDisplayName,
-  setLastScreen
 };

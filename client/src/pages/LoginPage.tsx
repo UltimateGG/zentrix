@@ -32,7 +32,7 @@ const LoginPage = () => {
   }, [init]);
   
   useEffect(() => {
-    if (user) navigate(user.lastScreen || Page.CHAT_LIST);
+    if (user) navigate(Page.CHAT_LIST);
   }, [user, navigate]);
 
   const signIn = async () => {

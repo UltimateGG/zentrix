@@ -19,7 +19,6 @@ const SocketEvent = {
 
   // User
   SET_DISPLAY_NAME: 'setDisplayName',
-  SET_LAST_SCREEN: 'setLastScreen',
 
   // Chat
   CREATE_CHAT: 'createChat',
@@ -80,7 +79,7 @@ module.exports = {
 };
 
 const { cachePopulate } = require('./cacheEvents');
-const { setDisplayName, setLastScreen } = require('./userEvents');
+const { setDisplayName } = require('./userEvents');
 const { createChat, updateChat, deleteChat, updateMembers } = require('./chatEvents');
 const { messageCreate, getMessages, messageDelete } = require('./messageEvents');
 const { decryptToken } = require('../utils/utils');
@@ -89,7 +88,6 @@ const eventHandlers = [
   { event: SocketEvent.CACHE_POPULATE, handler: cachePopulate },
   
   { event: SocketEvent.SET_DISPLAY_NAME, handler: setDisplayName },
-  { event: SocketEvent.SET_LAST_SCREEN, handler: setLastScreen },
 
   { event: SocketEvent.CREATE_CHAT, handler: createChat },
   { event: SocketEvent.UPDATE_CHAT, handler: updateChat },

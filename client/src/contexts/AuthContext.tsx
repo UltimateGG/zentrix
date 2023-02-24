@@ -41,18 +41,14 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   // Update last screen
   useEffect(() => {
-    if (!user || currentPage === user.lastScreen || currentPage === null) return;
-
-    emit(SocketEvent.SET_LAST_SCREEN, { screen: currentPage });
-    user.lastScreen = currentPage;
+    if (!user || currentPage === null) return;
     localStorage.setItem('lastScreen', currentPage + '');
-  }, [currentPage, user]);
+  }, [currentPage]);
 
   const connectToSocket = async () => {
     await connect().then(user => {
       if (!user) return;
       setUser(user);
-      navigate(user.lastScreen || Page.CHAT_LIST);
     }).catch(console.error);
   }
 
