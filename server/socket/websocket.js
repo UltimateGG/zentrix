@@ -139,5 +139,5 @@ setInterval(() => {
     ws.isAlive = false;
     send(ws, SocketEvent.PING, {});
   });
-}, 10_000);
+}, 5_000);
 

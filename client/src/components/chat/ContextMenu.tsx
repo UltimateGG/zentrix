@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Message, SocketEvent } from '../../api/apiTypes';
+import { Message, MessageType, SocketEvent } from '../../api/apiTypes';
 import { Box, Icon, IconEnum, theme } from '../../Jet';
 import { Clipboard } from '@capacitor/clipboard';
 import { emit } from '../../api/websocket';
@@ -126,7 +126,7 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
         open={(open || animating) && !closing}
       >
         <small style={{ margin: '0.4rem 1rem' }}>{new Date(message?.createdAt || Date.now()).toLocaleString()}</small>
-        {canDelete && (
+        {canDelete && message?.type === MessageType.USER && (
           <ContextItemStyle spacing="1rem" onClick={() => onAction('delete')}>
             <Icon icon={IconEnum.trash} size={24} />
             <h5 style={{ margin: 0 }}>Delete</h5>

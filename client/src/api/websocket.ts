@@ -11,10 +11,13 @@ let connecting = false;
 let lastPing = Date.now();
 
 setInterval(() => {
-  if (!ws || ws.readyState !== WebSocket.OPEN) return;
-
-  if (Date.now() - lastPing > 10_000 + 2_000) ws.close();
-}, 10_000);
+  if (!ws || Date.now() - lastPing < 5_000 + 2_000) return;
+  if (ws) {
+    ws.onclose && ws.onclose(new CloseEvent('timeout'));
+    ws.close();
+    ws = null;
+  }
+}, 100);
 
 const getWSUrl = (path: string) => {
   return `ws${DEV ? '' : 's'}://${API_URL}${path}?n=${localStorage.getItem('zxtoken')}`;
@@ -99,6 +102,7 @@ const OFFLINE_IGNORED_EVENTS = [
 ];
 const queueRequest = (event: SocketEvent, payload: any) => {
   if (OFFLINE_IGNORED_EVENTS.includes(event)) return;
+  if (ws && ws.readyState === WebSocket.OPEN) ws.close(); // Prevent duplicate requests
   let queue: any[] = [];
 
   try {
@@ -108,6 +112,7 @@ const queueRequest = (event: SocketEvent, payload: any) => {
     localStorage.setItem('wsQueue', '[]');
   }
 
+  if (queue.length > 100) queue.shift();
   queue.push({ event, payload });
   localStorage.setItem('wsQueue', JSON.stringify(queue));
 }

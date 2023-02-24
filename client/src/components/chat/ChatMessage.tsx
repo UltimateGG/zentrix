@@ -27,7 +27,7 @@ const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
   transition: background-color 0.1s ease-in-out;
 
   &:active {
-    background-color: ${({ message }) => message.type === MessageType.USER ? theme.colors.background[1] : 'inherit'};
+    background-color: ${props => theme.colors.background[props.message.type === MessageType.SYSTEM ? 3 : 1]};
   }
 `;
 
@@ -35,7 +35,7 @@ const profilePicturesEnabled = true;
 
 const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) => {
   const { users, removeMessage } = useDataCache();
-  const longPress = useLongPress(message.type === MessageType.USER ? onContextMenu : undefined);
+  const longPress = useLongPress(onContextMenu);
 
 
   const author = users.find(user => user._id === message.author);
