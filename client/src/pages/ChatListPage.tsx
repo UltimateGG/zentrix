@@ -9,7 +9,7 @@ import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
 
 const ChatListPage = () => {
   const { user } = useAuth();
-  const { chats, loading, safeArea } = useDataCache();
+  const { chats, safeArea } = useDataCache();
   const [createChatModalOpen, setCreateChatModalOpen] = React.useState(false);
 
   const safeAreaTop = safeArea?.insets.top || 0;
@@ -34,11 +34,7 @@ const ChatListPage = () => {
       </Box>
       <div style={{ height: `calc(3.2rem + ${safeAreaTop}px` }} />
 
-      {loading ? (
-        <Box justifyContent="center" alignItems="center" style={{ marginTop: '6rem' }}>
-          <Progress circular indeterminate />
-        </Box>
-      ) : (<>
+      <>
         {chats.length === 0 && (
           <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ marginTop: '4rem' }}>
             <h3 style={{ margin: 0 }}>No chats yet</h3>
@@ -55,7 +51,7 @@ const ChatListPage = () => {
         )}
 
         <CreateChatModal open={createChatModalOpen} onClose={() => setCreateChatModalOpen(false)} />
-      </>)}
+      </>
     </>
   );
 }

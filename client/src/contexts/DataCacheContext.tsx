@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
 import { emitWithRes, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
@@ -12,20 +12,80 @@ interface DataCacheContextProps {
   addMessage: (message: Message) => void;
   removeMessage: (message: Message) => void;
   foundFirstMessage: (chat: Chat) => void;
-  loading: boolean;
+  usingOfflineData: boolean;
   safeArea: SafeAreaInsets | null;
 }
 
+export const CACHE_KEY = 'zcache.';
+const CACHE_MAX_ITEMS = 100;
+const CACHE_MAX_MESSAGES_PER_CHAT = 200;
+
 export const DataCacheContext = React.createContext<DataCacheContextProps | undefined>(undefined);
 export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [populated, setPopulated] = React.useState<boolean>(false);
-  const [chats, setChats] = React.useState<Chat[]>([]);
-  const [users, setUsers] = React.useState<User[]>([]);
-  const [messages, setMessages] = React.useState<ChatMessages[]>([]);
-  const [safeArea, setSafeArea] = React.useState<SafeAreaInsets | null>(null);
+  const [init, setInit] = useState<boolean>(false);
+  const [populated, setPopulated] = useState<boolean>(false);
+
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [messages, setMessages] = useState<ChatMessages[]>([]);
+  const [safeArea, setSafeArea] = useState<SafeAreaInsets | null>(null);
 
   const { user } = useAuth();
 
+
+  const loadOfflineData = async () => {
+    if (!chats.length) setChats(loadCacheFromDisk('chats'));
+    if (!users.length) setUsers(loadCacheFromDisk('users'));
+    if (!messages.length) setMessages(loadCacheFromDisk('messages'));
+  }
+
+  const loadCacheFromDisk = (key: string): any[] => {
+    const data = localStorage.getItem(CACHE_KEY + key);
+    if (!data) return [];
+
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  const saveCacheToDisk = (key: string, data: any[]) => {
+    if (!data || !data.length) return;
+    if (data.length > CACHE_MAX_ITEMS) data = data.slice(data.length - CACHE_MAX_ITEMS);
+
+    localStorage.setItem(CACHE_KEY + key, JSON.stringify(data));
+  }
+
+  // Cache update listeners
+  useEffect(() => {
+    localStorage.setItem(CACHE_KEY + 'user', JSON.stringify(user));
+  }, [user]);
+
+  useEffect(() => {
+    saveCacheToDisk('users', users);
+  }, [users]);
+
+  useEffect(() => {
+    saveCacheToDisk('chats', chats);
+  }, [chats]);
+
+  useEffect(() => {
+    const savedMessages = [...messages];
+    savedMessages.forEach(chat => {
+      if (chat.messages.length > CACHE_MAX_MESSAGES_PER_CHAT)
+        chat.messages = chat.messages.slice(chat.messages.length - CACHE_MAX_MESSAGES_PER_CHAT);
+    });
+
+    saveCacheToDisk('messages', savedMessages);
+  }, [messages]);
+
+  useEffect(() => {
+    if (init) return;
+
+    loadOfflineData();
+    setInit(true);
+  }, [init]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Should only run once, rest is handled through cache update
   const populateCache = async () => {
@@ -55,7 +115,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     }, 10);
 
     return () => clearInterval(interval);
-  }, [populated, user]);
+  }, [populated, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onCacheUpdate = useCallback((data: CacheUpdate) => {
     if (data.chats && data.chats.length > 0) {
@@ -113,8 +173,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       });
     }
 
-    if (data.messages && data.messages.length > 0)
-      data.messages.forEach(addMessage);
+    if (data.messages && data.messages.length > 0) data.messages.forEach(addMessage);
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -185,7 +244,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   }
 
   return (
-    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, loading: !populated, safeArea }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, usingOfflineData: !populated, safeArea }}>
       {children}
     </DataCacheContext.Provider>
   );

@@ -26,7 +26,7 @@ const TitleStyle = styled.h4`
 const ChatPage = () => {
   const { navigate, currentChat, setCurrentChat } = useNav();
   const { user } = useAuth();
-  const { chats, messages, addMessage, removeMessage, foundFirstMessage, loading, safeArea } = useDataCache();
+  const { chats, messages, addMessage, removeMessage, foundFirstMessage, safeArea } = useDataCache();
   const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === currentChat));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [messageBarHeight, setMessageBarHeight] = useState(4);
@@ -36,12 +36,12 @@ const ChatPage = () => {
 
 
   useEffect(() => {
-    if (!user || loading) return;
+    if (!user) return;
 
     const index = chats.findIndex(chat => chat._id === currentChat);
     setIndex(index);
     if (index === -1) navigate(Page.CHAT_LIST);
-  }, [user, loading, currentChat, chats, navigate]);
+  }, [user, currentChat, chats, navigate]);
 
   const onSend = async (string: string) => {
     if (!user || !chat) return;
@@ -108,7 +108,7 @@ const ChatPage = () => {
   }
 
   const chat = chats[index];
-  if (!user || !chat || loading)
+  if (!user || !chat)
     return (
       <Box justifyContent="center" alignItems="center" style={{ marginTop: '6rem' }}>
         <Progress circular indeterminate />

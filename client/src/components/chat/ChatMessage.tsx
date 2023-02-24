@@ -35,7 +35,7 @@ const profilePicturesEnabled = true;
 
 const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) => {
   const { users, removeMessage } = useDataCache();
-  const longPress = useLongPress(onContextMenu);
+  const longPress = useLongPress(message.type === MessageType.USER ? onContextMenu : undefined);
 
 
   const author = users.find(user => user._id === message.author);

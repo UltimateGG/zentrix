@@ -13,13 +13,14 @@ interface DeleteChatModalProps {
 
 const DeleteChatModal = ({ open, onClose, chat }: DeleteChatModalProps) => {
   const [deleting, setDeleting] = useState(false);
-  const { navigate } = useNav();
+  const { navigate, setCurrentChat } = useNav();
 
 
   const deleteChat = async () => {
     setDeleting(true);
     await emitWithRes(SocketEvent.DELETE_CHAT, { id: chat._id }).catch(e => {});
     navigate(Page.CHAT_LIST);
+    setCurrentChat(null);
     setDeleting(false);
   }
 

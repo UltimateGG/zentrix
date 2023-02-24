@@ -54,7 +54,7 @@ interface ChatMembersListProps {
 
 const ChatMembersList = ({ chat }: ChatMembersListProps) => {
   const { user } = useAuth();
-  const { users, loading } = useDataCache();
+  const { users } = useDataCache();
   const [updating, setUpdating] = React.useState(false);
 
   const { addNotification } = useNotifications();
@@ -83,10 +83,8 @@ const ChatMembersList = ({ chat }: ChatMembersListProps) => {
 
   return (
     <>
-      {loading && <Box justifyContent="center"><Progress circular indeterminate /></Box>}
-
       <Box flexDirection="column" alignItems="center" spacing="0.4rem">
-        {!loading && sortedUsers.map((u, index) => (
+        {sortedUsers.map((u, index) => (
           <ChatMember
             key={u._id}
             user={u}

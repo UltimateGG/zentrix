@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SocketEvent, User } from '../api/apiTypes';
-import LoadingScreen from '../pages/LoadingScreen';
 import { connect, emit } from '../api/websocket';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import useNav, { Page } from './NavigationContext';
 import LoginPage from '../pages/LoginPage';
+import { CACHE_KEY } from './DataCacheContext';
 
 
 interface AuthContextProps {
@@ -14,9 +14,9 @@ interface AuthContextProps {
 
 export const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [user, setUser] = React.useState<User | null>(null);
-  const [loggingIn, setLoggingIn] = React.useState(true);
-  const [firstLoad, setFirstLoad] = React.useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loggingIn, setLoggingIn] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   const { currentPage, navigate, setCurrentChat } = useNav();
 
@@ -24,6 +24,11 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   useEffect(() => {
     if (!firstLoad) return;
     setFirstLoad(false);
+
+    try {
+      const self = localStorage.getItem(CACHE_KEY + 'user');
+      if (self) setUser(JSON.parse(self));
+    } catch (e) {}
 
     connectToSocket();
   }, [firstLoad]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -52,18 +57,13 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
 
   const logout = async () => {
     localStorage.removeItem('zxtoken');
+    localStorage.removeItem(CACHE_KEY + 'user');
     await GoogleAuth.signOut();
     setUser(null);
   }
 
-  const getLoadingScreenStatus = () => {
-    if (loggingIn) return 'Logging in...';
-    return 'Loading...';
-  }
-
   const getContent = () => {
-    if (loggingIn) return (<LoadingScreen status={getLoadingScreenStatus()} />);
-    else if (!user) return (<LoginPage />);
+    if (!user) return (<LoginPage />);
 
     return children;
   }

@@ -48,7 +48,7 @@ const SnackbarStyle = styled.div.attrs((props: SnackbarProps) => props)`
   color: ${theme.colors.text[0]};
   padding: 0.6rem;
   min-width: 20rem;
-  z-index: 10;
+  z-index: 150;
 
   pointer-events: ${props => props.shown ? 'all' : 'none'};
   opacity: ${props => props.shown ? 1 : 0};

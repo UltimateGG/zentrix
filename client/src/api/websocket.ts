@@ -81,13 +81,52 @@ export const subscribe = (event: SocketEvent, callback: (payload: any) => void) 
   }
 }
 
+const queueRequest = (event: SocketEvent, payload: any) => {
+  let queue: any[] = [];
+
+  try {
+    queue = JSON.parse(localStorage.getItem('wsQueue') || '[]');
+  } catch (e) {
+    console.error('Error parsing wsQueue', e);
+    localStorage.setItem('wsQueue', '[]');
+  }
+
+  // Remove any previous requests for the same event type
+  if (event === SocketEvent.SET_LAST_CHAT || event === SocketEvent.SET_LAST_SCREEN) {
+    queue.forEach((request: any, index: number) => {
+      if (request.event === event) queue.splice(index, 1);
+    });
+  }
+
+  queue.push({ event, payload });
+  localStorage.setItem('wsQueue', JSON.stringify(queue));
+}
+
+// Queue processing
+setInterval(() => {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+  const queue = JSON.parse(localStorage.getItem('wsQueue') || '[]');
+  if (queue.length === 0) return;
+
+  const toSend = queue.shift();
+  ws.send(JSON.stringify(toSend));
+
+  localStorage.setItem('wsQueue', JSON.stringify(queue));
+}, 300);
+
 export const emit = (event: SocketEvent, payload: any) => {
   if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ event, payload }));
+  else queueRequest(event, payload);
 }
 
 export const emitWithRes = async (event: SocketEvent, payload: any) => {
   return new Promise<any>((resolve, reject) => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return reject();
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      queueRequest(event, payload);
+      return resolve({});
+    }
+
     const id = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
     let resolved = false;
@@ -105,6 +144,7 @@ export const emitWithRes = async (event: SocketEvent, payload: any) => {
       if (resolved) return;
 
       unsubscribe();
+      queueRequest(event, payload);
       reject({
         error: true,
         message: 'Request timed out',
