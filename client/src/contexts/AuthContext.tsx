@@ -15,7 +15,6 @@ interface AuthContextProps {
 export const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
 export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loggingIn, setLoggingIn] = useState(true);
   const [firstLoad, setFirstLoad] = useState(true);
 
   const { currentPage, navigate, setCurrentChat } = useNav();
@@ -43,16 +42,12 @@ export const AuthContextProvider: React.FC<{children: React.ReactNode}> = ({ chi
   }, [currentPage, user]);
 
   const connectToSocket = async () => {
-    setLoggingIn(true);
-
     await connect().then(user => {
       if (!user) return;
       setUser(user);
       navigate(user.lastScreen || Page.CHAT_LIST);
       if (user.lastChat) setCurrentChat(user.lastChat);
     }).catch(console.error);
-
-    setLoggingIn(false);
   }
 
   const logout = async () => {

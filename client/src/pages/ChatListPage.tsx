@@ -4,7 +4,7 @@ import CreateChatModal from '../components/chat/CreateChatModal';
 import StatusBar from '../components/StatusBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
-import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
+import { Box, Icon, IconEnum, theme } from '../Jet';
 
 
 const ChatListPage = () => {

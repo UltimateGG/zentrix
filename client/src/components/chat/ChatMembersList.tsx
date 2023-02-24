@@ -4,7 +4,7 @@ import { emitWithRes } from '../../api/websocket';
 import useAuth from '../../contexts/AuthContext';
 import useDataCache from '../../contexts/DataCacheContext';
 import useNotifications from '../../Jet/NotificationContext';
-import { Box, Checkbox, Progress, theme } from '../../Jet';
+import { Box, Checkbox, theme } from '../../Jet';
 import Avatar from '../Avatar';
 
 
