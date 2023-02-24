@@ -96,6 +96,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
 
     if (res.chats) setChats(res.chats);
     if (res.users) setUsers(res.users);
+    setMessages([]);
 
     try {
       const area = await SafeArea.getSafeAreaInsets();
