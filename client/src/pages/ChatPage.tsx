@@ -80,7 +80,7 @@ const ChatPage = () => {
     if (!element) return;
 
     element.scroll({ top: element.scrollHeight });
-  }, [scrolledToBottom, messageBarHeight, messages]);
+  }, [scrolledToBottom, messageBarHeight, messages, keyboardHeight]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const element = e.currentTarget;
@@ -111,7 +111,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-    Keyboard.addListener('keyboardWillShow', (e: any) => setKeyboardHeight(e.keyboardHeight / 16));
+    Keyboard.addListener('keyboardWillShow', (e: any) => setKeyboardHeight(e.keyboardHeight));
     Keyboard.addListener('keyboardWillHide', () => setKeyboardHeight(0));
 
     return () => {
