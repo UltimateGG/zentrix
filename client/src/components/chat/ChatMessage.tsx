@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import React from 'react';
 import styled from 'styled-components';
 import { LOGO_URL } from '../../api/api';
@@ -25,10 +26,6 @@ const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
   background-color: ${props => props.message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit'};
   padding: ${props => props.message.type === MessageType.SYSTEM ? '0.8rem' : '0 0.8rem'};
   transition: background-color 0.1s ease-in-out;
-
-  &:active {
-    background-color: ${props => theme.colors.background[props.message.type === MessageType.SYSTEM ? 3 : 1]};
-  }
 `;
 
 const profilePicturesEnabled = true;
@@ -58,8 +55,13 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
     removeMessage(message);
   }
 
+  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!e.shiftKey || Capacitor.getPlatform() !== 'web') return;
+    onContextMenu?.();
+  }
+
   return (
-    <MessageStyle spacing="1rem" {...longPress} message={message} shouldStack={shouldStack}>
+    <MessageStyle spacing="1rem" {...longPress} onClick={onClick} message={message} shouldStack={shouldStack}>
       {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || LOGO_URL} size={2.6} />}
 
       <Box flexDirection="column" style={{ width: '100%' }}>

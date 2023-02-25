@@ -5,6 +5,7 @@ import { Box, Icon, IconEnum, theme } from '../../Jet';
 import { Clipboard } from '@capacitor/clipboard';
 import { emit } from '../../api/websocket';
 import useNotifications from '../../Jet/NotificationContext';
+import { Capacitor } from '@capacitor/core';
 
 
 const OverlayStyle = styled.div.attrs((props: ContextMenuProps) => props)`
@@ -53,7 +54,7 @@ interface ContextMenuProps {
 }
 
 const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
-  const [canClose, setCanClose] = useState(false);
+  const [canClose, setCanClose] = useState(Capacitor.getPlatform() === 'web');
   const [animating, setAnimating] = useState(false);
   const [closing, setClosing] = useState(false);
   const { addNotification } = useNotifications();
@@ -73,7 +74,7 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
       setAnimating(false);
       setClosing(false);
       onClose();
-      setCanClose(false);
+      setCanClose(Capacitor.getPlatform() === 'web');
     }, 200);
   }
 

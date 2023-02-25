@@ -13,6 +13,8 @@ import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import ContextMenu from '../components/chat/ContextMenu';
 import useNav, { Page } from '../contexts/NavigationContext';
+import { Keyboard } from '@capacitor/keyboard';
+import { Capacitor } from '@capacitor/core';
 
 
 const TitleStyle = styled.h4`
@@ -33,6 +35,7 @@ const ChatPage = () => {
   const [scrolledToBottom, setScrolledToBottom] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [contextMenu, setContextMenu] = useState<Message | null>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
 
   useEffect(() => {
@@ -106,6 +109,16 @@ const ChatPage = () => {
     setCurrentChat(null);
   }
 
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    Keyboard.addListener('keyboardWillShow', (e: any) => setKeyboardHeight(e.keyboardHeight / 16));
+    Keyboard.addListener('keyboardWillHide', () => setKeyboardHeight(0));
+
+    return () => {
+      Keyboard.removeAllListeners();
+    }
+  }, []);
+
   const chat = chats[index];
   if (!user || !chat)
     return (
@@ -121,7 +134,13 @@ const ChatPage = () => {
   const safeAreaTop = safeArea?.insets.top || 0;
 
   return (
-    <>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: `calc(100% - ${keyboardHeight}px)`,
+      }}
+    >
       <StatusBar color={theme.colors.background[1]} />
       <Box alignItems="center" style={{
         position: 'fixed',
@@ -187,7 +206,7 @@ const ChatPage = () => {
 
       <ContextMenu message={contextMenu} canDelete={contextMenu ? contextMenu.author === user._id : false} onClose={() => setContextMenu(null)} />
       <ChatSettingsDrawer open={settingsDrawerOpen} onClose={() => setSettingsDrawerOpen(false)} chat={chat} />
-    </>
+    </div>
   );
 }
 

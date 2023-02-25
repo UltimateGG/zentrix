@@ -119,7 +119,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
       alignItems="center"
       spacing="1rem"
       style={{
-        position: 'fixed',
+        position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
