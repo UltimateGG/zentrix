@@ -48,7 +48,7 @@ const SettingsPage = () => {
     return () => {
       Keyboard.setResizeMode({ mode: KeyboardResize.Native });
     }
-  });
+  }, []);
 
   const updateDisplayName = async () => {
     const cleanDisplayName = displayName.trim();

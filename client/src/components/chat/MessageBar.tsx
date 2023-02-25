@@ -96,7 +96,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-  });
+  }, []);
 
   const onType = (string: string) => {
     setMessage(string);
