@@ -139,6 +139,7 @@ const ChatPage = () => {
         position: 'relative',
         width: '100%',
         height: `calc(100% - ${keyboardHeight}px)`,
+        transition: 'height 0.2s ease-in-out',
       }}
     >
       <StatusBar color={theme.colors.background[1]} />
