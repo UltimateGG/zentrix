@@ -113,6 +113,7 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
   return (
     <OverlayStyle
       onMouseUp={() => setCanClose(true)}
+      onTouchEnd={() => setCanClose(true)}
       onClick={onOverlayClick}
       message={message}
       style={{

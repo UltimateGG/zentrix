@@ -10,7 +10,7 @@ import StatusBar from '../components/StatusBar';
 import useAuth from '../contexts/AuthContext';
 import useDataCache from '../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, Progress, theme } from '../Jet';
-import { Haptics } from '@capacitor/haptics';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import ContextMenu from '../components/chat/ContextMenu';
 import useNav, { Page } from '../contexts/NavigationContext';
 
@@ -173,7 +173,7 @@ const ChatPage = () => {
                 && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
               }
               onContextMenu={() => {
-                Haptics.selectionStart();
+                Haptics.impact({ style: ImpactStyle.Light });
                 setContextMenu(message);
               }}
             />

@@ -118,7 +118,6 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
   }
 
   const safeAreaBottom = safeArea?.insets.bottom || 0;
-  if (Capacitor.getPlatform() === 'ios') Keyboard.setAccessoryBarVisible({ isVisible: false });
 
   return (
     <Box

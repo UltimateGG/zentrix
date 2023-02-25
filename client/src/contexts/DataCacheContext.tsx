@@ -3,6 +3,8 @@ import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageTyp
 import { emit, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 import { SafeArea, SafeAreaInsets } from 'capacitor-plugin-safe-area';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 
 
 interface DataCacheContextProps {
@@ -88,6 +90,8 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     try {
       SafeArea.getSafeAreaInsets().then(area => setSafeArea(area));
     } catch (e) {}
+
+    if (Capacitor.getPlatform() === 'ios') Keyboard.setAccessoryBarVisible({ isVisible: false });
 
     setInit(true);
   }, [init]); // eslint-disable-line react-hooks/exhaustive-deps
