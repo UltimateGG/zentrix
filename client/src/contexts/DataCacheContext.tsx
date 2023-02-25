@@ -84,6 +84,11 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     if (init) return;
 
     loadOfflineData();
+
+    try {
+      SafeArea.getSafeAreaInsets().then(area => setSafeArea(area));
+    } catch (e) {}
+
     setInit(true);
   }, [init]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -97,11 +102,6 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
     if (res.chats) setChats(res.chats);
     if (res.users) setUsers(res.users);
     setMessages([]);
-
-    try {
-      const area = await SafeArea.getSafeAreaInsets();
-      setSafeArea(area);
-    } catch (e) {}
   }
 
   useEffect(() => {

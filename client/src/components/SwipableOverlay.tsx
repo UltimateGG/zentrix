@@ -32,7 +32,7 @@ const SwipableOverlay = ({ onClose, children }: SwipableOverlayProps) => {
 
   return (
     <BlankOverlay style={{ zIndex: 12 }}>
-      <Swiper style={{ height: '100%' }} initialSlide={1} allowSlideNext={false} onSlideChange={onChange} touchStartPreventDefault={false}>
+      <Swiper style={{ height: '100%' }} initialSlide={1} allowSlideNext={false} onSlideChange={onChange} touchStartPreventDefault={true}>
         <SwiperSlide>
           <BlankOverlay />
         </SwiperSlide>

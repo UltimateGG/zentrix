@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import React, { ReactNode, useEffect } from 'react';
 import { NotificationProvider } from './NotificationContext';
 import { theme } from './theme/Theme';
@@ -20,6 +21,14 @@ const getGlobalStyles = () => `
     scroll-behavior: smooth;
     color: ${theme.colors.text[0]};
     font-family: ${theme.fontFamily};
+    ${Capacitor.isNativePlatform() && `
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    `}
   }
 
   html, body, #root {
