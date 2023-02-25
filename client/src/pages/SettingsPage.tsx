@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { uploadFile } from '../api/api';
 import { SocketEvent } from '../api/apiTypes';
@@ -9,8 +9,6 @@ import useNotifications from '../Jet/NotificationContext';
 import { Box, Progress, TextField, theme } from '../Jet';
 import StatusBar from '../components/StatusBar';
 import useDataCache from '../contexts/DataCacheContext';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
@@ -40,15 +38,6 @@ const SettingsPage = () => {
   const [error, setError] = React.useState('');
   const ref = useRef<HTMLInputElement>(null);
 
-
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-    Keyboard.setResizeMode({ mode: KeyboardResize.None });
-
-    return () => {
-      Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-    }
-  }, []);
 
   const updateDisplayName = async () => {
     const cleanDisplayName = displayName.trim();

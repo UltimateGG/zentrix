@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, Drawer, Icon, IconEnum, Progress, TextField, theme } from '../../Jet';
 import { Chat, SocketEvent } from '../../api/apiTypes';
 import { isAsciiPrintable } from './CreateChatModal';
@@ -11,8 +11,6 @@ import ChatMembersList from './ChatMembersList';
 import useAuth from '../../contexts/AuthContext';
 import Avatar from '../Avatar';
 import useDataCache from '../../contexts/DataCacheContext';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 
 const LabelStyle = styled.label`
@@ -37,15 +35,6 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
   const { safeArea } = useDataCache();
   const { addNotification } = useNotifications();
 
-
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-    Keyboard.setResizeMode({ mode: KeyboardResize.None });
-
-    return () => {
-      Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-    }
-  }, [open]);
 
   const onNameChange = (str: string) => {
     const typed = str.slice(name.length);

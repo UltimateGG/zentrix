@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useDataCache from '../../contexts/DataCacheContext';
 import { Box, Icon, IconEnum, TextArea, theme } from '../../Jet';
 import { Capacitor } from '@capacitor/core';
-import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
+import { Keyboard } from '@capacitor/keyboard';
 
 
 interface MessageBoxProps {
@@ -92,11 +92,6 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     document.addEventListener('click', onClickOutside);
     return () => document.removeEventListener('click', onClickOutside);
   }, [focused]);
-
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-    Keyboard.setResizeMode({ mode: KeyboardResize.Native });
-  }, []);
 
   const onType = (string: string) => {
     setMessage(string);

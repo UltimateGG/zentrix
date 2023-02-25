@@ -173,6 +173,7 @@ const ChatPage = () => {
                 && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
               }
               onContextMenu={() => {
+                if (contextMenu?._id === message._id) return;
                 Haptics.impact({ style: ImpactStyle.Light });
                 setContextMenu(message);
               }}
