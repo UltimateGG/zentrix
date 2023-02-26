@@ -34,12 +34,8 @@ const SwipableNav = () => {
 
       {currentChat &&
       <SwipableOverlay onClose={onCloseChat}
-        onMove={(e: any) => {
-          if (e.translate !== e.width) setChatSwiped(true);
-        }}
-        onEnd={() => {
-          setChatSwiped(false);
-        }}
+        onMove={() => setChatSwiped(true)}
+        onEnd={() => setChatSwiped(false)}
       >
         <ChatPage swiped={chatSwiped} />
        </SwipableOverlay>

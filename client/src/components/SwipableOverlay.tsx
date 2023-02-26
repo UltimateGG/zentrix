@@ -14,7 +14,7 @@ const BlankOverlay = styled.div`
 
 interface SwipableOverlayProps {
   onClose?: () => any;
-  onMove?: (e: any) => any;
+  onMove?: () => any;
   onEnd?: () => any;
   children: React.ReactNode;
 }
