@@ -14,10 +14,12 @@ const BlankOverlay = styled.div`
 
 interface SwipableOverlayProps {
   onClose?: () => any;
+  onMove?: (e: any) => any;
+  onEnd?: () => any;
   children: React.ReactNode;
 }
 
-const SwipableOverlay = ({ onClose, children }: SwipableOverlayProps) => {
+const SwipableOverlay = ({ onClose, onMove, onEnd, children }: SwipableOverlayProps) => {
   const [firedInitial, setFiredInitial] = useState(false);
 
 
@@ -32,7 +34,7 @@ const SwipableOverlay = ({ onClose, children }: SwipableOverlayProps) => {
 
   return (
     <BlankOverlay style={{ zIndex: 12 }}>
-      <Swiper style={{ height: '100%' }} initialSlide={1} allowSlideNext={false} onSlideChange={onChange} touchStartPreventDefault={true}>
+      <Swiper style={{ height: '100%' }} initialSlide={1} allowSlideNext={false} onSlideChange={onChange} onSliderMove={onMove} onTouchEnd={onEnd}>
         <SwiperSlide>
           <BlankOverlay />
         </SwiperSlide>

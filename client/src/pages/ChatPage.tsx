@@ -25,7 +25,7 @@ const TitleStyle = styled.h4`
   max-width: calc(100% - 7.6rem);
 `;
 
-const ChatPage = () => {
+const ChatPage = ({ swiped }: { swiped: boolean }) => {
   const { navigate, currentChat, setCurrentChat } = useNav();
   const { user } = useAuth();
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, safeArea } = useDataCache();
@@ -139,7 +139,7 @@ const ChatPage = () => {
         position: 'relative',
         width: '100%',
         height: `calc(100% - ${keyboardHeight}px)`,
-        transition: 'height 0.2s ease-in-out',
+        transition: 'height 0.2s ease-in-out'
       }}
     >
       <StatusBar color={theme.colors.background[1]} />
@@ -167,7 +167,7 @@ const ChatPage = () => {
         id="messages-container"
         onScroll={handleScroll}
         style={{
-          overflowY: 'auto',
+          overflowY: swiped ? 'hidden' : 'auto',
           height: '100%',
           maxHeight: `calc(100% - 3.2rem - ${messageBarHeight}rem - ${safeArea?.insets.bottom || 0}px - ${safeAreaTop}px)`,
           scrollBehavior: 'auto',
