@@ -139,7 +139,8 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
         position: 'relative',
         width: '100%',
         height: `calc(100% - ${keyboardHeight}px)`,
-        transition: 'height 0.2s ease-in-out'
+        transition: 'height 0.2s ease-in-out',
+        backgroundColor: swiped ? 'red' : undefined
       }}
     >
       <StatusBar color={theme.colors.background[1]} />
@@ -193,7 +194,7 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
                 && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
               }
               onContextMenu={() => {
-                if (contextMenu?._id === message._id) return;
+                if (swiped || contextMenu?._id === message._id) return;
                 Haptics.impact({ style: ImpactStyle.Light });
                 setContextMenu(message);
               }}
