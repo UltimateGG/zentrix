@@ -69,7 +69,7 @@ router.post('/:chatId/icon', uploadPfp.single('file'), asyncHandler(async (req, 
   const file = req.file;
   if (!file) throw new Error('No file was uploaded');
 
-  const chat = await Chat.findById(req.params.chatId).populate('lastMessage');
+  const chat = await Chat.findById(req.params.chatId);
   if (!chat) throw new Error('Chat not found');
 
   chat.iconURL = file.location;

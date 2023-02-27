@@ -22,18 +22,22 @@ const createChat = async (user, payload) => {
 }
 
 const updateChat = async (user, payload) => {
+  payload.id = payload._id;
   if (!payload.id || !payload.title || !payload.title.trim() || payload.title.length > 50) return;
+  if (!payload.topic || payload.topic.length > 200) return;
 
-  const chat = await Chat.findById(payload.id).populate('lastMessage');
+  const chat = await Chat.findById(payload.id);
   if (!chat || !chat.members.includes(user.id)) return;
 
-  chat.title = payload.title;
+  chat.title = payload.title.trimStart();
+  chat.topic = payload.topic.trimStart();
+  const changedTitle = chat.isModified('title');
   await chat.save();
 
   const systemMessage = new Message({
     type: ChatType.SYSTEM,
     chat: chat._id,
-    content: `<@${user._id}> renamed the chat to "${payload.title}"`
+    content: changedTitle ? `<@${user._id}> renamed the chat to "${payload.title}"` : `<@${user._id}> updated the chat topic`
   });
 
   await systemMessage.save();
@@ -60,7 +64,7 @@ const updateMembers = async (user, payload) => {
   if (!payload.id || !payload.member) return;
 
   const add = payload.add;
-  const chat = await Chat.findById(payload.id).populate('lastMessage');
+  const chat = await Chat.findById(payload.id);
   if (!chat || payload.member.toString() === chat.owner.toString()) return;
   if (!add && !chat.members.includes(payload.member)) return;
   if (add && chat.members.includes(payload.member)) return;

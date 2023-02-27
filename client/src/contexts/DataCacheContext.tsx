@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages, MessageType } from '../api/apiTypes';
+import { Chat, CacheUpdate, SocketEvent, User, Message, ChatMessages } from '../api/apiTypes';
 import { emit, isConnected, subscribe } from '../api/websocket';
 import useAuth from './AuthContext';
 import { SafeArea, SafeAreaInsets } from 'capacitor-plugin-safe-area';
@@ -207,15 +207,6 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
       messages.forEach(m => m.messages.sort((a, b) => a.createdAt - b.createdAt));
       return [...messages];
     });
-
-    if (message.type !== MessageType.USER) return;
-    setChats(chats => {
-      const chat = chats.find(c => c._id === message.chat);
-      if (chat && (!chat.lastMessage || chat.lastMessage.createdAt < message.createdAt))
-        chat.lastMessage = message;
-
-      return [...chats];
-    });
   }
 
   const removeMessage = (message: Message) => {
@@ -225,15 +216,6 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
         chatStore.messages = chatStore.messages.filter(m => m._id !== message._id);
 
       return [...messages];
-    });
-
-    // Remove chat's last message if it was the deleted message
-    setChats(chats => {
-      const chat = chats.find(c => c._id === message.chat);
-      if (chat && chat.lastMessage && chat.lastMessage._id === message._id)
-        chat.lastMessage = null;
-
-      return [...chats];
     });
   }
 

@@ -52,10 +52,10 @@ const ChatEntry = ({ chat }: ChatEntryProps) => {
           }} size={24} />
         )}
         
-        <Box flexDirection="column" style={{ maxWidth: '100%' }}>
+        <Box flexDirection="column" justifyContent="center" style={{ maxWidth: '100%' }}>
           <TruncatedTextStyle>
             <h4>{chat.title}</h4>
-            <p style={{ color: theme.colors.text[5] }}>{chat.lastMessage?.content || ''}</p>
+            {chat.topic && <p style={{ color: theme.colors.text[5] }}>{chat.topic}</p>}
           </TruncatedTextStyle>
         </Box>
       </Box>

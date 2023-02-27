@@ -11,7 +11,7 @@ export interface Chat {
   owner: string;
   title: string;
   iconURL: string;
-  lastMessage: Message | null; // only populated on client side
+  topic: string | null;
   encrypted: boolean;
   password: string | null;
   members: string[];

@@ -27,6 +27,7 @@ interface ChatSettingsDrawerProps {
 const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) => {
   const [name, setName] = useState(chat.title);
   const [nameError, setNameError] = useState<string>('');
+  const [topic, setTopic] = useState(chat.topic || '');
   const [uploadingIcon, setUploadingIcon] = useState(false);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
@@ -37,12 +38,12 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
 
 
   const onNameChange = (str: string) => {
-    const typed = str.slice(name.length);
-    if (typed.length === 0) return setName(str);
-    if (typed.length === 0 || !isAsciiPrintable(typed) || str.length > 50) return;
-    
     setName(str.trimStart());
     setNameError('');
+  }
+
+  const onTopicChange = (str: string) => {
+    setTopic(str.trimStart());
   }
 
   const setChatName = () => {
@@ -51,7 +52,14 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
     setNameError('');
 
     if (name === chat.title) return;
-    emit(SocketEvent.UPDATE_CHAT, { id: chat._id, title: name }).catch(e => {
+    emit(SocketEvent.UPDATE_CHAT, { ...chat, title: name }).catch(e => {
+      addNotification({ variant: 'danger', text: e.message, seconds: 10, dismissable: true });
+    });
+  }
+
+  const setChatTopic = () => {
+    if (topic === chat.topic) return;
+    emit(SocketEvent.UPDATE_CHAT, { ...chat, topic }).catch(e => {
       addNotification({ variant: 'danger', text: e.message, seconds: 10, dismissable: true });
     });
   }
@@ -81,12 +89,27 @@ const ChatSettingsDrawer =  ({ open, onClose, chat }: ChatSettingsDrawerProps) =
         <TextField
           name="name"
           value={name}
+          maxLength={50}
           onChanged={onNameChange}
           error={nameError}
           onBlur={setChatName}
           onKeyDown={e => {
             if (e.key !== 'Enter') return;
-            setChatName();
+            (e.target as HTMLInputElement).blur();
+          }}
+          fullWidth
+          enterKeyHint="done"
+        />
+
+        <LabelStyle htmlFor="topic">Chat Topic</LabelStyle>
+        <TextField
+          name="topic"
+          value={topic}
+          maxLength={200}
+          onChanged={onTopicChange}
+          onBlur={setChatTopic}
+          onKeyDown={e => {
+            if (e.key !== 'Enter') return;
             (e.target as HTMLInputElement).blur();
           }}
           fullWidth
