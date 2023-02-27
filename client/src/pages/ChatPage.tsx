@@ -22,7 +22,15 @@ const TitleStyle = styled.h4`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: calc(100% - 7.6rem);
+  max-width: 100%;
+`;
+
+const TopicStyle = styled.small`
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const ChatPage = () => {
@@ -170,7 +178,10 @@ const ChatPage = () => {
       }}>
         <Icon icon={IconEnum.left} style={{ cursor: 'pointer', marginRight: '0.2rem' }} size={32} onClick={handleClose} />
         <Avatar src={chat.iconURL} size={2.2} mr={0.8} />
-        <TitleStyle style={{ margin: 0 }}>{chat.title}</TitleStyle>
+        <Box flexDirection="column" justifyContent="center" style={{ overflow: 'hiddren', maxWidth: 'calc(100% - 7.2rem)', width: '100%' }}>
+          <TitleStyle>{chat.title}</TitleStyle>
+          {chat.topic && <TopicStyle>{chat.topic}</TopicStyle>}
+        </Box>
         
         <Icon icon={IconEnum.menu} style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '0.4rem' }} size={32} onClick={() => setSettingsDrawerOpen(true)} />
       </Box>
