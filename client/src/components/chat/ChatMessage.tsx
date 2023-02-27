@@ -23,12 +23,13 @@ const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
   white-space: pre-wrap;
   margin-top: ${props => !props.shouldStack ? '1rem' : props.message.type === MessageType.SYSTEM ? 0 : '0.2rem'};
   background-color: ${props => props.message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit'};
-  padding: ${props => props.message.type === MessageType.SYSTEM ? '0.2rem 0.8rem' : '0 0.8rem'};
+  padding: ${props => props.message.type === MessageType.SYSTEM ? '0.4rem 0.8rem' : '0 0.8rem'};
   transition: background-color 0.1s ease-in-out;
 `;
 
 const ContextStyle = styled.p.attrs((props: any) => props)`
   color: ${props => props.color};
+  line-height: 1;
 
   p {
     color: ${props => props.color};

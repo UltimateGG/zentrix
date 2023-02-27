@@ -100,7 +100,7 @@ const Checkbox = (props: CheckboxProps) => {
         {checked && <CheckIconStyle size={18} icon={IconEnum.checkmark} color={disabled ? theme.colors.background[5] : theme.colors.text[7]} />}
       </Box>
 
-      {label && <label htmlFor={props.name} style={{ marginLeft: '0.6rem' }}>{label}</label>}
+      {label && <label htmlFor={props.name} style={{ marginLeft: '0.6rem', cursor: 'pointer' }}>{label}</label>}
     </CheckboxContainerStyle>);
 }
 

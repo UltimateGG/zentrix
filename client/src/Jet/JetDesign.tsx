@@ -139,7 +139,33 @@ const getGlobalStyles = () => `
     background-color: ${theme.colors.background[5]};
   }
 
-  .hljs{display:block;overflow-x:auto;padding:.5em;color:#abb2bf;background:${theme.colors.background[1]};border-radius:${theme.rounded}}.hljs-comment,.hljs-quote{color:#5c6370;font-style:italic}.hljs-doctag,.hljs-formula,.hljs-keyword{color:#c678dd}.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#e06c75}.hljs-literal{color:#56b6c2}.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#98c379}.hljs-built_in,.hljs-class .hljs-title{color:#e6c07b}.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#d19a66}.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#61aeee}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-link{text-decoration:underline}
+  .hljs{display:block;overflow-x:auto;padding:.5em;color:#abb2bf;background:${theme.colors.background[1]};border-radius:${theme.rounded};line-height:1;white-space:pre-wrap;}.hljs-comment,.hljs-quote{color:#5c6370;font-style:italic}.hljs-doctag,.hljs-formula,.hljs-keyword{color:#c678dd}.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#e06c75}.hljs-literal{color:#56b6c2}.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#98c379}.hljs-built_in,.hljs-class .hljs-title{color:#e6c07b}.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#d19a66}.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#61aeee}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-link{text-decoration:underline}
+
+  ul, ol {
+    list-style-position: inside;
+  }
+
+  ul > li {
+    margin-left: 0.6rem;
+  }
+
+  ul.contains-task-list {
+    list-style-type: none;
+  }
+
+  ul.contains-task-list > li {
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  blockquote {
+    border-left: 0.3rem solid ${theme.colors.primary[0]};
+    background-color: ${theme.colors.background[2]};
+    padding-left: 0.6rem;
+    margin-left: 0;
+    line-height: 0.6;
+  }
 `;
 
 const JetDesign = ({ children }: { children: ReactNode }) => {
