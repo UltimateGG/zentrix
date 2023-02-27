@@ -3,6 +3,8 @@ const { Message, ChatType } = require('../models/Message');
 const { cacheUpdate } = require('./websocket');
 
 
+const MAX_MESSAGE_LENGTH = 4096;
+
 const messageCreate = async (user, payload) => {
   if (!payload.chat || !payload.content) return;
 
@@ -13,7 +15,7 @@ const messageCreate = async (user, payload) => {
   const { content } = payload;
 
   if (content.trim().length < 1) throw new Error('Message is too short');
-  if (content.length > 4096) throw new Error('Message is too long');
+  if (content.length > MAX_MESSAGE_LENGTH) throw new Error('Message is too long');
 
   const message = new Message({
     type: ChatType.USER,
@@ -58,9 +60,30 @@ const messageDelete = async (user, payload) => {
   cacheUpdate({ messages: [{ _id: message._id, chat: chat._id, deleted: true }] }, chat.members);
 }
 
+const messageUpdate = async (user, payload) => {
+  const { id, content } = payload;
+  if (!id || !content) return;
+
+  const message = await Message.findById(id);
+  if (!message || message.author.toString() !== user._id.toString()) return;
+
+  const chat = await Chat.findById(message.chat);
+  if (!chat || !chat.members.includes(user._id)) return;
+
+  if (content.trim().length < 1) throw new Error('Message is too short');
+  if (content.length > MAX_MESSAGE_LENGTH) throw new Error('Message is too long');
+
+  message.content = content.trimEnd();
+  message.editedAt = Date.now();
+  await message.save();
+
+  cacheUpdate({ messages: [message.toJSON()] }, chat.members);
+}
+
 
 module.exports = {
   messageCreate,
   getMessages,
   messageDelete,
+  messageUpdate,
 };

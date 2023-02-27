@@ -16,6 +16,8 @@ interface DataCacheContextProps {
   foundFirstMessage: (chat: Chat) => void;
   usingOfflineData: boolean;
   safeArea: SafeAreaInsets | null;
+  editingMessage: string | null;
+  setEditingMessage: (message: string | null) => void;
 }
 
 export const CACHE_KEY = 'zcache.';
@@ -31,6 +33,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   const [users, setUsers] = useState<User[]>([]);
   const [messages, setMessages] = useState<ChatMessages[]>([]);
   const [safeArea, setSafeArea] = useState<SafeAreaInsets | null>(null);
+  const [editingMessage, setEditingMessage] = useState<string | null>(null);
 
   const { user } = useAuth();
 
@@ -245,7 +248,7 @@ export const DataCacheContextProvider: React.FC<{children: React.ReactNode}> = (
   }
 
   return (
-    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, usingOfflineData: !populated, safeArea }}>
+    <DataCacheContext.Provider value={{ chats, users, messages, addMessage, removeMessage, foundFirstMessage, usingOfflineData: !populated, safeArea, editingMessage, setEditingMessage }}>
       {children}
     </DataCacheContext.Provider>
   );

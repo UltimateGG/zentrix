@@ -30,6 +30,7 @@ export interface Message {
   author?: string;
   chat: string;
   content: string;
+  editedAt?: number;
   createdAt: number;
 
   // Client side only
@@ -68,6 +69,7 @@ export enum SocketEvent {
   MESSAGE_CREATE = 'messageCreate',
   GET_MESSAGES = 'getMessages',
   MESSAGE_DELETE = 'messageDelete',
+  MESSAGE_UPDATE = 'messageUpdate',
 }
 
 export interface CacheUpdate {

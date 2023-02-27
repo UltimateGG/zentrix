@@ -6,6 +6,7 @@ import { Clipboard } from '@capacitor/clipboard';
 import { emit } from '../../api/websocket';
 import useNotifications from '../../Jet/NotificationContext';
 import { Capacitor } from '@capacitor/core';
+import useDataCache from '../../contexts/DataCacheContext';
 
 
 const OverlayStyle = styled.div.attrs((props: ContextMenuProps) => props)`
@@ -58,6 +59,7 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
   const [animating, setAnimating] = useState(false);
   const [closing, setClosing] = useState(false);
   const { addNotification } = useNotifications();
+  const { setEditingMessage } = useDataCache();
   const open = message !== null;
 
 
@@ -98,13 +100,16 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
     close();
 
     switch (action) {
-      case 'delete':
-        onDelete();
-        break;
       case 'copy':
         Clipboard.write({
           string: message?.content || ''
         });
+        break;
+      case 'delete':
+        onDelete();
+        break;
+      case 'edit':
+        if (message._id) setEditingMessage(message._id);
         break;
       default:
         break;
@@ -128,17 +133,25 @@ const ContextMenu = ({ message, canDelete, onClose }: ContextMenuProps) => {
         open={(open || animating) && !closing}
       >
         <small style={{ margin: '0.4rem 1rem' }}>{new Date(message?.createdAt || Date.now()).toLocaleString()}</small>
-        {canDelete && message?.type === MessageType.USER && (
-          <ContextItemStyle spacing="1rem" onClick={() => onAction('delete')}>
-            <Icon icon={IconEnum.trash} size={24} />
-            <h5 style={{ margin: 0 }}>Delete</h5>
-          </ContextItemStyle>
-        )}
 
         <ContextItemStyle spacing="1rem" onClick={() => onAction('copy')}>
           <Icon icon={IconEnum.copy} size={24} />
           <h5 style={{ margin: 0 }}>Copy</h5>
         </ContextItemStyle>
+
+        {canDelete && message?.type === MessageType.USER && (
+         <>
+           <ContextItemStyle spacing="1rem" onClick={() => onAction('delete')}>
+              <Icon icon={IconEnum.trash} size={24} />
+              <h5 style={{ margin: 0 }}>Delete</h5>
+            </ContextItemStyle>
+
+            <ContextItemStyle spacing="1rem" onClick={() => onAction('edit')}>
+              <Icon icon={IconEnum.edit} size={24} />
+              <h5 style={{ margin: 0 }}>Edit</h5>
+            </ContextItemStyle>
+         </>
+        )}
       </ContextMenuStyle>
     </OverlayStyle>
   );

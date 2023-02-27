@@ -28,7 +28,7 @@ const TitleStyle = styled.h4`
 const ChatPage = () => {
   const { navigate, currentChat, setCurrentChat } = useNav();
   const { user } = useAuth();
-  const { chats, messages, addMessage, removeMessage, foundFirstMessage, safeArea } = useDataCache();
+  const { chats, messages, addMessage, removeMessage, foundFirstMessage, safeArea, setEditingMessage } = useDataCache();
   const [index, setIndex] = useState<number>(chats.findIndex(chat => chat._id === currentChat));
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [messageBarHeight, setMessageBarHeight] = useState(4);
@@ -45,6 +45,17 @@ const ChatPage = () => {
     setIndex(index);
     if (index === -1) navigate(Page.CHAT_LIST);
   }, [user, currentChat, chats, navigate]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setSettingsDrawerOpen(false);
+      setEditingMessage(null);
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSend = async (string: string) => {
     if (!user || !chat) return;
@@ -105,6 +116,7 @@ const ChatPage = () => {
   }
 
   const handleClose = () => {
+    setEditingMessage(null);
     navigate(Page.CHAT_LIST);
     setCurrentChat(null);
   }

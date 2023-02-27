@@ -28,6 +28,9 @@ const MessageSchema = new Schema({
     required: true,
     maxlength: 4096,
   },
+  editedAt: {
+    type: Number,
+  },
   createdAt: {
     type: Number,
     required: true,
