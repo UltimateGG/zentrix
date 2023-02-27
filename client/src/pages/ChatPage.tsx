@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Message, MessageType, SocketEvent } from '../api/apiTypes';
 import { emit } from '../api/websocket';
 import Avatar from '../components/Avatar';
-import ChatMessage from '../components/chat/ChatMessage';
+import ChatMessage from '../components/chat/message/ChatMessage';
 import ChatSettingsDrawer from '../components/chat/ChatSettingsDrawer';
 import MessageBar from '../components/chat/MessageBar';
 import StatusBar from '../components/StatusBar';

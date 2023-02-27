@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import React, { ReactNode, useEffect } from 'react';
 import { NotificationProvider } from './NotificationContext';
-import { theme } from './theme/Theme';
+import { hexToRgb, theme } from './theme/Theme';
 
 
 const getGlobalStyles = () => `
@@ -165,6 +165,19 @@ const getGlobalStyles = () => `
     padding-left: 0.6rem;
     margin-left: 0;
     line-height: 0.6;
+  }
+
+  .mention {
+    display: inline-block;
+    margin: 0;
+    background-color: rgba(${(() => {
+      const col = hexToRgb(theme.colors.primary[0]);
+      return `${col.r}, ${col.g}, ${col.b}`;
+    })()}, 0.2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: ${theme.colors.text[6]} !important;
   }
 `;
 
