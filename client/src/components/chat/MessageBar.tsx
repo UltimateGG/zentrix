@@ -21,7 +21,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter' && !e.shiftKey && Capacitor.getPlatform() === 'web') {
         e.preventDefault();
         send();
         return;
