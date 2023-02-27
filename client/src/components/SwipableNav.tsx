@@ -6,17 +6,12 @@ import useNav, { Page } from '../contexts/NavigationContext';
 import 'swiper/css';
 import Navbar from './Navbar';
 import ChatPage from '../pages/ChatPage';
-import SwipableOverlay from './SwipableOverlay';
+import { theme } from '../Jet';
 
 
 const SwipableNav = () => {
-  const { currentPage, currentChat, setCurrentChat, navigate, init, initialized } = useNav();
+  const { currentPage, currentChat, navigate, init, initialized } = useNav();
 
-  
-  const onCloseChat = () => {
-    navigate(Page.CHAT_LIST);
-    setCurrentChat(null);
-  }
 
   return (
     <>
@@ -32,9 +27,17 @@ const SwipableNav = () => {
       </Swiper>
 
       {currentChat &&
-        <SwipableOverlay onClose={onCloseChat}>
-          <ChatPage />
-        </SwipableOverlay>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 12,
+          backgroundColor: theme.colors.background[0]
+        }}>
+          <ChatPage />  
+        </div>
       }
 
       <Navbar />

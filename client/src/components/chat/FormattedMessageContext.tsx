@@ -4,7 +4,6 @@ import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 
 
-// TODO links
 const FormattedMessageContent = ({ content } : { content: string }) => {
   return (
     <ReactMarkdown
@@ -13,7 +12,7 @@ const FormattedMessageContent = ({ content } : { content: string }) => {
         [remarkGfm, { singleTilde: false }],
       ]}
       rehypePlugins={[
-        rehypeHighlight
+        [rehypeHighlight, { ignoreMissing: true }]
       ]}
       components={{
         

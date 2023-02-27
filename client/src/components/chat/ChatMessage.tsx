@@ -1,4 +1,3 @@
-import { Capacitor } from '@capacitor/core';
 import React from 'react';
 import styled from 'styled-components';
 import { LOGO_URL } from '../../api/api';
@@ -22,10 +21,18 @@ const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
   word-break: break-word;
   word-wrap: break-word;
   white-space: pre-wrap;
-  margin-top: ${props => !props.shouldStack ? '1rem' : '0.2rem'};
+  margin-top: ${props => !props.shouldStack ? '1rem' : props.message.type === MessageType.SYSTEM ? 0 : '0.2rem'};
   background-color: ${props => props.message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit'};
-  padding: ${props => props.message.type === MessageType.SYSTEM ? '0.8rem' : '0 0.8rem'};
+  padding: ${props => props.message.type === MessageType.SYSTEM ? '0.2rem 0.8rem' : '0 0.8rem'};
   transition: background-color 0.1s ease-in-out;
+`;
+
+const ContextStyle = styled.p.attrs((props: any) => props)`
+  color: ${props => props.color};
+
+  p {
+    color: ${props => props.color};
+  }
 `;
 
 const profilePicturesEnabled = true;
@@ -55,13 +62,8 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
     removeMessage(message);
   }
 
-  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!e.shiftKey || Capacitor.getPlatform() !== 'web') return;
-    onContextMenu?.();
-  }
-
   return (
-    <MessageStyle spacing="1rem" {...longPress} onClick={onClick} message={message} shouldStack={shouldStack}>
+    <MessageStyle spacing="1rem" {...longPress} message={message} shouldStack={shouldStack}>
       {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || LOGO_URL} size={2.6} />}
 
       <Box flexDirection="column" style={{ width: '100%' }}>
@@ -72,11 +74,11 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
           </Box>
         )}
         
-        <p
+        <ContextStyle
           style={{
             marginLeft: shouldStack && profilePicturesEnabled ? 'calc(2.6rem + 1rem)' : 0,
-            color: getMessageColor(),
           }}
+          color={getMessageColor()}
         >
           {message.type === MessageType.SYSTEM && message.error && <b style={{ color: theme.colors.danger[0] }}>Error: </b>}
           <FormattedMessageContent content={message.content} />
@@ -89,7 +91,7 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
               <a onClick={handleDismiss} style={{ color: theme.colors.primary[0] }}>Dismiss</a>
             </small>
           </>}
-        </p>
+        </ContextStyle>
       </Box>
     </MessageStyle>
   );

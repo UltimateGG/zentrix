@@ -83,7 +83,6 @@ const ChatPage = () => {
   }, [scrolledToBottom, messageBarHeight, messages, keyboardHeight]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    e.stopPropagation();
     const element = e.currentTarget;
     const chatMessages = messages.find(m => m.chat === chat._id);
     const hasFirstMessage = chatMessages?.hasFirstMessage;
