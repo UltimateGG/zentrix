@@ -125,13 +125,9 @@ const ChatPage = () => {
     if (!Capacitor.isNativePlatform()) return;
     Keyboard.addListener('keyboardWillShow', (e: any) => {
       if (settingsDrawerOpen) return;
-      setScrolledToBottom(false);
       setKeyboardHeight(e.keyboardHeight);
     });
-    Keyboard.addListener('keyboardWillHide', () => {
-      setScrolledToBottom(false);
-      setKeyboardHeight(0);
-    });
+    Keyboard.addListener('keyboardWillHide', () => setKeyboardHeight(0));
 
     return () => {
       Keyboard.removeAllListeners();
@@ -157,8 +153,7 @@ const ChatPage = () => {
       style={{
         position: 'relative',
         width: '100%',
-        height: `calc(100% - ${keyboardHeight}px)`,
-        transition: 'height 0.2s ease-in-out'
+        height: `calc(100% - ${keyboardHeight}px)`
       }}
     >
       <StatusBar color={theme.colors.background[1]} />
