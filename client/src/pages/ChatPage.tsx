@@ -123,13 +123,16 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-    Keyboard.addListener('keyboardWillShow', (e: any) => setKeyboardHeight(e.keyboardHeight));
+    Keyboard.addListener('keyboardWillShow', (e: any) => {
+      if (settingsDrawerOpen) return;
+      setKeyboardHeight(e.keyboardHeight);
+    });
     Keyboard.addListener('keyboardWillHide', () => setKeyboardHeight(0));
 
     return () => {
       Keyboard.removeAllListeners();
     }
-  }, []);
+  }, [settingsDrawerOpen]);
 
   const chat = chats[index];
   if (!user || !chat)

@@ -112,7 +112,7 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
     await onSend(message);
   }
 
-  const safeAreaBottom = safeArea?.insets.bottom || 0;
+  const safeAreaBottom = focused ? 0 : safeArea?.insets.bottom || 0;
 
   return (
     <Box
