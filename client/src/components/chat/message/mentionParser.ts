@@ -45,8 +45,8 @@ const mentionPlugin: Plugin = ({ getDisplayName }: MentionPlugin) => {
         };
 
         node.value = node.value.slice(0, start);
-        parent.children.push(mentionNode);
-        parent.children.push(endTextNode);
+        parent.children.splice(index + 1, 0, mentionNode);
+        parent.children.splice(index + 2, 0, endTextNode);
       }
     });
   };
