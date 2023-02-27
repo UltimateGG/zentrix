@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ChatListPage from '../pages/ChatListPage';
 import SettingsPage from '../pages/SettingsPage';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,7 +11,6 @@ import SwipableOverlay from './SwipableOverlay';
 
 const SwipableNav = () => {
   const { currentPage, currentChat, setCurrentChat, navigate, init, initialized } = useNav();
-  const [chatSwiped, setChatSwiped] = useState(false);
 
   
   const onCloseChat = () => {
@@ -33,12 +32,9 @@ const SwipableNav = () => {
       </Swiper>
 
       {currentChat &&
-      <SwipableOverlay onClose={onCloseChat}
-        onMove={() => setChatSwiped(true)}
-        onEnd={() => setChatSwiped(false)}
-      >
-        <ChatPage swiped={chatSwiped} />
-       </SwipableOverlay>
+        <SwipableOverlay onClose={onCloseChat}>
+          <ChatPage />
+        </SwipableOverlay>
       }
 
       <Navbar />

@@ -25,7 +25,7 @@ const TitleStyle = styled.h4`
   max-width: calc(100% - 7.6rem);
 `;
 
-const ChatPage = ({ swiped }: { swiped: boolean }) => {
+const ChatPage = () => {
   const { navigate, currentChat, setCurrentChat } = useNav();
   const { user } = useAuth();
   const { chats, messages, addMessage, removeMessage, foundFirstMessage, safeArea } = useDataCache();
@@ -83,6 +83,7 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
   }, [scrolledToBottom, messageBarHeight, messages, keyboardHeight]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    e.stopPropagation();
     const element = e.currentTarget;
     const chatMessages = messages.find(m => m.chat === chat._id);
     const hasFirstMessage = chatMessages?.hasFirstMessage;
@@ -139,8 +140,7 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
         position: 'relative',
         width: '100%',
         height: `calc(100% - ${keyboardHeight}px)`,
-        transition: 'height 0.2s ease-in-out',
-        backgroundColor: swiped ? 'red' : undefined
+        transition: 'height 0.2s ease-in-out'
       }}
     >
       <StatusBar color={theme.colors.background[1]} />
@@ -168,7 +168,7 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
         id="messages-container"
         onScroll={handleScroll}
         style={{
-          overflowY: swiped ? 'hidden' : 'auto',
+          overflowY: 'auto',
           height: '100%',
           maxHeight: `calc(100% - 3.2rem - ${messageBarHeight}rem - ${safeArea?.insets.bottom || 0}px - ${safeAreaTop}px)`,
           scrollBehavior: 'auto',
@@ -194,7 +194,7 @@ const ChatPage = ({ swiped }: { swiped: boolean }) => {
                 && message.createdAt - chatMessages.messages[i - 1].createdAt < 60_000 * 5
               }
               onContextMenu={() => {
-                if (swiped || contextMenu?._id === message._id) return;
+                if (contextMenu?._id === message._id) return;
                 Haptics.impact({ style: ImpactStyle.Light });
                 setContextMenu(message);
               }}
