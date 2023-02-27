@@ -184,7 +184,7 @@ const ChatPage = () => {
         style={{
           overflowY: 'auto',
           height: '100%',
-          maxHeight: `calc(100% - 3.2rem - ${messageBarHeight}rem - ${keyboardHeight !== 0 ? safeArea?.insets.bottom || 0 : 0}px - ${safeAreaTop}px)`,
+          maxHeight: `calc(100% - 3.2rem - ${messageBarHeight}rem - ${keyboardHeight === 0 ? safeArea?.insets.bottom || 0 : 0}px - ${safeAreaTop}px)`,
           scrollBehavior: 'auto',
         }}
       >
