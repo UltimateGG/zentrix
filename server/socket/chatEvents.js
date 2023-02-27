@@ -24,13 +24,13 @@ const createChat = async (user, payload) => {
 const updateChat = async (user, payload) => {
   payload.id = payload._id;
   if (!payload.id || !payload.title || !payload.title.trim() || payload.title.length > 50) return;
-  if (!payload.topic || payload.topic.length > 200) return;
+  if (payload.topic && payload.topic.length > 200) return;
 
   const chat = await Chat.findById(payload.id);
   if (!chat || !chat.members.includes(user.id)) return;
 
   chat.title = payload.title.trimStart();
-  chat.topic = payload.topic.trimStart();
+  chat.topic = payload.topic.trimStart() || null;
   const changedTitle = chat.isModified('title');
   await chat.save();
 
