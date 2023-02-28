@@ -9,6 +9,8 @@ import useNotifications from '../Jet/NotificationContext';
 import { Box, Progress, TextField, theme } from '../Jet';
 import StatusBar from '../components/StatusBar';
 import useDataCache from '../contexts/DataCacheContext';
+import { Capacitor } from '@capacitor/core';
+import { Camera } from '@capacitor/camera';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
@@ -74,6 +76,20 @@ const SettingsPage = () => {
     }
   }
 
+  const openFilePicker = async () => {
+    if (Capacitor.isNativePlatform()) {
+      const photos = await Camera.pickImages({
+        quality: 90,
+        limit: 1
+      });
+
+      console.log(photos);
+      return;
+    }
+
+    if (ref && ref.current) ref.current.click();
+  }
+
   const safeAreaTop = safeArea?.insets.top || 0;
 
   if (!user) return null;
@@ -91,7 +107,7 @@ const SettingsPage = () => {
       </Box>
 
       <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ margin: '1rem 0' }}>
-        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ cursor: 'pointer' }} onClick={() => ref?.current?.click()}>
+        <Box flexDirection="column" justifyContent="center" alignItems="center" style={{ cursor: 'pointer' }} onClick={openFilePicker}>
           {uploadingIcon ? (
             <Progress circular indeterminate />
           ) : (
