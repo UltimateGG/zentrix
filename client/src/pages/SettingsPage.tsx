@@ -11,6 +11,7 @@ import StatusBar from '../components/StatusBar';
 import useDataCache from '../contexts/DataCacheContext';
 import { Capacitor } from '@capacitor/core';
 import { Camera } from '@capacitor/camera';
+import { Filesystem } from '@capacitor/filesystem';
 
 
 const SettingStyle = styled(Box).attrs((props: any) => props)`
@@ -78,12 +79,17 @@ const SettingsPage = () => {
 
   const openFilePicker = async () => {
     if (Capacitor.isNativePlatform()) {
-      const photos = await Camera.pickImages({
+      const data = await Camera.pickImages({
         quality: 90,
         limit: 1
       });
 
-      console.log(photos);
+      if (data.photos.length === 0 || !data.photos[0].path) return;
+      const contents = await Filesystem.readFile({
+        path: data.photos[0].path
+      });
+
+      console.log('data:', contents);
       return;
     }
 
