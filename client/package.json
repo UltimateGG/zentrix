@@ -7,6 +7,7 @@
     "@capacitor/camera": "^4.1.4",
     "@capacitor/clipboard": "^4.1.0",
     "@capacitor/core": "^4.6.3",
+    "@capacitor/filesystem": "^4.1.4",
     "@capacitor/haptics": "^4.1.0",
     "@capacitor/ios": "^4.6.3",
     "@capacitor/keyboard": "^4.1.1",
