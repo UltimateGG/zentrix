@@ -159,7 +159,10 @@ const MessageBox = ({ onSend, onResize }: MessageBoxProps) => {
         icon={IconEnum.send}
         style={{ cursor: canSend ? 'pointer' : 'not-allowed' }}
         color={canSend ? theme.colors.primary[0] : theme.colors.background[4]} size={32}
-        onClick={send} 
+        onClick={() => {
+          send();
+          if (Capacitor.isNativePlatform()) setFocused(false);
+        }}
       />
     </Box>
   );
