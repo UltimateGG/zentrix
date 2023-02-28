@@ -94,9 +94,13 @@ const SettingsPage = () => {
       path: data.photos[0].path
     });
 
-    const encoder = new TextEncoder();
-    const encoded = encoder.encode(contents.data);
-    const blob = new Blob([encoded], { type: 'image/' + data.photos[0].format });
+    const decodedContents = atob(contents.data);
+    const binaryData = new Uint8Array(decodedContents.length);
+    for (let i = 0; i < decodedContents.length; i++)
+      binaryData[i] = decodedContents.charCodeAt(i);
+
+    const type = `image/${data.photos[0].format}`;
+    const blob = new Blob([binaryData], { type });
     doUpload(blob);
 
     Filesystem.deleteFile({
