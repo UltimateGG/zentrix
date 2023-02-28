@@ -94,14 +94,9 @@ const SettingsPage = () => {
       path: data.photos[0].path
     });
 
-    // TODO strema
-    const decodedContents = atob(contents.data);
-    const binaryData = new Uint8Array(decodedContents.length);
-    for (let i = 0; i < decodedContents.length; i++)
-      binaryData[i] = decodedContents.charCodeAt(i);
-
-    const type = `image/${data.photos[0].format}`;
-    const blob = new Blob([binaryData], { type });
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(contents.data);
+    const blob = new Blob([encoded], { type: 'application/octet-stream' });
     doUpload(blob);
 
     Filesystem.deleteFile({
