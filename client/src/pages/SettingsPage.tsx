@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { uploadFile } from '../api/api';
 import { SocketEvent } from '../api/apiTypes';
@@ -35,11 +35,10 @@ const SettingsPage = () => {
   const { user, logout } = useAuth();
   const { safeArea } = useDataCache();
   const { addNotification } = useNotifications();
-  const [editingDisplayName, setEditingDisplayName] = React.useState(false);
-  const [displayName, setDisplayName] = React.useState(user?.displayName || '');
-  const [uploadingIcon, setUploadingIcon] = React.useState(false);
-  const [error, setError] = React.useState('');
-  const ref = useRef<HTMLInputElement>(null);
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [displayName, setDisplayName] = useState(user?.displayName || '');
+  const [uploadingIcon, setUploadingIcon] = useState(false);
+  const [error, setError] = useState('');
 
 
   const updateDisplayName = async () => {
@@ -57,16 +56,10 @@ const SettingsPage = () => {
     setEditingDisplayName(false);
   }
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
-
-    doUpload(file);
-  }
-
   const doUpload = async (file: Blob) => {
     if (!user) return;
-    try { // Upload to storage
+
+    try {
       setUploadingIcon(true);
       const data = await uploadFile('/media/pfp', file);
 
@@ -78,39 +71,42 @@ const SettingsPage = () => {
       console.error(err);
     } finally {
       setUploadingIcon(false);
-      if (ref && ref.current) ref.current.value = '';
     }
   }
 
   const openFilePicker = async () => {
-    if (Capacitor.isNativePlatform()) {
-      const data = await Camera.pickImages({
-        quality: 90,
-        limit: 1
-      });
+    const data = await Camera.pickImages({
+      quality: 90,
+      limit: 1
+    });
 
+    if (data.photos.length === 0) return;
+    if (Capacitor.getPlatform() === 'web') {
+      const blob = await (await fetch(data.photos[0].webPath)).blob();
+      await doUpload(blob).catch(() => {});
 
-      if (data.photos.length === 0 || !data.photos[0].path) return;
-      const contents = await Filesystem.readFile({
-        path: data.photos[0].path
-      });
-
-      const decodedContents = atob(contents.data);
-      const binaryData = new Uint8Array(decodedContents.length);
-      for (let i = 0; i < decodedContents.length; i++)
-        binaryData[i] = decodedContents.charCodeAt(i);
-
-      const type = `image/${data.photos[0].format}`;
-      const blob = new Blob([binaryData], { type });
-      doUpload(blob);
-
-      Filesystem.deleteFile({
-        path: data.photos[0].path
-      }).catch(e => console.error(e));
+      URL.revokeObjectURL(data.photos[0].webPath);
       return;
     }
 
-    if (ref && ref.current) ref.current.click();
+    if (!data.photos[0].path) return; // mobile should always have a path
+    const contents = await Filesystem.readFile({
+      path: data.photos[0].path
+    });
+
+    // TODO strema
+    const decodedContents = atob(contents.data);
+    const binaryData = new Uint8Array(decodedContents.length);
+    for (let i = 0; i < decodedContents.length; i++)
+      binaryData[i] = decodedContents.charCodeAt(i);
+
+    const type = `image/${data.photos[0].format}`;
+    const blob = new Blob([binaryData], { type });
+    doUpload(blob);
+
+    Filesystem.deleteFile({
+      path: data.photos[0].path
+    }).catch(e => console.error(e));
   }
 
   const safeAreaTop = safeArea?.insets.top || 0;
@@ -137,8 +133,6 @@ const SettingsPage = () => {
             <Avatar src={user.iconURL} size={6} />
           )}
           <small style={{ textAlign: 'center', marginTop: '0.2rem' }}>Click to change</small>
-
-          <input type="file" style={{ display: 'none' }} ref={ref} accept="image/*" onChange={onFileChange} />
         </Box>
 
         {editingDisplayName ? (

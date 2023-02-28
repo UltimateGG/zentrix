@@ -20,6 +20,7 @@ const Avatar = ({ src, size, mr }: AvatarProps) => {
         height: size + 'rem',
         borderRadius: '50%',
         marginRight: mr ? mr + 'rem' : 0,
+        objectFit: 'cover',
       }}
     />
   );

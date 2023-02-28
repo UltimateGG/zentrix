@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import axios from 'axios';
 
+
 export const DEV = process.env.NODE_ENV === 'development' || Capacitor.DEBUG;
 const devIp = Capacitor.getPlatform() === 'android' ? '10.0.2.2' // android emulator tunnel
                         : Capacitor.getPlatform() === 'ios' ? process.env.REACT_APP_REMOTE_API
