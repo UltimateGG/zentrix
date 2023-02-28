@@ -14,15 +14,16 @@ import FormattedMessageContent from './FormattedMessageContext';
 interface ChatMessageProps {
   message: Message;
   shouldStack?: boolean;
-  onContextMenu?: () => any;
+  onContextMenu: () => any;
 }
 
-const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
+const MessageStyle = styled(Box).attrs((props: ChatMessageProps & { active: boolean }) => props)`
   width: 100%;
   word-break: break-word;
   word-wrap: break-word;
   white-space: pre-wrap;
   margin-top: ${props => !props.shouldStack ? '1rem' : props.message.type === MessageType.SYSTEM ? 0 : '0.2rem'};
+  background-color: ${props => props.active ? theme.colors.background[3] : 'inherit'};
   padding: ${props => props.message.type === MessageType.SYSTEM ? '0.4rem 0.8rem' : '0 0.8rem'};
   transition: background-color 0.1s ease-in-out;
 `;
@@ -42,7 +43,8 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
   const { users, removeMessage, editingMessage, setEditingMessage } = useDataCache();
   const [editingContent, setEditingContent] = useState(message.content);
   const [error, setError] = useState('');
-  const longPress = useLongPress(onContextMenu);
+  const [active, setActive] = useState(false);
+  const longPress = useLongPress({ callback: onContextMenu, ms: 300, activeSetter: setActive });
 
 
   useEffect(() => {
@@ -85,7 +87,13 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
   }
 
   return (
-    <MessageStyle spacing="1rem" {...longPress} message={message} shouldStack={shouldStack}>
+    <MessageStyle
+      spacing="1rem"
+      {...longPress}
+      message={message}
+      shouldStack={shouldStack}
+      active={active}
+    >
       {!shouldStack && profilePicturesEnabled && <Avatar src={author?.iconURL || LOGO_URL} size={2.6} />}
 
       <Box flexDirection="column" style={{ width: '100%' }}>

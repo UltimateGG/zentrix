@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 
 
-const useLongPress = (callback = () => {}, ms = 300) => {
+interface UseLongPressProps {
+  callback: () => any;
+  ms: number;
+  activeSetter: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const useLongPress = ({ callback, ms, activeSetter }: UseLongPressProps) => {
   const [startLongPress, setStartLongPress] = useState(false);
 
 
@@ -11,6 +17,10 @@ const useLongPress = (callback = () => {}, ms = 300) => {
 
     return () => clearTimeout(timerId);
   }, [callback, ms, startLongPress]);
+
+  useEffect(() => {
+    activeSetter(startLongPress);
+  }, [activeSetter, startLongPress]);
 
   return {
     onMouseDown: () => setStartLongPress(true),
