@@ -90,6 +90,8 @@ const SettingsPage = () => {
       });
 
       console.log('data:', contents);
+      // log exif
+      console.log(atob(contents.data));
       return;
     }
 
