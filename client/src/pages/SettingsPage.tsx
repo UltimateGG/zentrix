@@ -94,6 +94,7 @@ const SettingsPage = () => {
         path: data.photos[0].path
       });
 
+      console.log(data.photos[0])
       const blob = new Blob([contents.data], { type: data.photos[0].format });
       doUpload(blob);
       return;

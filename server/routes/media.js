@@ -35,6 +35,7 @@ router.post('/upload', uploadFile.single('file'), asyncHandler(async (req, res) 
 
 
 const pfpFilter = (req, file, cb) => {
+  console.log(file)
   const valid = file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg';
   cb(valid ? null : new Error('File type not supported'), valid ? true : false);
 }
