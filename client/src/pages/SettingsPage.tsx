@@ -95,7 +95,10 @@ const SettingsPage = () => {
         path: data.photos[0].path
       });
 
-      const blob = new Blob([contents.data], { type: `image/${data.photos[0].format}` });
+      const type = `image/${data.photos[0].format}`;
+      const prefix = `data:${type};base64,`;
+
+      const blob = new Blob([prefix + contents.data], { type });
       doUpload(blob);
 
       Filesystem.deleteFile({
