@@ -57,10 +57,15 @@ const SettingsPage = () => {
     setEditingDisplayName(false);
   }
 
-  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!user || !file || !file.type.startsWith('image/')) return;
+    if (!file || !file.type.startsWith('image/')) return;
 
+    doUpload(file);
+  }
+
+  const doUpload = async (file: File | string) => {
+    if (!user) return;
     try { // Upload to storage
       setUploadingIcon(true);
       const data = await uploadFile('/media/pfp', file);
@@ -89,9 +94,7 @@ const SettingsPage = () => {
         path: data.photos[0].path
       });
 
-      console.log('data:', contents);
-      // log exif
-      console.log(atob(contents.data));
+      doUpload(contents.data);
       return;
     }
 
