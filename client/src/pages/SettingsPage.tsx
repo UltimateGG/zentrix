@@ -96,7 +96,7 @@ const SettingsPage = () => {
 
     const encoder = new TextEncoder();
     const encoded = encoder.encode(contents.data);
-    const blob = new Blob([encoded], { type: 'application/octet-stream' });
+    const blob = new Blob([encoded], { type: 'image/' + data.photos[0].format });
     doUpload(blob);
 
     Filesystem.deleteFile({
