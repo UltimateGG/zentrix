@@ -23,7 +23,6 @@ const MessageStyle = styled(Box).attrs((props: ChatMessageProps) => props)`
   word-wrap: break-word;
   white-space: pre-wrap;
   margin-top: ${props => !props.shouldStack ? '1rem' : props.message.type === MessageType.SYSTEM ? 0 : '0.2rem'};
-  background-color: ${props => props.message.type === MessageType.SYSTEM ? theme.colors.background[2] : 'inherit'};
   padding: ${props => props.message.type === MessageType.SYSTEM ? '0.4rem 0.8rem' : '0 0.8rem'};
   transition: background-color 0.1s ease-in-out;
 `;
@@ -94,7 +93,7 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
           <Box justifyContent="space-between" alignItems="center">
             <Box spacing="0.6rem" alignItems="center">
               {getDisplayName()}
-              {message.editedAt ? <small style={{ color: theme.colors.text[7] }}>(edited)</small> : null}
+              {/* {message.editedAt ? <small style={{ color: theme.colors.text[7] }}>(edited)</small> : null} */}
             </Box>
             <small>{formatTime(message.createdAt)}</small>
           </Box>
