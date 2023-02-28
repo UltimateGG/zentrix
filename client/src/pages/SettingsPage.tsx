@@ -64,7 +64,7 @@ const SettingsPage = () => {
     doUpload(file);
   }
 
-  const doUpload = async (file: File | string) => {
+  const doUpload = async (file: Blob) => {
     if (!user) return;
     try { // Upload to storage
       setUploadingIcon(true);
@@ -94,7 +94,8 @@ const SettingsPage = () => {
         path: data.photos[0].path
       });
 
-      doUpload(contents.data);
+      const blob = new Blob([contents.data], { type: data.photos[0].format });
+      doUpload(blob);
       return;
     }
 

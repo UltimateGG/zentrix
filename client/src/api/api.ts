@@ -44,7 +44,7 @@ export const loginWithGoogle = async (token: string) => {
   return res.data;
 }
 
-export const uploadFile = async (path: string, file: File | string) => {
+export const uploadFile = async (path: string, file: Blob) => {
   const formData = new FormData();
   formData.append('file', file);
 

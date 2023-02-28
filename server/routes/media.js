@@ -57,6 +57,7 @@ const uploadPfp = multer({
 
 router.post('/pfp', uploadPfp.single('file'), asyncHandler(async (req, res) => {
   const file = req.file;
+  console.log(file)
   if (!file) throw new Error('No file was uploaded');
 
   req.user.iconURL = file.location;
