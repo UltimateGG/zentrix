@@ -89,13 +89,13 @@ const SettingsPage = () => {
         limit: 1
       });
 
+
       if (data.photos.length === 0 || !data.photos[0].path) return;
       const contents = await Filesystem.readFile({
         path: data.photos[0].path
       });
 
-      console.log(data.photos[0])
-      const blob = new Blob([contents.data], { type: data.photos[0].format });
+      const blob = new Blob([contents.data], { type: `image/${data.photos[0].format}` });
       doUpload(blob);
       return;
     }
