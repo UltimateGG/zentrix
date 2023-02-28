@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LOGO_URL } from '../../../api/api';
 import { Message, MessageType, SocketEvent } from '../../../api/apiTypes';
@@ -45,6 +45,10 @@ const ChatMessage = ({ message, shouldStack, onContextMenu }: ChatMessageProps) 
   const [error, setError] = useState('');
   const longPress = useLongPress(onContextMenu);
 
+
+  useEffect(() => {
+    if (!editingMessage) return setEditingContent(message.content);
+  }, [editingMessage, message.content]);
 
   const author = users.find(user => user._id === message.author);
 
